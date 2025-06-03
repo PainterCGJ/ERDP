@@ -1,0 +1,10 @@
+Project/MDK/.vscode
+Project/MDK/Objects
+
+Project/MDK/*.uvguix.*
+Project/MDK/*.uvoptx
+
+# Source/Kernel
+# Source/Application
+# Source/HAL
+# Source/Interface
