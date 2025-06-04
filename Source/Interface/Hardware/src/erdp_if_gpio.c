@@ -166,6 +166,6 @@ ERDP_Status_t erdp_if_gpio_read(ERDP_GpioPort_t port, ERDP_GpioPin_t pin)
     }
     else
     {
-        return ERDP_REDSET; // Pin is reset
+        return ERDP_RESET; // Pin is reset
     }
 }

@@ -1,11 +1,18 @@
 #ifndef ERDP_INTERFACE_H
 #define ERDP_INTERFACE_H
 
-typedef enum
+#ifdef __cplusplus
+extern "C"
 {
-    ERDP_REDSET = 0,
-    ERDP_SET,
-} ERDP_Status_t;
+#endif // __cplusplus
+
+#include <stdint.h>
+#include <stdio.h>
+    typedef enum
+    {
+        ERDP_RESET = 0,
+        ERDP_SET,
+    } ERDP_Status_t;
 
 #define erdp_assert(expr)                                   \
     do                                                      \
@@ -16,5 +23,9 @@ typedef enum
                 ; /* Infinite loop for assertion failure */ \
         }                                                   \
     } while (0)
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // ERDP_INTERFACE_H
