@@ -33,6 +33,7 @@ OF SUCH DAMAGE.
 */
 
 #include "gd32f4xx_it.h"
+#include "systick.h"
 
 /*!
     \brief      this function handles NMI exception
@@ -167,3 +168,14 @@ void DebugMon_Handler(void)
 
 //     delay_decrement();
 // }
+
+/*!
+    \brief      this function handles SysTick exception
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void SysTick_Handler(void)
+{
+    delay_decrement();
+}
