@@ -137,7 +137,7 @@ void erdp_if_gpio_af_cfg(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, uint32_t af)
     uint32_t gpio_pin = erdp_if_gpio_get_pin(pin);
 
     // Set the alternate function for the GPIO pin
-    gpio_af_set(gpio_periph, GPIO_AF_12, gpio_pin);
+    gpio_af_set(gpio_periph, af, gpio_pin);
 }
 
 void erdp_if_gpio_write(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_Status_t value)
