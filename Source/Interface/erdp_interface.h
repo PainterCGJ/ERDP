@@ -8,11 +8,14 @@ extern "C"
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
     typedef enum
     {
         ERDP_RESET = 0,
         ERDP_SET,
     } ERDP_Status_t;
+
+    // typedef enum { false, true } bool;
 
 #define erdp_assert(expr)                                   \
     do                                                      \
