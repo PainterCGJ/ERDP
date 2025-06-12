@@ -104,14 +104,20 @@ public:
     }
 
 private:
-    T* __obj = nullptr; // Pointer to the user-defined object
-    void (T::*__usr_irq_handler)() = nullptr;
-
+    template <class U = T>
+    using obj_type = std::conditional_t<!std::is_same_v<U, VoidClass>, T*, void*>;
+    obj_type<> __obj = nullptr;
+    template <class U = T>
+    using handler_type = std::conditional_t<!std::is_same_v<U, VoidClass>, void (T::*)(), void*>;
+    handler_type<> __usr_irq_handler = nullptr;
+    
     void __usr_irq_service() override
     {
-        if (__usr_irq_handler != nullptr)
-        {
-            (__obj->*__usr_irq_handler)(); // Call the user-defined function
+        if constexpr (!std::is_same_v<T, VoidClass>) {
+            if (__usr_irq_handler != nullptr)
+            {
+                (__obj->*__usr_irq_handler)(); // Call the user-defined function
+            }
         }
     }
 };
