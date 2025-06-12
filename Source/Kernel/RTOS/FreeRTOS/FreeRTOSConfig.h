@@ -422,7 +422,6 @@ extern uint32_t SystemCoreClock;
 #define configASSERT(x)                                   \
     if ((x) == 0)                                         \
     {                                                     \
-        printf("OS Error:%s,%d\r\n", __FILE__, __LINE__); \
         taskDISABLE_INTERRUPTS();                         \
         for (;;)                                          \
             ;                                             \
