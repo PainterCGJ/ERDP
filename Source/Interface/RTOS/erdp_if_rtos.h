@@ -1,6 +1,11 @@
 #ifndef ERDP_IF_RTOS_H
 #define ERDP_IF_RTOS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
+
 #include "FreeRTOS.h"
 #include "event_groups.h"
 #include "list.h"
@@ -247,4 +252,10 @@ uint32_t erdp_if_rtos_cpu_lock(void);
  */
 void erdp_if_rtos_cpu_unlock(uint32_t key);
 
-#endif
+
+#ifdef __cplusplus
+}
+#endif  /* __cplusplus */
+
+#endif /* ERDP_IF_RTOS_H */
+
