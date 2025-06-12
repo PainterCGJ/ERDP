@@ -1,6 +1,39 @@
 #include "erdp_if_rtos.h"
 #define List_Index_Loop(item) for (OS_ListItem *__end = (OS_ListItem *)listGET_END_MARKER(item->pxContainer); item != __end; item = item->pxNext)
 
+OS_TaskHandle erdp_if_rtos_task_create(void (*task_function)(void *),
+                                       const char *name, uint32_t stack_size,
+                                       void *arg, uint32_t priority)
+{
+    TaskHandle_t xHandle = NULL;
+    xTaskCreate(task_function, name, stack_size, arg, priority, &xHandle);
+    return (OS_TaskHandle)xHandle;
+}
+
+void erdp_if_rtos_task_delete(OS_TaskHandle task_handle)
+{
+    if (task_handle!= NULL)
+    {
+        vTaskDelete(task_handle);
+    }
+}
+
+void erdp_if_rtos_task_suspend(OS_TaskHandle task_handle)
+{
+    if (task_handle != NULL)
+    {
+        vTaskSuspend(task_handle);
+    }
+}
+
+void erdp_if_rtos_task_resume(OS_TaskHandle task_handle)
+{
+    if (task_handle!= NULL)
+    {
+        vTaskResume(task_handle); 
+    }
+}
+
 void erdp_if_rtos_start_scheduler()
 {
     vTaskStartScheduler();

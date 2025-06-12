@@ -18,6 +18,69 @@ extern "C" {
 #define DEFAULT_STACK_SIZE 128        /* Default task stack size in words */
 #define OS_WAIT_FOREVER portMAX_DELAY /* Infinite blocking period */
 
+typedef TaskHandle_t OS_TaskHandle;
+
+/* Task Control */
+/**
+ * @brief Creates a new RTOS task
+ * @param[in] task_function Pointer to the task function
+ * @param[in] name Task name (for debugging)
+ * @param[in] stack_size Task stack size in words
+ * @param[in] priority Task priority (0-255)
+ * @return Handle to the created task
+ */
+OS_TaskHandle erdp_if_rtos_task_create(void (*task_function)(void *),
+                                       const char *name, uint32_t stack_size, void *arg,
+                                       uint32_t priority);
+
+/**
+ * @brief Deletes a task and frees its memory.
+ *        This function is used to remove a specific RTOS task from the system and 
+ *        release the memory resources allocated to it.
+ * @param[in] task_handle Handle to the task to delete.
+ *                        A valid handle pointing to the task that needs to be deleted. 
+ *                        If set to NULL, the behavior depends on the underlying RTOS implementation, 
+ *                        often it deletes the calling task itself.
+ * @note Ensure no other tasks are blocked on this task before deletion.
+ *       Before calling this function, make sure that no other tasks are waiting 
+ *       for this task to complete or are blocked due to the resources of this task. 
+ *       Otherwise, it may lead to unexpected behavior or even system instability.
+ * @note After the task is deleted, any subsequent operations using the task handle will be invalid.
+ */
+void erdp_if_rtos_task_delete(OS_TaskHandle task_handle);
+
+/**
+ * @brief Suspends a running RTOS task.
+ *        This function pauses the execution of a specified task. The suspended task will 
+ *        not consume CPU time until it is resumed.
+ * @param[in] task_handle Handle to the task to suspend.
+ *                        A valid handle pointing to the task that needs to be suspended.
+ *                        If it is a null pointer, the function may have different behaviors 
+ *                        depending on the implementation.
+ * @note The suspended task remains in the system and its state is preserved.
+ *       Before suspending a task, consider the impact on other tasks that may depend on it.
+ *       Make sure that suspending this task will not cause deadlocks or other unexpected issues.
+ * @note The suspended task can be resumed using the corresponding resume function.
+ */
+void erdp_if_rtos_task_suspend(OS_TaskHandle task_handle);
+
+/**
+ * @brief Resumes a suspended RTOS task.
+ *        This function restarts the execution of a previously suspended task. 
+ *        After calling this function, the resumed task will be eligible to run again and start consuming CPU time.
+ * @param[in] task_handle Handle to the task to resume.
+ *                        A valid handle pointing to the task that needs to be resumed.
+ *                        If it is a null pointer, the function may have different behaviors 
+ *                        depending on the implementation.
+ * @note Ensure that the task was previously suspended. Resuming a non - suspended task may have no effect or 
+ *       lead to unexpected behavior depending on the RTOS implementation.
+ * @note Consider the overall system state and potential impacts on other tasks before resuming a task.
+ *       Make sure that resuming this task will not cause deadlocks or other synchronization issues.
+ */
+void erdp_if_rtos_task_resume(OS_TaskHandle task_handle);
+
+
+
 /* Scheduler Control */
 /**
  * @brief Starts the RTOS scheduler
