@@ -1,0 +1,16 @@
+#ifndef ERDP_HAL_CONFIG_H
+#define ERDP_HAL_CONFIG_H
+
+/* ================================< user config >================================ */
+
+#define ERDP_CONFIG_RTOS_ENABLED 0
+
+#define ERDP_CONFIG_HEAP_SIZE ((size_t)(10 * 1024))
+
+/* =============================< end of user config >============================ */
+
+#if ERDP_CONFIG_RTOS_ENABLED == 1
+#define ERDP_ENABLE_RTOS 
+#endif
+
+#endif
