@@ -9,23 +9,12 @@ extern "C"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include "erdp_assert.h"
     typedef enum
     {
         ERDP_RESET = 0,
         ERDP_SET,
     } ERDP_Status_t;
-
-    // typedef enum { false, true } bool;
-
-#define erdp_assert(expr)                                   \
-    do                                                      \
-    {                                                       \
-        if (!(expr))                                        \
-        {                                                   \
-            while (1)                                       \
-                ; /* Infinite loop for assertion failure */ \
-        }                                                   \
-    } while (0)
 
 #ifdef __cplusplus
 }
