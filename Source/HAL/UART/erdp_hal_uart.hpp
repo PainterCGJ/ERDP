@@ -4,9 +4,9 @@
 #include "erdp_hal.h"
 #include "erdp_if_uart.h"
 #include "erdp_if_gpio.h"
+#include "printf.h"
 
 #include <type_traits>
-
 namespace erdp
 {
     extern "C"
@@ -45,16 +45,22 @@ namespace erdp
 
         ERDP_Uart_t __uart = ERDP_UART0;            // Default to UART0
         static UartBase *__instance[ERDP_UART_MAX]; // Array to hold instances for each UART
+        static UartBase *__debug_com;
         uint8_t __data;
 
         void init(UartConfig_t &config)
         {
-            __init(config);
+            __init(config);    
         }
 
         void send(uint8_t *data, uint32_t len)
         {
             erdp_if_uart_send_bytes(__uart, data, len);
+        }
+
+        void set_as_debug_com()
+        {   
+            __debug_com = this;
         }
 
     private:
