@@ -1,10 +1,13 @@
 #include "erdp_hal_uart.hpp"
-UartBase *UartBase::__instance[ERDP_UART_MAX];
-
-extern "C"
+namespace erdp
 {
-    void erdp_irq_handler(ERDP_Uart_t uart)
+    UartBase *UartBase::__instance[ERDP_UART_MAX];
+
+    extern "C"
     {
-        UartBase::__instance[uart]->__irq_handler();
+        void erdp_irq_handler(ERDP_Uart_t uart)
+        {
+            UartBase::__instance[uart]->__irq_handler();
+        }
     }
 }
