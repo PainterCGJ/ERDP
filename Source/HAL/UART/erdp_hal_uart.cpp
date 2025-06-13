@@ -5,7 +5,7 @@ namespace erdp
 
     extern "C"
     {
-        void erdp_irq_handler(ERDP_Uart_t uart)
+        void erdp_uart_irq_handler(ERDP_Uart_t uart)
         {
             UartBase::__instance[uart]->__irq_handler();
         }

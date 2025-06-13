@@ -1,6 +1,7 @@
 #ifndef ERDP_HAL_UART_GPP
 #define ERDP_HAL_UART_GPP
 
+#include "erdp_hal.h"
 #include "erdp_if_uart.h"
 #include "erdp_if_gpio.h"
 
@@ -10,7 +11,7 @@ namespace erdp
 {
     extern "C"
     {
-        void erdp_irq_handler(ERDP_Uart_t uart);
+        void erdp_uart_irq_handler(ERDP_Uart_t uart);
     }
     typedef struct
     {
@@ -36,7 +37,7 @@ namespace erdp
 
     class UartBase
     {
-        friend void erdp_irq_handler(ERDP_Uart_t uart);
+        friend void erdp_uart_irq_handler(ERDP_Uart_t uart);
 
     public:
         UartBase() {}
