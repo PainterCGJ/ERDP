@@ -1,7 +1,7 @@
 #include "erdp_if_uart.h"
 #include "gd32f4xx_usart.h"
 
-extern void erdp_irq_handler(ERDP_Uart_t uart);
+extern void erdp_uart_irq_handler(ERDP_Uart_t uart);
 
 const static uint32_t uart_instance[ERDP_UART_MAX]={
     (uint32_t)USART0,
@@ -184,33 +184,33 @@ void erdp_if_uart_read_byte(ERDP_Uart_t uart, uint8_t *data)
 
 void USART0_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART0);
+    erdp_uart_irq_handler(ERDP_UART0);
 }
 void USART1_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART1);
+    erdp_uart_irq_handler(ERDP_UART1);
 }
 void USART2_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART2);
+    erdp_uart_irq_handler(ERDP_UART2);
 }
 void UART3_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART3);
+    erdp_uart_irq_handler(ERDP_UART3);
 }
 void UART4_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART4);
+    erdp_uart_irq_handler(ERDP_UART4);
 }
 void USART5_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART5);
+    erdp_uart_irq_handler(ERDP_UART5);
 }
 void UART6_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART6);
+    erdp_uart_irq_handler(ERDP_UART6);
 }
 void UART7_IRQHandler(void)
 {
-    erdp_irq_handler(ERDP_UART7);
+    erdp_uart_irq_handler(ERDP_UART7);
 }
