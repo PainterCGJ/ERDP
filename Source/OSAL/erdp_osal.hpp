@@ -1,12 +1,14 @@
 #ifndef ERDP_OSAL_HPP
 #define ERDP_OSAL_HPP
 #include "erdp_config.h"
+#include "erdp_assert.h"
 #include "erdp_if_rtos.h"
 #include "string.h"
 
 #include <cstddef>
 #include <functional>
-
+#include <queue>
+#include <map>
 namespace erdp
 {
     extern "C"
@@ -203,7 +205,7 @@ namespace erdp
     private:
         OS_Queue __handler;
     };
-#else  // ERDP_ENABLE_RTOS
+#else // ERDP_ENABLE_RTOS
     class Heap4
     {
     public:
@@ -218,7 +220,7 @@ namespace erdp
         };
 
         // 初始化内存池
-        Heap4 (){}
+        Heap4() {}
         explicit Heap4(void *heap_area, size_t heap_size) noexcept;
 
         // 禁止拷贝和移动
@@ -298,35 +300,87 @@ namespace erdp
     // 全局默认堆(需先初始化)
     extern Heap4 *default_heap;
 
+#endif // ERDP_ENABLE_RTOS
+
     template <typename T>
     class RingBuffer
     {
-        public:
+    public:
         RingBuffer(const RingBuffer &) = delete;
         RingBuffer &operator=(const RingBuffer &) = delete;
 
-        RingBuffer(uint8_t* buffer, size_t size) noexcept{
-            initialize(buffer, size);
+        RingBuffer(uint8_t *buffer, size_t size) noexcept
+        {
+            erdp_assert(buffer != nullptr);
+            erdp_assert(size % sizeof(T) == 0);
+            initialize(buffer, size % sizeof(T));
         }
 
-        void initialize(uint8_t*buffer, size_t size) noexcept
+        RingBuffer(size_t size) noexcept
         {
+            initialize(new T[size], size);
+        }
+
+        void initialize(T *buffer, size_t size) noexcept
+        {
+            erdp_assert(buffer != nullptr);
+            erdp_assert(size > 0);
+            std::fill(buffer, buffer + size, 0);
             __buffer = buffer;
             __size = size;
             __head = 0;
             __tail = 0;
         }
 
-        private:
-        uint8_t* __buffer;
+        bool full() const noexcept { return (__tail + 1) % __size == __head; }
+
+        bool empty() const noexcept { return __head == __tail; }
+
+        bool push(const T &item) noexcept
+        {
+            if (full())
+            {
+                return false;
+            }
+            __buffer[__tail] = item;
+            __tail = (__tail + 1) % __size;
+            return true;
+        }
+
+        bool pop(T &item) noexcept
+        {
+            if (empty())
+            {
+                return false;
+            }
+            item = __buffer[__head];
+            __head = (__head + 1) % __size;
+            return true;
+        }
+
+        size_t size() const noexcept
+        {
+            return (__tail - __head + __size) % __size;
+        }
+
+    private:
+        T *__buffer;
         size_t __size;
         volatile size_t __head;
         volatile size_t __tail;
+
+        T &operator[](size_t index)
+        {
+            erdp_assert(index < size());
+            return *reinterpret_cast<T *>(__buffer + ((__head + index) % __size));
+        }
+
+        const T &operator[](size_t index) const
+        {
+            erdp_assert(index < size());
+            return *reinterpret_cast<const T *>(__buffer + ((__head + index) % __size));
+        }
     };
-
-#endif // ERDP_ENABLE_RTOS
-
-    
 
 } // namespace erdp
 
