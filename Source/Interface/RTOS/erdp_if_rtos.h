@@ -95,6 +95,14 @@ void erdp_if_rtos_start_scheduler();
  */
 uint32_t erdp_if_rtos_ms_to_ticks(uint32_t nms);
 
+/**
+ * @brief Delays the execution of the current task for a specified time period
+ * @param[in] nms Time value in milliseconds to delay
+ * @note This function blocks the current task's execution for the specified duration.
+ *       Other tasks with higher priority will be scheduled to run during this delay.
+ */
+void erdp_if_rtos_delay_ms(uint32_t nms);
+
 /* Queue API */
 typedef QueueHandle_t OS_Queue;
 

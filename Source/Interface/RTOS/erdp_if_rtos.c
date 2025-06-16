@@ -44,6 +44,11 @@ uint32_t erdp_if_rtos_ms_to_ticks(uint32_t nms)
     return pdMS_TO_TICKS(nms);
 }
 
+void erdp_if_rtos_delay_ms(uint32_t nms)
+{
+    vTaskDelay(pdMS_TO_TICKS(nms));
+}
+
 void *erdp_if_rtos_malloc(size_t size)
 {
     return pvPortMalloc(size);
