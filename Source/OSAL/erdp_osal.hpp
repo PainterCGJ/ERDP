@@ -163,47 +163,58 @@ namespace erdp
     class Queue
     {
     public:
-        /**
-         * @brief 构造队列
-         * @param[in] queue_length 队列容量，指能容纳元素的个数
-         */
         Queue(uint32_t queue_length)
         {
             __handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
+            __queue_length = queue_length;
+            __queue_size = 0;
         }
+        ~Queue() { erdp_if_rtos_queue_delet(__handler); }
 
-        /**
-         * @brief 元素入队，遇到阻塞默认一直等待
-         * @param[in] elm_to_push 需要入队的元素
-         * @param[in] ticks_to_wait 阻塞时等待时间
-         * @return osFALSE 入队失败；pdTRUE 入队成功
-         */
         bool push(const _Type &elm_to_push, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
         {
-            return erdp_if_rtos_queue_send(__handler, (uint8_t *)(&elm_to_push), ticks_to_wait);
+            if (erdp_if_rtos_queue_send(__handler, (uint8_t *)(&elm_to_push), ticks_to_wait))
+            {
+                __queue_size++;
+                return true;
+            }
+            return false;
         }
 
-        /**
-         * @brief 取出元素，遇到阻塞默认一直等待
-         * @param[in] elm_recv 接收取出的元素
-         * @param[in] ticks_to_wait 阻塞时等待时间
-         * @return osFALSE 队列为空，取出失败；pdTRUE 取出成功
-         */
         bool pop(_Type &elm_recv, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
         {
-            return erdp_if_rtos_queue_recv(__handler, (uint8_t *)(&elm_recv), ticks_to_wait);
+            if (erdp_if_rtos_queue_recv(__handler, (uint8_t *)(&elm_recv), ticks_to_wait))
+            {
+                __queue_size--;
+                return true;
+            }
+            return false;
         }
 
-        /**
-         * @brief 查询当前队列中所含的元素个数
-         * @return 当前队列中所含的元素个数
-         */
-        uint32_t size() { return uxQueueMessagesWaiting(__handler); }
+        bool empty()
+        {
+            if (__queue_size == 0)
+            {
+                return true;
+            }
+            return false;
+        }
 
-        ~Queue() { erdp_if_rtos_queue_delet(__handler); }
+        bool full()
+        {
+            if (__queue_size == __queue_length)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        uint32_t size() { return __queue_size; }
 
     private:
         OS_Queue __handler;
+        uint32_t __queue_length;
+        uint32_t __queue_size;
     };
 #else // ERDP_ENABLE_RTOS
     class Heap4
@@ -313,7 +324,7 @@ namespace erdp
         {
             erdp_assert(buffer != nullptr);
             erdp_assert(size % sizeof(T) == 0);
-            initialize(buffer, size % sizeof(T));
+            initialize(reinterpret_cast<T *>(buffer), size / sizeof(T));
         }
 
         RingBuffer(size_t size) noexcept
