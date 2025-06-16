@@ -16,6 +16,21 @@ namespace erdp
         void erdp_task_run(void *parm);
     }
 
+    template <typename T>
+    class ContainerBase
+    {
+    public:
+        ContainerBase(){}
+        ~ContainerBase(){}
+
+        virtual bool initialize(size_t size) = 0;
+        virtual bool push(const T &elm) = 0;
+        virtual bool pop(T &elm) = 0;
+        virtual uint32_t size()const noexcept  = 0;
+        virtual bool empty()const noexcept  = 0;
+        virtual bool full()const noexcept  = 0;
+    };
+
 #ifdef ERDP_ENABLE_RTOS
     class Thread
     {
@@ -144,6 +159,16 @@ namespace erdp
             return __handler;
         }
 
+        static void delay_ms(uint32_t ms)
+        {
+            erdp_if_rtos_delay_ms(ms);
+        }
+
+        static void start_scheduler()
+        {
+            erdp_if_rtos_start_scheduler();
+        }
+
         virtual void thead_code()
         {
             __thread_code(__p_arg);
@@ -163,16 +188,27 @@ namespace erdp
     class Queue
     {
     public:
+        Queue() {}
         Queue(uint32_t queue_length)
         {
-            __handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
-            __queue_length = queue_length;
-            __queue_size = 0;
+            initialize(queue_length);
         }
         ~Queue() { erdp_if_rtos_queue_delet(__handler); }
 
+        bool initialize(size_t queue_length)
+        {
+            __handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
+            if (__handler == nullptr)
+            {
+                return false;
+            }
+            __queue_length = queue_length;
+            __queue_size = 0;
+            return true;
+        }
         bool push(const _Type &elm_to_push, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
         {
+            erdp_assert(__handler != nullptr);
             if (erdp_if_rtos_queue_send(__handler, (uint8_t *)(&elm_to_push), ticks_to_wait))
             {
                 __queue_size++;
@@ -183,6 +219,7 @@ namespace erdp
 
         bool pop(_Type &elm_recv, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
         {
+            erdp_assert(__handler != nullptr);
             if (erdp_if_rtos_queue_recv(__handler, (uint8_t *)(&elm_recv), ticks_to_wait))
             {
                 __queue_size--;
@@ -193,6 +230,7 @@ namespace erdp
 
         bool empty()
         {
+            erdp_assert(__handler != nullptr);
             if (__queue_size == 0)
             {
                 return true;
@@ -202,6 +240,7 @@ namespace erdp
 
         bool full()
         {
+            erdp_assert(__handler != nullptr);
             if (__queue_size == __queue_length)
             {
                 return true;
@@ -209,7 +248,11 @@ namespace erdp
             return false;
         }
 
-        uint32_t size() { return __queue_size; }
+        uint32_t size()
+        {
+            erdp_assert(__handler != nullptr);
+            return __queue_size;
+        }
 
     private:
         OS_Queue __handler;
@@ -314,33 +357,46 @@ namespace erdp
 #endif // ERDP_ENABLE_RTOS
 
     template <typename T>
-    class RingBuffer
+    class RingBuffer: public ContainerBase<T>
     {
     public:
         RingBuffer(const RingBuffer &) = delete;
         RingBuffer &operator=(const RingBuffer &) = delete;
 
-        RingBuffer(uint8_t *buffer, size_t size) noexcept
+        RingBuffer(){}
+
+        RingBuffer(uint8_t *mempool, size_t mempool_size) noexcept
         {
-            erdp_assert(buffer != nullptr);
-            erdp_assert(size % sizeof(T) == 0);
-            initialize(reinterpret_cast<T *>(buffer), size / sizeof(T));
+            initialize(mempool, mempool_size);
         }
 
         RingBuffer(size_t size) noexcept
         {
-            initialize(new T[size], size);
+            initialize(size);
         }
 
-        void initialize(T *buffer, size_t size) noexcept
+        bool initialize(uint8_t *mempool, size_t mempool_size)
         {
-            erdp_assert(buffer != nullptr);
-            erdp_assert(size > 0);
-            std::fill(buffer, buffer + size, 0);
-            __buffer = buffer;
+            erdp_assert(mempool != nullptr);
+            erdp_assert(mempool_size % sizeof(T) == 0);
+            __buffer = reinterpret_cast<T *>(mempool);
+            __size = mempool_size / sizeof(T);
+            __head = 0;
+            __tail = 0;
+            return true;
+        }
+
+        bool initialize(uint32_t size) noexcept
+        {
+            __buffer = new T[size];
+            if (__buffer == nullptr)
+            {
+                return false;
+            }
             __size = size;
             __head = 0;
             __tail = 0;
+            return true;
         }
 
         bool full() const noexcept { return (__tail + 1) % __size == __head; }
@@ -369,24 +425,24 @@ namespace erdp
             return true;
         }
 
-        size_t size() const noexcept
+        uint32_t size() const noexcept
         {
             return (__tail - __head + __size) % __size;
         }
 
     private:
         T *__buffer;
-        size_t __size;
-        volatile size_t __head;
-        volatile size_t __tail;
+        uint32_t __size;
+        volatile uint32_t __head;
+        volatile uint32_t __tail;
 
-        T &operator[](size_t index)
+        T &operator[](uint32_t index)
         {
             erdp_assert(index < size());
             return *reinterpret_cast<T *>(__buffer + ((__head + index) % __size));
         }
 
-        const T &operator[](size_t index) const
+        const T &operator[](uint32_t index) const
         {
             erdp_assert(index < size());
             return *reinterpret_cast<const T *>(__buffer + ((__head + index) % __size));
