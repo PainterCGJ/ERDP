@@ -169,7 +169,7 @@ namespace erdp
             erdp_if_rtos_start_scheduler();
         }
 
-        virtual void thead_code()
+        virtual void thread_code()
         {
             __thread_code(__p_arg);
         }
