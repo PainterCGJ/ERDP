@@ -16,19 +16,19 @@ namespace erdp
         void erdp_task_run(void *parm);
     }
 
-    template <typename T>
+    template <typename _Type>
     class ContainerBase
     {
     public:
-        ContainerBase(){}
-        ~ContainerBase(){}
+        ContainerBase() {}
+        ~ContainerBase() {}
 
         virtual bool initialize(size_t size) = 0;
-        virtual bool push(const T &elm) = 0;
-        virtual bool pop(T &elm) = 0;
-        virtual uint32_t size()const noexcept  = 0;
-        virtual bool empty()const noexcept  = 0;
-        virtual bool full()const noexcept  = 0;
+        virtual bool push(const _Type &elm) = 0;
+        virtual bool pop(_Type &elm) = 0;
+        virtual uint32_t size() const noexcept = 0;
+        virtual bool empty() const noexcept = 0;
+        virtual bool full() const noexcept = 0;
     };
 
 #ifdef ERDP_ENABLE_RTOS
@@ -185,7 +185,7 @@ namespace erdp
     };
 
     template <typename _Type>
-    class Queue
+    class Queue : public ContainerBase<_Type>
     {
     public:
         Queue() {}
@@ -206,7 +206,7 @@ namespace erdp
             __queue_size = 0;
             return true;
         }
-        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
+        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait)
         {
             erdp_assert(__handler != nullptr);
             if (erdp_if_rtos_queue_send(__handler, (uint8_t *)(&elm_to_push), ticks_to_wait))
@@ -217,7 +217,18 @@ namespace erdp
             return false;
         }
 
-        bool pop(_Type &elm_recv, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
+        bool push(const _Type &elm_to_push)
+        {
+            erdp_assert(__handler != nullptr);
+            if (erdp_if_rtos_queue_send(__handler, (uint8_t *)(&elm_to_push), 0))
+            {
+                __queue_size++;
+                return true;
+            }
+            return false;
+        }
+
+        bool pop(_Type &elm_recv, uint32_t ticks_to_wait)
         {
             erdp_assert(__handler != nullptr);
             if (erdp_if_rtos_queue_recv(__handler, (uint8_t *)(&elm_recv), ticks_to_wait))
@@ -228,7 +239,18 @@ namespace erdp
             return false;
         }
 
-        bool empty()
+        bool pop(_Type &elm_recv)
+        {
+            erdp_assert(__handler != nullptr);
+            if (erdp_if_rtos_queue_recv(__handler, (uint8_t *)(&elm_recv), 0))
+            {
+                __queue_size--;
+                return true;
+            }
+            return false;
+        }
+
+        bool empty() const noexcept
         {
             erdp_assert(__handler != nullptr);
             if (__queue_size == 0)
@@ -238,7 +260,7 @@ namespace erdp
             return false;
         }
 
-        bool full()
+        bool full() const noexcept
         {
             erdp_assert(__handler != nullptr);
             if (__queue_size == __queue_length)
@@ -248,7 +270,7 @@ namespace erdp
             return false;
         }
 
-        uint32_t size()
+        uint32_t size() const noexcept
         {
             erdp_assert(__handler != nullptr);
             return __queue_size;
@@ -357,13 +379,13 @@ namespace erdp
 #endif // ERDP_ENABLE_RTOS
 
     template <typename T>
-    class RingBuffer: public ContainerBase<T>
+    class RingBuffer : public ContainerBase<T>
     {
     public:
         RingBuffer(const RingBuffer &) = delete;
         RingBuffer &operator=(const RingBuffer &) = delete;
 
-        RingBuffer(){}
+        RingBuffer() {}
 
         RingBuffer(uint8_t *mempool, size_t mempool_size) noexcept
         {
