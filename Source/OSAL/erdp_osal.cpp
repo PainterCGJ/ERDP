@@ -8,7 +8,7 @@ namespace erdp
     void erdp_task_run(void *parm)
     {
         Thread *thead = static_cast<Thread *>(parm);
-        thead->thead_code();
+        thead->thread_code();
         thead->kill();
     }
 }
