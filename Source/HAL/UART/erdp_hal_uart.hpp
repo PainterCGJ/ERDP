@@ -13,6 +13,7 @@ namespace erdp
     {
         void erdp_uart_irq_handler(ERDP_Uart_t uart);
     }
+
     typedef struct
     {
         ERDP_Uart_t uart;     // UART number
@@ -38,6 +39,11 @@ namespace erdp
     class UartBase
     {
         friend void erdp_uart_irq_handler(ERDP_Uart_t uart);
+#ifdef ERDP_ENABLE_RTOS
+        using Buffer = Queue<uint8_t>;
+#else
+        using Buffer = RingBuffer<uint8_t>;
+#endif
 
     public:
         UartBase() {}
@@ -48,9 +54,10 @@ namespace erdp
         static UartBase *__debug_com;
         uint8_t __data;
 
-        void init(UartConfig_t &config)
+        void init(UartConfig_t &config, size_t recv_buffer_size)
+
         {
-            __init(config);    
+            __init(config,recv_buffer_size);
         }
 
         void send(uint8_t *data, uint32_t len)
@@ -58,14 +65,25 @@ namespace erdp
             erdp_if_uart_send_bytes(__uart, data, len);
         }
 
+        bool recv(uint8_t &data)
+        {
+            return __recv_buffer.pop(data);
+        }
+
         void set_as_debug_com()
-        {   
+        {
             __debug_com = this;
         }
 
     private:
-        void __init(UartConfig_t &config)
+        Buffer __recv_buffer;
+
+        void __init(UartConfig_t &config, size_t recv_buffer_size)
         {
+            if(!__recv_buffer.initialize(recv_buffer_size))
+            {
+                return;
+            }
             ERDP_UartGpioCfg_t gpio_cfg = {
                 .tx_port = config.tx_port,
                 .tx_pin = config.tx_pin,
@@ -84,7 +102,8 @@ namespace erdp
         void __irq_handler()
         {
             erdp_if_uart_read_byte(__uart, &__data);
-            erdp_if_uart_send_bytes(__uart, &__data, 1);
+            __recv_buffer.push(__data);
+            // erdp_if_uart_send_bytes(__uart, &__data, 1);
             __usr_irq_service(); // Call the user-defined IRQ service
         }
 
@@ -99,9 +118,9 @@ namespace erdp
     {
     public:
         UartDev() : UartBase() {}
-        UartDev(UartConfig_t &config) : UartBase(config)
+        UartDev(UartConfig_t &config, size_t recv_buffer_size) : UartBase(config)
         {
-            init(config);
+            init(config, recv_buffer_size);
         }
 
         template <class U = T, class = std::enable_if_t<!std::is_same_v<U, VoidClass>>>
