@@ -3,6 +3,7 @@ Project/MDK/Objects
 
 Project/MDK/*.uvguix.*
 Project/MDK/*.uvoptx
+Project/MDK/Listings
 
 # Source/Kernel
 # Source/Application
