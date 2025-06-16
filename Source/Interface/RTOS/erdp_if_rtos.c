@@ -252,18 +252,19 @@ OS_Semaphore erdp_if_rtos_semaphore_creat(Semaphore_tag tag)
 {
     switch (tag)
     {
-    case BinarySemaphoreTag:
+    case BINARY_TAG:
     {
         return xSemaphoreCreateBinary();
     }
-    case MutexSemaphoreTag:
+    case MUTEX_TAG:
     {
         return xSemaphoreCreateMutex();
     }
-    case RecursiveMutexSemaphoreTag:
+    case RECURISIVE_TAG:
     {
         return xSemaphoreCreateRecursiveMutex();
     }
+    default:break;
     }
     return NULL;
 }
