@@ -49,6 +49,7 @@
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
 #include <stdint.h>
 #include <stdio.h>
+#include "printf.h"
 #include "gd32f4xx.h"
 extern uint32_t SystemCoreClock;
 #endif
@@ -422,6 +423,7 @@ extern uint32_t SystemCoreClock;
 #define configASSERT(x)                                   \
     if ((x) == 0)                                         \
     {                                                     \
+        printf("Error:%s,%d\r\n",__FILE__,__LINE__);      \
         taskDISABLE_INTERRUPTS();                         \
         for (;;)                                          \
             ;                                             \
@@ -661,6 +663,6 @@ extern uint32_t SystemCoreClock;
 
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
-// #define xPortSysTickHandler SysTick_Handler
+#define xPortSysTickHandler SysTick_Handler
 
 #endif /* FREERTOS_CONFIG_H */
