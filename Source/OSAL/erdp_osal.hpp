@@ -34,6 +34,8 @@ namespace erdp
 #ifdef ERDP_ENABLE_RTOS
     class Thread
     {
+        friend void create_main_task();
+
     public:
         /**
          * @brief 创建线程，线程无传入参数，可用于直接创建线程对象
@@ -151,6 +153,7 @@ namespace erdp
 
         void kill()
         {
+            erdp_assert(__handler != __main_task);
             erdp_if_rtos_task_delete(__handler);
         }
 
@@ -182,6 +185,9 @@ namespace erdp
         size_t __starck_size;
         OS_TaskHandle __handler;
         uint8_t __join_flag = 0;
+
+        static OS_TaskHandle __main_task;
+        static void main_thread(void *parm);
     };
 
     template <typename _Type>

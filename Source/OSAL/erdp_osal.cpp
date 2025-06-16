@@ -5,12 +5,27 @@
 #ifdef ERDP_ENABLE_RTOS
 namespace erdp
 {
+    OS_TaskHandle Thread::__main_task = nullptr;
     void erdp_task_run(void *parm)
     {
         Thread *thead = static_cast<Thread *>(parm);
         thead->thread_code();
         thead->kill();
     }
+
+    void create_main_task()
+    {
+        Thread::__main_task = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 1);
+    }
+} // namespace erdp
+int main(void)
+{
+    erdp_if_rtos_system_config();
+    erdp::create_main_task();
+    erdp::Thread::start_scheduler();
+    while (1)
+        ;
+    return 0;
 }
 
 void *operator new(size_t size)
