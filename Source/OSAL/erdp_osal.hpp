@@ -353,12 +353,16 @@ public:
     Mutex() : Semaphore<MUTEX_TAG>() {}
 };
 
-class event
+class Event
     {
 
     public:
-        event() : __handler(erdp_if_rtos_event_create()) {}
-        ~event()
+        Event() : __handler(erdp_if_rtos_event_create()) {}
+
+        Event(const Event&) = delete;
+        Event& operator=(const Event&) = delete;
+        
+        ~Event()
         {
             vEventGroupDelete(__handler);
         }
