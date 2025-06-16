@@ -312,6 +312,12 @@ extern "C"
      */
     bool erdp_if_rtos_recursive_semaphore_give(OS_Semaphore semaphore);
 
+    /**
+     * @brief Deletes a semaphore
+     * @param[in] semaphore Handle to the semaphore to delete
+     */
+    void erdp_if_rtos_semaphore_delet(OS_Semaphore semaphore);
+
     /* CPU Control */
     /**
      * @brief Locks the CPU by disabling interrupts

@@ -310,6 +310,11 @@ bool erdp_if_rtos_recursive_semaphore_give(OS_Semaphore semaphore)
     return (bool)xSemaphoreGiveRecursive(semaphore);
 }
 
+void erdp_if_rtos_semaphore_delet(OS_Semaphore semaphore)
+{
+    vSemaphoreDelete(semaphore);
+}
+
 uint32_t erdp_if_rtos_cpu_lock(void)
 {
     if (xPortIsInsideInterrupt() == pdTRUE)

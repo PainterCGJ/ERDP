@@ -335,7 +335,7 @@ public:
     ~Semaphore()
     {
         if(__handler != nullptr) {
-            vSemaphoreDelete(__handler);
+            erdp_if_rtos_semaphore_delet(__handler);
         }
     }
 
@@ -361,7 +361,7 @@ class Event
 
         Event(const Event&) = delete;
         Event& operator=(const Event&) = delete;
-        
+
         ~Event()
         {
             vEventGroupDelete(__handler);
