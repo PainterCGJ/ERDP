@@ -1,4 +1,6 @@
 #include "erdp_if_rtos.h"
+#include "systick.h"
+
 #define List_Index_Loop(item) for (OS_ListItem *__end = (OS_ListItem *)listGET_END_MARKER(item->pxContainer); item != __end; item = item->pxNext)
 
 OS_TaskHandle erdp_if_rtos_task_create(void (*task_function)(void *),
@@ -12,7 +14,7 @@ OS_TaskHandle erdp_if_rtos_task_create(void (*task_function)(void *),
 
 void erdp_if_rtos_task_delete(OS_TaskHandle task_handle)
 {
-    if (task_handle!= NULL)
+    if (task_handle != NULL)
     {
         vTaskDelete(task_handle);
     }
@@ -28,9 +30,9 @@ void erdp_if_rtos_task_suspend(OS_TaskHandle task_handle)
 
 void erdp_if_rtos_task_resume(OS_TaskHandle task_handle)
 {
-    if (task_handle!= NULL)
+    if (task_handle != NULL)
     {
-        vTaskResume(task_handle); 
+        vTaskResume(task_handle);
     }
 }
 
@@ -330,6 +332,12 @@ void erdp_if_rtos_cpu_unlock(uint32_t key)
     {
         taskEXIT_CRITICAL();
     }
+}
+
+void erdp_if_rtos_system_config(void)
+{
+    nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
+    systick_config();
 }
 
 // void task_run(void *parm)

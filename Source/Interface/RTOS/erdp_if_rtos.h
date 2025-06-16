@@ -23,11 +23,14 @@ typedef TaskHandle_t OS_TaskHandle;
 /* Task Control */
 /**
  * @brief Creates a new RTOS task
- * @param[in] task_function Pointer to the task function
- * @param[in] name Task name (for debugging)
- * @param[in] stack_size Task stack size in words
- * @param[in] priority Task priority (0-255)
- * @return Handle to the created task
+ * @param[in] task_function Pointer to the task entry function
+ * @param[in] name Descriptive name for the task (used for debugging)
+ * @param[in] stack_size Stack size in words (not bytes)
+ * @param[in] arg Pointer to be passed as parameter to the task function
+ * @param[in] priority Task priority (0=lowest, configMAX_PRIORITIES-1=highest)
+ * @return Task handle if created successfully, NULL otherwise
+ * @note The task function should never return or should call task deletion API
+ * @warning Stack size must be sufficient for the task's requirements
  */
 OS_TaskHandle erdp_if_rtos_task_create(void (*task_function)(void *),
                                        const char *name, uint32_t stack_size, void *arg,
@@ -322,6 +325,12 @@ uint32_t erdp_if_rtos_cpu_lock(void);
  * @param[in] key Value returned from erdp_if_rtos_cpu_lock()
  */
 void erdp_if_rtos_cpu_unlock(uint32_t key);
+
+/**
+ * @brief Configures the system for RTOS
+ * @note This function is called by the RTOS initialization
+ */
+void erdp_if_rtos_system_config(void);
 
 
 #ifdef __cplusplus
