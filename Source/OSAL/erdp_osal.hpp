@@ -287,6 +287,110 @@ namespace erdp
         uint32_t __queue_length;
         uint32_t __queue_size;
     };
+
+template <Semaphore_tag T>
+class Semaphore {
+public:
+    
+    template <Semaphore_tag U = T, typename = std::enable_if_t<U != COUNT_TAG>>
+    Semaphore()
+    {
+        if constexpr (U == BINARY_TAG) {
+            __handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
+        }
+        else if constexpr (U == MUTEX_TAG) {
+            __handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
+        }
+        else if constexpr (U == RECURISIVE_TAG) {
+            __handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
+        }
+    }
+
+    template <Semaphore_tag U = T, typename = std::enable_if_t<U == COUNT_TAG>>
+    Semaphore(uint32_t max_count, uint32_t initial_count)
+    {
+        __handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
+    }
+
+    // 获取信号量
+    bool take(uint32_t ticks_to_wait = portMAX_DELAY)
+    {
+        if constexpr (T == RECURISIVE_TAG) {
+            return erdp_if_rtos_recursive_semaphore_take(__handler, ticks_to_wait);
+        } else {
+            return erdp_if_rtos_semaphore_take(__handler, ticks_to_wait);
+        }
+    }
+
+    // 释放信号量
+    bool give()
+    {
+        if constexpr (T == RECURISIVE_TAG) {
+            return erdp_if_rtos_recursive_semaphore_give(__handler);
+        } else {
+            return erdp_if_rtos_semaphore_give(__handler);
+        }
+    }
+
+    ~Semaphore()
+    {
+        if(__handler != nullptr) {
+            vSemaphoreDelete(__handler);
+        }
+    }
+
+    // 删除拷贝构造和赋值
+    Semaphore(const Semaphore&) = delete;
+    Semaphore& operator=(const Semaphore&) = delete;
+
+private:
+    OS_Semaphore __handler = nullptr;
+};
+
+class Mutex : public Semaphore<MUTEX_TAG>
+{
+public:
+    Mutex() : Semaphore<MUTEX_TAG>() {}
+};
+
+class event
+    {
+
+    public:
+        event() : __handler(erdp_if_rtos_event_create()) {}
+        ~event()
+        {
+            vEventGroupDelete(__handler);
+        }
+        OS_EventBits set(OS_EventBits bits_to_set)
+        {
+            return erdp_if_rtos_set_event_bits(__handler, bits_to_set);
+        }
+
+        OS_EventBits clear(OS_EventBits bits_to_clear)
+        {
+            return erdp_if_rtos_clear_event_bits(__handler, bits_to_clear);
+        }
+
+        OS_EventBits get()
+        {
+            return erdp_if_rtos_get_event_bits(__handler);
+        }
+
+        OS_EventBits wait(OS_EventBits bits_to_wait, uint32_t ticks_to_wait = OS_WAIT_FOREVER, bool wait_for_all = true)
+        {
+            return xEventGroupWaitBits(__handler, bits_to_wait, false, wait_for_all, ticks_to_wait);
+        }
+
+        OS_EventBits sync(OS_EventBits bits_to_set, OS_EventBits bits_wait_for, uint32_t ticks_to_wait = OS_WAIT_FOREVER)
+        {
+            return erdp_if_rtos_event_sync(__handler, bits_to_set, bits_wait_for, ticks_to_wait);
+        }
+
+    private:
+        OS_Event __handler;
+    };
+    
 #else // ERDP_ENABLE_RTOS
     class Heap4
     {
