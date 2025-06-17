@@ -96,7 +96,11 @@ namespace erdp
             __instance[__uart] = this; // Store the instance for the IRQ handler
 
             erdp_if_uart_init(config.uart, config.baudrate, config.mode, config.priority);
-            erdp_if_uart_gpio_init(&gpio_cfg);
+            // erdp_if_uart_gpio_init(&gpio_cfg);
+            erdp_if_gpio_init(gpio_cfg.tx_port, gpio_cfg.tx_pin, ERDP_GPIO_PIN_MODE_ALTERNATE, ERDP_GPIO_PIN_PULLUP, ERDP_GPIO_SPEED_HIGH);   
+            erdp_if_gpio_init(gpio_cfg.rx_port, gpio_cfg.rx_pin, ERDP_GPIO_PIN_MODE_ALTERNATE, ERDP_GPIO_PIN_PULLUP, ERDP_GPIO_SPEED_HIGH);
+            erdp_if_gpio_af_cfg(gpio_cfg.tx_port, gpio_cfg.tx_pin, gpio_cfg.tx_af);
+            erdp_if_gpio_af_cfg(gpio_cfg.rx_port, gpio_cfg.rx_pin, gpio_cfg.rx_af);
         }
 
         void __irq_handler()
