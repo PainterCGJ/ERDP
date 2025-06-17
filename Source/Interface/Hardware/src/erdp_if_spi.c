@@ -169,17 +169,17 @@ void erdp_if_spi_recv(ERDP_Spi_t spi,uint16_t *data)
 
 bool erdp_if_spi_transfer_complete(ERDP_Spi_t spi)
 {
-    return !spi_flag_get(spi_instance[spi], SPI_STAT_TRANS);
+    return !spi_i2s_flag_get(spi_instance[spi], SPI_STAT_TRANS);
 }
 
 bool erdp_if_spi_transmit_buffer_empty(ERDP_Spi_t spi)
 {
-    return spi_flag_get(spi_instance[spi], SPI_STAT_TBE);
+    return spi_i2s_flag_get(spi_instance[spi], SPI_STAT_TBE);
 }
 
 bool erdp_if_spi_receive_buffer_not_empty(ERDP_Spi_t spi)
 {
-    return spi_flag_get(spi_instance[spi], SPI_STAT_RBNE);
+    return spi_i2s_flag_get(spi_instance[spi], SPI_STAT_RBNE);
 }
 
 

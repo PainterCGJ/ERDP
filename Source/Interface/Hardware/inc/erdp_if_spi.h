@@ -6,6 +6,7 @@ extern "C"
 {
 #endif // __cplusplus
 #include "erdp_interface.h"
+#include "erdp_if_gpio.h"
 
     typedef enum
     {
