@@ -23,7 +23,7 @@ namespace erdp
         ContainerBase() {}
         ~ContainerBase() {}
 
-        virtual bool initialize(size_t size) = 0;
+        virtual bool init(size_t size) = 0;
         virtual bool push(const _Type &elm) = 0;
         virtual bool pop(_Type &elm) = 0;
         virtual uint32_t size() const noexcept = 0;
@@ -197,11 +197,11 @@ namespace erdp
         Queue() {}
         Queue(uint32_t queue_length)
         {
-            initialize(queue_length);
+            init(queue_length);
         }
         ~Queue() { erdp_if_rtos_queue_delet(__handler); }
 
-        bool initialize(size_t queue_length)
+        bool init(size_t queue_length)
         {
             __handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
             if (__handler == nullptr)
@@ -417,7 +417,7 @@ class Event
         Heap4(const Heap4 &) = delete;
         Heap4 &operator=(const Heap4 &) = delete;
 
-        void initialize(void *heap_area, size_t heap_size) noexcept;
+        void init(void *heap_area, size_t heap_size) noexcept;
 
         // 内存分配(无异常)
         void *allocate(size_t size) noexcept;
@@ -503,15 +503,15 @@ class Event
 
         RingBuffer(uint8_t *mempool, size_t mempool_size) noexcept
         {
-            initialize(mempool, mempool_size);
+            init(mempool, mempool_size);
         }
 
         RingBuffer(size_t size) noexcept
         {
-            initialize(size);
+            init(size);
         }
 
-        bool initialize(uint8_t *mempool, size_t mempool_size)
+        bool init(uint8_t *mempool, size_t mempool_size)
         {
             erdp_assert(mempool != nullptr);
             erdp_assert(mempool_size % sizeof(T) == 0);
@@ -522,7 +522,7 @@ class Event
             return true;
         }
 
-        bool initialize(uint32_t size) noexcept
+        bool init(uint32_t size) noexcept
         {
             __buffer = new T[size];
             if (__buffer == nullptr)

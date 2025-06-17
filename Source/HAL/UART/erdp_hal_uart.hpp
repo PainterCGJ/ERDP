@@ -80,7 +80,7 @@ namespace erdp
 
         void __init(UartConfig_t &config, size_t recv_buffer_size)
         {
-            if(!__recv_buffer.initialize(recv_buffer_size))
+            if(!__recv_buffer.init(recv_buffer_size))
             {
                 return;
             }

@@ -64,10 +64,10 @@ namespace erdp
 
     Heap4::Heap4(void *heap_area, size_t heap_size) noexcept
     {
-        initialize(heap_area, heap_size);
+        init(heap_area, heap_size);
     }
 
-    void Heap4::initialize(void *heap_area, size_t heap_size) noexcept
+    void Heap4::init(void *heap_area, size_t heap_size) noexcept
     {
         std::fill(static_cast<uint8_t *>(heap_area), static_cast<uint8_t *>(heap_area) + heap_size, 0);
         // 确保堆大小足够并正确对齐
@@ -330,7 +330,7 @@ void *operator new(size_t size)
 {
     if (!erdp::default_heap)
     {
-        erdp::heap.initialize(erdp::memory_pool, sizeof(erdp::memory_pool));
+        erdp::heap.init(erdp::memory_pool, sizeof(erdp::memory_pool));
         erdp::default_heap = &erdp::heap;
     }
     return erdp::default_heap->allocate(size);
