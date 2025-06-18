@@ -2,6 +2,7 @@
 #define ERDP_HAL_H
 
 #include "erdp_config.h"
+#include "erdp_osal.hpp"
 
 class VoidClass
 {
