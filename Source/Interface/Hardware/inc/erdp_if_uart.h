@@ -1,5 +1,5 @@
-#ifndef ERDP_IF_UART_H
-#define ERDP_IF_UART_H
+#ifndef __ERDP_IF_UART_H__
+#define __ERDP_IF_UART_H__
 #ifdef __cplusplus
  extern "C" {
  #endif // __cplusplus
@@ -16,7 +16,7 @@ typedef enum
     ERDP_UART5,
     ERDP_UART6,
     ERDP_UART7,
-    ERDP_UART_MAX, // Maximum number of UARTs
+    ERDP_UART_NUM, // Maximum number of UARTs
 } ERDP_Uart_t;
 
 typedef enum{

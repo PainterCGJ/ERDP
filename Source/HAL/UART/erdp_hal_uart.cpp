@@ -1,7 +1,7 @@
 #include "erdp_hal_uart.hpp"
 namespace erdp
 {
-    UartBase *UartBase::__instance[ERDP_UART_MAX];
+    UartBase *UartBase::__instance[ERDP_UART_NUM];
     UartBase *UartBase::__debug_com = nullptr;
 
     extern "C"

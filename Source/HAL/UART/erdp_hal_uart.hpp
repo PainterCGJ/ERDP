@@ -50,7 +50,7 @@ namespace erdp
         UartBase(UartConfig_t &config) {}
 
         ERDP_Uart_t __uart = ERDP_UART0;            // Default to UART0
-        static UartBase *__instance[ERDP_UART_MAX]; // Array to hold instances for each UART
+        static UartBase *__instance[ERDP_UART_NUM]; // Array to hold instances for each UART
         static UartBase *__debug_com;
         uint8_t __data;
 

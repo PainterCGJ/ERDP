@@ -3,7 +3,7 @@
 
 extern void erdp_uart_irq_handler(ERDP_Uart_t uart);
 
-const static uint32_t uart_instance[ERDP_UART_MAX]={
+const static uint32_t uart_instance[ERDP_UART_NUM]={
     (uint32_t)USART0,
     (uint32_t)USART1,
     (uint32_t)USART2,

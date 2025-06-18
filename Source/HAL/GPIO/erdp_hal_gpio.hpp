@@ -1,5 +1,5 @@
-#ifndef ERDP_HAL_GPIO_HPP
-#define ERDP_HAL_GPIO_HPP
+#ifndef __ERDP_HAL_GPIO_HPP__
+#define __ERDP_HAL_GPIO_HPP__
 
 #include "erdp_if_gpio.h"
 namespace erdp
@@ -40,5 +40,18 @@ namespace erdp
         ERDP_GpioPort_t __port = ERDP_GPIOA;    // Default to GPIOA
         ERDP_GpioPin_t __pin = ERDP_GPIO_PIN_0; // Default to pin 0
     };
+    class LED:private GpioDev{
+        public:
+            LED(ERDP_GpioPort_t port, ERDP_GpioPin_t pin) : GpioDev(port, pin, ERDP_GPIO_PIN_MODE_OUTPUT,
+                                                               ERDP_GPIO_PIN_PULL_NONE, ERDP_GPIO_SPEED_LOW)
+            {
+            }
+    
+            void on()
+            {
+                write(ERDP_SET);
+            }
+    };
 }// namespace erdp
+
 #endif

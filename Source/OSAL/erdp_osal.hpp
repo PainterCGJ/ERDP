@@ -1,5 +1,5 @@
-#ifndef ERDP_OSAL_HPP
-#define ERDP_OSAL_HPP
+#ifndef __ERDP_OSAL_HPP__
+#define __ERDP_OSAL_HPP__
 #include "erdp_config.h"
 #include "erdp_assert.h"
 #include "erdp_if_rtos.h"
