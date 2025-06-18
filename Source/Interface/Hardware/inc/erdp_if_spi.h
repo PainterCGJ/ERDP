@@ -43,17 +43,19 @@ extern "C"
         ERDP_SPI_DATASIZE_16BIT     /* 16-bit data transfer */
     } ERDP_SpiDataSize_t;
 
-    typedef struct{
+    typedef struct
+    {
         ERDP_SpiMode_t mode;
         ERDP_SpiClkMode_t clk_mode;
         ERDP_SpiEndian_t endian;
-        ERDP_SpiDataSize_t data_size;
         uint32_t prescale;
         uint8_t priority;
-    }ERDP_SpiCfg_t;
+    } ERDP_SpiCfg_t;
 
     typedef struct
     {
+        ERDP_Spi_t spi;
+
         ERDP_GpioPort_t sck_port; // GPIO port for SCK pin
         ERDP_GpioPin_t sck_pin;   // GPIO pin for SCK pin
         uint32_t sck_af;          // GPIO function number for SCK pin
@@ -70,63 +72,69 @@ extern "C"
         ERDP_GpioPin_t cs_pin;   // GPIO pin for CS pin
         uint32_t cs_af;          // GPIO function number for CS pin
 
-    } ERDP_SpiGpioCfg_t;
+    } ERDP_SpiInfo_t;
 
     /**
      * @brief Initialize SPI GPIO pins
-     * @param[in] spi_gpio_cfg Pointer to SPI GPIO configuration structure
+     * @param[in] spi_info Pointer to SPI GPIO configuration structure
      * @param[in] mode SPI operation mode (master/slave)
      */
-    void erdp_if_spi_gpio_init(ERDP_SpiGpioCfg_t *spi_gpio_cfg, ERDP_SpiMode_t mode);
-    
+    void erdp_if_spi_gpio_init(ERDP_SpiInfo_t *spi_info, ERDP_SpiMode_t mode);
+
     /**
      * @brief Initialize SPI peripheral
      * @param[in] spi SPI instance identifier
      * @param[in] spi_cfg Pointer to SPI configuration structure
      */
-    void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg);
-    
+    void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size);
+
     /**
      * @brief Deinitialize SPI peripheral
      * @param[in] spi SPI instance identifier
      */
     void erdp_if_spi_deinit(ERDP_Spi_t spi);
-    
+
+    /**
+     * @brief Enable SPI peripheral
+     * @param[in] spi SPI instance identifier
+     * @param[in] enable true to enable SPI, false to disable SPI
+     */
+    void erdp_if_spi_enable(ERDP_Spi_t spi, bool enable);
+
     /**
      * @brief Send data through SPI
      * @param[in] spi SPI instance identifier
      * @param[in] data Data to be transmitted (8/16 bit depending on configuration)
      */
     void erdp_if_spi_send(ERDP_Spi_t spi, uint16_t data);
-    
+
     /**
      * @brief Receive data from SPI
      * @param[in] spi SPI instance identifier
-     * @param[out] data Pointer to store received data
+     * @return Received data (8/16 bit depending on configuration)
      */
-    void erdp_if_spi_recv(ERDP_Spi_t spi, uint16_t *data);
-    
+    uint16_t erdp_if_spi_recv(ERDP_Spi_t spi);
+
     /**
      * @brief Check if SPI transfer is complete
      * @param[in] spi SPI instance identifier
      * @return true if transfer is complete, false otherwise
      */
     bool erdp_if_spi_transfer_complete(ERDP_Spi_t spi);
-    
+
     /**
      * @brief Check if SPI transmit buffer is empty
      * @param[in] spi SPI instance identifier
      * @return true if transmit buffer is empty, false otherwise
      */
     bool erdp_if_spi_transmit_buffer_empty(ERDP_Spi_t spi);
-    
+
     /**
      * @brief Check if SPI receive buffer is not empty
      * @param[in] spi SPI instance identifier
      * @return true if receive buffer contains data, false otherwise
      */
     bool erdp_if_spi_receive_buffer_not_empty(ERDP_Spi_t spi);
-
 
 #ifdef __cplusplus
 }
