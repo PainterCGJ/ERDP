@@ -19,6 +19,8 @@ extern "C"
         ERDP_GPIOG,
         ERDP_GPIOH,
         ERDP_GPIOI,
+        
+        ERDP_GPIO_MAX,
     } ERDP_GpioPort_t;
 
     typedef enum
@@ -39,6 +41,8 @@ extern "C"
         ERDP_GPIO_PIN_13,
         ERDP_GPIO_PIN_14,
         ERDP_GPIO_PIN_15,
+
+        ERDP_GPIO_PIN_MAX,
     } ERDP_GpioPin_t;
 
     typedef enum
