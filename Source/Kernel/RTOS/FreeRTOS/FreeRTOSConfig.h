@@ -51,6 +51,7 @@
 #include <stdio.h>
 #include "printf.h"
 #include "gd32f4xx.h"
+#include "erdp_config.h"
 extern uint32_t SystemCoreClock;
 #endif
 
@@ -661,8 +662,10 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_xTaskGetHandle 0
 #define INCLUDE_xTaskResumeFromISR 1
 
+#ifdef ERDP_ENABLE_RTOS
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+#endif
 
 #endif /* FREERTOS_CONFIG_H */
