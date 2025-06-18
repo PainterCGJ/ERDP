@@ -175,7 +175,10 @@ void DebugMon_Handler(void)
     \param[out] none
     \retval     none
 */
+#include "erdp_config.h"
+#ifndef ERDP_ENABLE_RTOS
 void SysTick_Handler(void)
 {
     delay_decrement();
 }
+#endif
