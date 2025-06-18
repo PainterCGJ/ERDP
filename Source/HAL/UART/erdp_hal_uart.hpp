@@ -1,7 +1,7 @@
 #ifndef ERDP_HAL_UART_GPP
 #define ERDP_HAL_UART_GPP
 
-#include "erdp_hal.h"
+#include "erdp_hal.hpp"
 #include "erdp_if_uart.h"
 #include "erdp_if_gpio.h"
 #include "printf.h"
