@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>2</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
+              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -434,6 +434,16 @@
               <FileType>5</FileType>
               <FilePath>..\..\Source\HAL\UART\erdp_hal_uart.hpp</FilePath>
             </File>
+            <File>
+              <FileName>erdp_hal_spi.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Source\HAL\SPI\erdp_hal_spi.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>erdp_hal_spi.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Source\HAL\SPI\erdp_hal_spi.hpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -463,6 +473,11 @@
               <FileName>erdp_if_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>erdp_if_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_spi.c</FilePath>
             </File>
             <File>
               <FileName>erdp_if_rtos.c</FileName>
