@@ -484,11 +484,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\Source\Interface\RTOS\erdp_if_rtos.c</FilePath>
             </File>
-            <File>
-              <FileName>erdp_if_interrupt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_interrupt.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
