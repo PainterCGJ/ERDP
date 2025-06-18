@@ -6,63 +6,62 @@
 #include "gd32f4xx_gpio.h"
 #include "gd32f4xx_rcu.h"
 
+const static uint32_t port_instance[ERDP_GPIO_MAX] = {
+    (uint32_t)GPIOA,
+    (uint32_t)GPIOB,
+    (uint32_t)GPIOC,
+    (uint32_t)GPIOD,
+    (uint32_t)GPIOE,
+    (uint32_t)GPIOF,
+    (uint32_t)GPIOG,
+    (uint32_t)GPIOH,
+    (uint32_t)GPIOI,
+};
+
+const static uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
+    (uint32_t)GPIO_PIN_0,
+    (uint32_t)GPIO_PIN_1,
+    (uint32_t)GPIO_PIN_2,
+    (uint32_t)GPIO_PIN_3,
+    (uint32_t)GPIO_PIN_4,
+    (uint32_t)GPIO_PIN_5,
+    (uint32_t)GPIO_PIN_6,
+    (uint32_t)GPIO_PIN_7,
+    (uint32_t)GPIO_PIN_8,
+    (uint32_t)GPIO_PIN_9,
+    (uint32_t)GPIO_PIN_10,
+    (uint32_t)GPIO_PIN_11,
+    (uint32_t)GPIO_PIN_12,
+    (uint32_t)GPIO_PIN_13,
+    (uint32_t)GPIO_PIN_14,
+    (uint32_t)GPIO_PIN_15,
+};
+
+const static uint32_t port_clk[ERDP_GPIO_MAX] = {
+    (uint32_t)RCU_GPIOA,
+    (uint32_t)RCU_GPIOB,
+    (uint32_t)RCU_GPIOC,
+    (uint32_t)RCU_GPIOD,
+    (uint32_t)RCU_GPIOE,
+    (uint32_t)RCU_GPIOF,
+    (uint32_t)RCU_GPIOG,
+    (uint32_t)RCU_GPIOH,
+    (uint32_t)RCU_GPIOI,
+};
+
 uint32_t erdp_if_gpio_get_port(ERDP_GpioPort_t port)
 {
-    switch (port)
-    {
-    case ERDP_GPIOA:
-        return (uint32_t)GPIOA;
-    case ERDP_GPIOB:
-        return (uint32_t)GPIOB;
-    case ERDP_GPIOC:
-        return (uint32_t)GPIOC;
-    case ERDP_GPIOD:
-        return (uint32_t)GPIOD;
-    case ERDP_GPIOE:
-        return (uint32_t)GPIOE;
-    case ERDP_GPIOF:
-        return (uint32_t)GPIOF;
-    case ERDP_GPIOG:
-        return (uint32_t)GPIOG;
-    case ERDP_GPIOH:
-        return (uint32_t)GPIOH;
-    case ERDP_GPIOI:
-        return (uint32_t)GPIOI;
-    default:
-        return 0; // Invalid port
-    }
+    return port_instance[port];
 }
 
 uint32_t erdp_if_gpio_get_pin(ERDP_GpioPin_t pin)
 {
-    return (1U << pin);
+    return pin_instance[pin];
 }
 
 uint32_t erdp_if_gpio_get_PCLK(ERDP_GpioPort_t port)
 {
-    switch (port)
-    {
-    case ERDP_GPIOA:
-        return (uint32_t)RCU_GPIOA;
-    case ERDP_GPIOB:
-        return (uint32_t)RCU_GPIOB;
-    case ERDP_GPIOC:
-        return (uint32_t)RCU_GPIOC;
-    case ERDP_GPIOD:
-        return (uint32_t)RCU_GPIOD;
-    case ERDP_GPIOE:
-        return (uint32_t)RCU_GPIOE;
-    case ERDP_GPIOF:
-        return (uint32_t)RCU_GPIOF;
-    case ERDP_GPIOG:
-        return (uint32_t)RCU_GPIOG;
-    case ERDP_GPIOH:
-        return (uint32_t)RCU_GPIOH;
-    case ERDP_GPIOI:
-        return (uint32_t)RCU_GPIOI;
-    default:
-        return 0; // Invalid port
-    }
+    return port_clk[port];
 }
 
 void erdp_if_gpio_init(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_GpioPinMode_t mode, ERDP_GpioPinPull_t pull, ERDP_GpioSpeed_t speed)
