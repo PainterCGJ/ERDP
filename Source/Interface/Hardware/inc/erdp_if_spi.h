@@ -14,7 +14,7 @@ extern "C"
         ERDP_SPI1,
         ERDP_SPI2,
         ERDP_SPI3,
-        ERDP_SPI_MAX, // Maximum number of SPI
+        ERDP_SPI_NUM, // Maximum number of SPI
     } ERDP_Spi_t;
 
     typedef enum
@@ -45,7 +45,6 @@ extern "C"
 
     typedef struct
     {
-        ERDP_SpiMode_t mode;
         ERDP_SpiClkMode_t clk_mode;
         ERDP_SpiEndian_t endian;
         uint32_t prescale;
@@ -84,9 +83,11 @@ extern "C"
     /**
      * @brief Initialize SPI peripheral
      * @param[in] spi SPI instance identifier
+     * @param[in] mode SPI operation mode (master/slave)
      * @param[in] spi_cfg Pointer to SPI configuration structure
+     * @param[in] data_size Data size (8/16 bit)
      */
-    void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size);
+    void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size);
 
     /**
      * @brief Deinitialize SPI peripheral

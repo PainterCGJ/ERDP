@@ -7,14 +7,14 @@
 
 extern void erdp_spi_irq_handler(ERDP_Spi_t spi);
 
-const static uint32_t spi_instance[ERDP_SPI_MAX] = {
+const static uint32_t spi_instance[ERDP_SPI_NUM] = {
     (uint32_t)SPI0,
     (uint32_t)SPI1,
     (uint32_t)SPI2,
     (uint32_t)SPI3,
 };
 
-const static uint8_t spi_irq_id[ERDP_SPI_MAX] = {
+const static uint8_t spi_irq_id[ERDP_SPI_NUM] = {
     (uint8_t)SPI0_IRQn,
     (uint8_t)SPI1_IRQn,
     (uint8_t)SPI2_IRQn,
@@ -70,28 +70,29 @@ void erdp_if_spi_gpio_init(ERDP_SpiInfo_t *spi_info, ERDP_SpiMode_t mode)
     gpio_pin = erdp_if_gpio_get_pin(spi_info->cs_pin);
     if (mode == ERDP_SPI_MODE_MASTER)
     {
-        gpio_mode_set(gpio_periph,GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, gpio_pin);
+        gpio_mode_set(gpio_periph, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, gpio_pin);
         gpio_output_options_set(gpio_periph, GPIO_OTYPE_PP, GPIO_OSPEED_50MHZ, gpio_pin);
     }
     else if (mode == ERDP_SPI_MODE_SLAVE)
     {
-        gpio_mode_set(gpio_periph, GPIO_MODE_INPUT, GPIO_PUPD_NONE, gpio_pin);
+        gpio_mode_set(gpio_periph, GPIO_MODE_AF, GPIO_PUPD_NONE, gpio_pin);
         gpio_af_set(gpio_periph, spi_info->cs_af, gpio_pin);
-        
     }
 }
 
-void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size)
+void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size)
 {
     spi_parameter_struct spi_init_struct;
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
 
-    if (spi_cfg->mode == ERDP_SPI_MODE_MASTER)
+    if (mode == ERDP_SPI_MODE_MASTER)
     {
+        spi_init_struct.nss = SPI_NSS_SOFT;
         spi_init_struct.device_mode = SPI_MASTER;
     }
-    else if (spi_cfg->mode == ERDP_SPI_MODE_SLAVE)
+    else if (mode == ERDP_SPI_MODE_SLAVE)
     {
+        spi_init_struct.nss = SPI_NSS_HARD;
         spi_init_struct.device_mode = SPI_SLAVE;
         nvic_irq_enable(spi_irq_id[spi], spi_cfg->priority, 0);
         spi_i2s_interrupt_enable(spi_instance[spi], SPI_I2S_INT_RBNE);
@@ -132,7 +133,7 @@ void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t
         spi_init_struct.endian = SPI_ENDIAN_LSB;
     }
 
-    spi_init_struct.nss = SPI_NSS_SOFT;
+    
     spi_init_struct.prescale = spi_cfg->prescale;
 
     rcu_periph_clock_enable(erdp_if_spi_get_PCLK(spi));
