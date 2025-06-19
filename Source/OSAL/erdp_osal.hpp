@@ -3,6 +3,7 @@
 #include "erdp_config.h"
 #include "erdp_assert.h"
 #include "erdp_if_rtos.h"
+#include "erdp_heap.hpp"
 #include "string.h"
 
 #include <cstddef>
@@ -288,79 +289,89 @@ namespace erdp
         uint32_t __queue_size;
     };
 
-template <Semaphore_tag T>
-class Semaphore {
-public:
-    
-    template <Semaphore_tag U = T, typename = std::enable_if_t<U != COUNT_TAG>>
-    Semaphore()
+    template <Semaphore_tag T>
+    class Semaphore
     {
-        if constexpr (U == BINARY_TAG) {
-            __handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
+    public:
+        template <Semaphore_tag U = T, typename = std::enable_if_t<U != COUNT_TAG>>
+        Semaphore()
+        {
+            if constexpr (U == BINARY_TAG)
+            {
+                __handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
+            }
+            else if constexpr (U == MUTEX_TAG)
+            {
+                __handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
+            }
+            else if constexpr (U == RECURISIVE_TAG)
+            {
+                __handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
+            }
         }
-        else if constexpr (U == MUTEX_TAG) {
-            __handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
-        }
-        else if constexpr (U == RECURISIVE_TAG) {
-            __handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
-        }
-    }
 
-    template <Semaphore_tag U = T, typename = std::enable_if_t<U == COUNT_TAG>>
-    Semaphore(uint32_t max_count, uint32_t initial_count)
+        template <Semaphore_tag U = T, typename = std::enable_if_t<U == COUNT_TAG>>
+        Semaphore(uint32_t max_count, uint32_t initial_count)
+        {
+            __handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
+        }
+
+        // 获取信号量
+        bool take(uint32_t ticks_to_wait = portMAX_DELAY)
+        {
+            if constexpr (T == RECURISIVE_TAG)
+            {
+                return erdp_if_rtos_recursive_semaphore_take(__handler, ticks_to_wait);
+            }
+            else
+            {
+                return erdp_if_rtos_semaphore_take(__handler, ticks_to_wait);
+            }
+        }
+
+        // 释放信号量
+        bool give()
+        {
+            if constexpr (T == RECURISIVE_TAG)
+            {
+                return erdp_if_rtos_recursive_semaphore_give(__handler);
+            }
+            else
+            {
+                return erdp_if_rtos_semaphore_give(__handler);
+            }
+        }
+
+        ~Semaphore()
+        {
+            if (__handler != nullptr)
+            {
+                erdp_if_rtos_semaphore_delet(__handler);
+            }
+        }
+
+        // 删除拷贝构造和赋值
+        Semaphore(const Semaphore &) = delete;
+        Semaphore &operator=(const Semaphore &) = delete;
+
+    private:
+        OS_Semaphore __handler = nullptr;
+    };
+
+    class Mutex : public Semaphore<MUTEX_TAG>
     {
-        __handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
-    }
+    public:
+        Mutex() : Semaphore<MUTEX_TAG>() {}
+    };
 
-    // 获取信号量
-    bool take(uint32_t ticks_to_wait = portMAX_DELAY)
-    {
-        if constexpr (T == RECURISIVE_TAG) {
-            return erdp_if_rtos_recursive_semaphore_take(__handler, ticks_to_wait);
-        } else {
-            return erdp_if_rtos_semaphore_take(__handler, ticks_to_wait);
-        }
-    }
-
-    // 释放信号量
-    bool give()
-    {
-        if constexpr (T == RECURISIVE_TAG) {
-            return erdp_if_rtos_recursive_semaphore_give(__handler);
-        } else {
-            return erdp_if_rtos_semaphore_give(__handler);
-        }
-    }
-
-    ~Semaphore()
-    {
-        if(__handler != nullptr) {
-            erdp_if_rtos_semaphore_delet(__handler);
-        }
-    }
-
-    // 删除拷贝构造和赋值
-    Semaphore(const Semaphore&) = delete;
-    Semaphore& operator=(const Semaphore&) = delete;
-
-private:
-    OS_Semaphore __handler = nullptr;
-};
-
-class Mutex : public Semaphore<MUTEX_TAG>
-{
-public:
-    Mutex() : Semaphore<MUTEX_TAG>() {}
-};
-
-class Event
+    class Event
     {
 
     public:
         Event() : __handler(erdp_if_rtos_event_create()) {}
 
-        Event(const Event&) = delete;
-        Event& operator=(const Event&) = delete;
+        Event(const Event &) = delete;
+        Event &operator=(const Event &) = delete;
 
         ~Event()
         {
@@ -394,99 +405,8 @@ class Event
     private:
         OS_Event __handler;
     };
-    
+
 #else // ERDP_ENABLE_RTOS
-    class Heap4
-    {
-    public:
-        // 内存统计信息
-        struct Stats
-        {
-            size_t total_size;      // 内存池总大小
-            size_t free_size;       // 当前空闲内存
-            size_t min_free_size;   // 历史最小空闲内存
-            size_t alloc_count;     // 当前分配块数
-            size_t max_alloc_count; // 最大分配块数
-        };
-
-        // 初始化内存池
-        Heap4() {}
-        explicit Heap4(void *heap_area, size_t heap_size) noexcept;
-
-        // 禁止拷贝和移动
-        Heap4(const Heap4 &) = delete;
-        Heap4 &operator=(const Heap4 &) = delete;
-
-        void init(void *heap_area, size_t heap_size) noexcept;
-
-        // 内存分配(无异常)
-        void *allocate(size_t size) noexcept;
-
-        // 内存释放
-        void deallocate(void *ptr) noexcept;
-
-        // 获取内存统计
-        Stats get_stats() const noexcept;
-
-        // 遍历所有内存块(用于调试)
-        void walk_heap(const std::function<void(void *ptr, size_t size, bool is_free)> &visitor) const noexcept;
-
-        // 验证堆完整性(调试用)
-        bool validate() const noexcept;
-
-        // C++标准Allocator接口(无异常)
-        template <typename T>
-        class Allocator
-        {
-        public:
-            using value_type = T;
-
-            explicit Allocator(Heap4 &heap) noexcept : heap_(heap) {}
-
-            template <typename U>
-            Allocator(const Allocator<U> &other) noexcept : heap_(other.heap_) {}
-
-            T *allocate(size_t n) noexcept
-            {
-                return static_cast<T *>(heap_.allocate(n * sizeof(T)));
-            }
-
-            void deallocate(T *p, size_t) noexcept
-            {
-                heap_.deallocate(p);
-            }
-
-            Heap4 &heap_;
-        };
-
-    private:
-        struct BlockHeader
-        {
-            BlockHeader *next; // 下一个空闲块
-            size_t size;       // 块大小(包括头部)
-        };
-
-        // 内存对齐设置
-        static constexpr size_t ALIGNMENT = 8;
-        static constexpr size_t ALIGN_MASK = ALIGNMENT - 1;
-        static constexpr size_t MIN_BLOCK_SIZE = sizeof(BlockHeader) * 2;
-
-        // 辅助函数
-        static size_t align_size(size_t size) noexcept;
-        void insert_free_block(BlockHeader *block) noexcept;
-        void coalesce_free_blocks(BlockHeader *prev, BlockHeader *block) noexcept;
-        BlockHeader *find_best_fit(size_t required_size) noexcept;
-
-        // 堆管理变量
-        BlockHeader *heap_start_;
-        BlockHeader *heap_end_;
-        BlockHeader *free_list_;
-        size_t free_size_;
-        size_t min_free_size_;
-        size_t alloc_count_;
-        size_t max_alloc_count_;
-    };
-
     // 全局默认堆(需先初始化)
     extern Heap4 *default_heap;
 
