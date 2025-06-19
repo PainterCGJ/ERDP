@@ -459,6 +459,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\Source\OSAL\erdp_osal.hpp</FilePath>
             </File>
+            <File>
+              <FileName>erdp_heap.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Source\OSAL\erdp_heap.hpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
