@@ -82,6 +82,7 @@ void erdp_if_spi_gpio_init(ERDP_SpiInfo_t *spi_info, ERDP_SpiMode_t mode)
 
 void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size)
 {
+    rcu_periph_clock_enable(erdp_if_spi_get_PCLK(spi));
     spi_parameter_struct spi_init_struct;
     spi_init_struct.trans_mode = SPI_TRANSMODE_FULLDUPLEX;
 
@@ -133,10 +134,7 @@ void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cf
         spi_init_struct.endian = SPI_ENDIAN_LSB;
     }
 
-    
     spi_init_struct.prescale = spi_cfg->prescale;
-
-    rcu_periph_clock_enable(erdp_if_spi_get_PCLK(spi));
     spi_init(spi_instance[spi], &spi_init_struct);
     spi_enable(spi_instance[spi]);
 }
