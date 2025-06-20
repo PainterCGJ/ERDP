@@ -2,9 +2,11 @@
 #include <cstddef>
 #include <stdint.h>
 #include "erdp_assert.h"
+#include "erdp_config.h"
 #include "printf.h"
 #define HEAP4_DEBUG 0
 
+#ifndef ERDP_ENABLE_RTOS
 class Heap4
 {
 public:
@@ -232,3 +234,5 @@ private:
     size_t alloc_count_ = 0;
     size_t max_alloc_count_ = 0;
 };
+#endif // !ERDP_ENABLE_RTOS
+
