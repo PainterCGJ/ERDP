@@ -116,6 +116,12 @@ namespace erdp
             strcpy(__name, name);
         }
 
+        Thread(std::function<void()> handle, const char *name, uint32_t priority, size_t stack_size = DEFAULT_STACK_SIZE)
+            : __thread_code_lambda(handle), __priority(priority), __starck_size(stack_size)
+        {
+            strcpy(__name, name);
+        }
+
         ~Thread() {}
 
         void join()
@@ -124,6 +130,7 @@ namespace erdp
             {
                 __join_flag = 1;
                 __handler = erdp_if_rtos_task_create(erdp_task_run, __name, __starck_size, this, __priority);
+                erdp_assert(__handler!= nullptr);
             }
         }
 
@@ -147,15 +154,9 @@ namespace erdp
             erdp_if_rtos_task_resume(__handler);
         }
 
-        void kill(OS_TaskHandle handler)
+        void kill(OS_TaskHandle handler = nullptr)
         {
             erdp_if_rtos_task_delete(handler);
-        }
-
-        void kill()
-        {
-            erdp_assert(__handler != __main_task);
-            erdp_if_rtos_task_delete(__handler);
         }
 
         OS_TaskHandle get_thread_handler()
@@ -175,11 +176,19 @@ namespace erdp
 
         virtual void thread_code()
         {
-            __thread_code(__p_arg);
+            if (__thread_code)
+            {
+                __thread_code(__p_arg);
+            }
+            if (__thread_code_lambda)
+            {
+                __thread_code_lambda();
+            }
         }
 
     private:
-        void (*__thread_code)(void *p_arg);
+        void (*__thread_code)(void *p_arg) = nullptr;
+        std::function<void()> __thread_code_lambda = nullptr;
         void *__p_arg;
         char __name[configMAX_TASK_NAME_LEN + 1];
         uint32_t __priority;

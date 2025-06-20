@@ -18,6 +18,10 @@ void erdp_if_rtos_task_delete(OS_TaskHandle task_handle)
     {
         vTaskDelete(task_handle);
     }
+    else
+    {
+        vTaskDelete(NULL);
+    }
 }
 
 void erdp_if_rtos_task_suspend(OS_TaskHandle task_handle)
