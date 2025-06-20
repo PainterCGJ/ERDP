@@ -14,7 +14,7 @@ namespace erdp
         {
             erdp_if_gpio_init(port, pin, mode, pull, speed);
         }
-        ~GpioDev();
+        ~GpioDev(){}
 
         void init(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_GpioPinMode_t mode,
                   ERDP_GpioPinPull_t pull, ERDP_GpioSpeed_t speed)
