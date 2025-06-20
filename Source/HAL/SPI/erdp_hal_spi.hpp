@@ -205,10 +205,19 @@ namespace erdp
             return __tx_buffer.empty();
         }
 
+        void set_usr_rx_irq_handler(std::function<void(typename SpiDevBase<DATA_SIZE>::DataType)> handler) {
+            __usr_rx_irq_handler = handler;
+        }
+
+        void clear_usr_rx_irq_handler() {
+            __usr_rx_irq_handler = nullptr;
+        }
+
     private:
         uint32_t __tx_count = 0;
         typename SpiDevBase<DATA_SIZE>::DataType __data;
         typename SpiDevBase<DATA_SIZE>::Buffer __tx_buffer;
+        std::function<void(typename SpiDevBase<DATA_SIZE>::DataType)> __usr_rx_irq_handler=nullptr;
         bool __load_tx_buffer(typename SpiDevBase<DATA_SIZE>::DataType *data, uint32_t len)
         {
             __tx_count = 0;
@@ -241,6 +250,10 @@ namespace erdp
             {
                 __data = static_cast<typename SpiDevBase<DATA_SIZE>::DataType>(erdp_if_spi_recv(SpiBase::__spi_info.spi));
                 SpiDevBase<DATA_SIZE>::__rx_buffer.push(__data);
+                if (__usr_rx_irq_handler)
+                {
+                    __usr_rx_irq_handler(__data);
+                }
             }
         }
     };
