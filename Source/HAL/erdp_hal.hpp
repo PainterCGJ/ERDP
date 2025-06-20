@@ -3,6 +3,7 @@
 
 #include "erdp_config.h"
 #include "erdp_osal.hpp"
+#include <functional>
 
 class VoidClass
 {
