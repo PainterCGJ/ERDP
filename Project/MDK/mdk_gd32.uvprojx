@@ -337,7 +337,7 @@
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
             <VariousControls>
-              <MiscControls></MiscControls>
+              <MiscControls>-fexceptions</MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
