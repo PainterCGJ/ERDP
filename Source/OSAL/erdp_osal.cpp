@@ -1,6 +1,24 @@
 #include "erdp_osal.hpp"
 #include <new>
 #include <cstring>
+extern "C" {
+
+// 必须使用 volatile，且严格返回 0/1
+int __cxa_guard_acquire(volatile int* guard_object) {
+    return !*(volatile char*)guard_object;
+}
+
+void __cxa_guard_release(volatile int* guard_object) {
+    *(volatile char*)guard_object = 1;
+}
+
+void __cxa_guard_abort(volatile int*) {
+    // 可选实现，一般忽略
+}
+
+}
+
+
 
 #ifdef ERDP_ENABLE_RTOS
 namespace erdp
