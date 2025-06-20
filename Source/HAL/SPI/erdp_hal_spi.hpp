@@ -83,7 +83,6 @@ namespace erdp
     class SpiMasterBase : public SpiDevBase<DATA_SIZE>
     {
     public:
-
         SpiMasterBase() = default;  // Add default constructor
         SpiMasterBase(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
             : SpiDevBase<DATA_SIZE>(spi_info, ERDP_SPI_MODE_MASTER, spi_cfg, rx_buffer_size)
@@ -273,7 +272,7 @@ namespace erdp
             }
         }
     };
-    template <ERDP_SpiMode_t MODE = ERDP_SPI_MODE_MASTER,
+    template <ERDP_SpiMode_t MODE ,
               ERDP_SpiDataSize_t DATA_SIZE = ERDP_SPI_DATASIZE_8BIT>
     class SpiDev : public std::conditional_t<MODE == ERDP_SPI_MODE_MASTER,
                                              SpiMasterBase<DATA_SIZE>,
