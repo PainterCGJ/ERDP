@@ -62,7 +62,7 @@ namespace erdp
         }
 
         virtual bool send(DataType *data, uint32_t len) = 0;
-        virtual bool recv(uint32_t&& len) = 0;
+        virtual bool recv(uint32_t &&len) = 0;
 
     protected:
         void __init(SpiInfo_t &spi_info, ERDP_SpiMode_t mode, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
@@ -114,7 +114,7 @@ namespace erdp
             return true;
         }
 
-        bool recv(uint32_t&& len) override
+        bool recv(uint32_t &&len) override
         {
             uint32_t rx_count = 0;
             typename SpiDevBase<DATA_SIZE>::DataType data = 0;
@@ -133,9 +133,47 @@ namespace erdp
             return true;
         }
 
-        bool send_recv(typename SpiDevBase<DATA_SIZE>::DataType *tx_data, typename SpiDevBase<DATA_SIZE>::DataType *rx_data, uint32_t tx_len, uint32_t rx_len)
+        bool send_recv(typename SpiDevBase<DATA_SIZE>::DataType *tx_data, uint32_t tx_len, uint32_t rx_len)
         {
-
+            uint32_t tx_size = tx_len > rx_len ? tx_len : rx_len;
+            uint32_t tx_count = 0;
+            uint32_t rx_count = 0;
+            uint8_t txallowed = 1;
+            typename SpiDevBase<DATA_SIZE>::DataType data = 0;
+            while (tx_count < tx_size || rx_count < rx_len)
+            {
+                if (txallowed)
+                {
+                    txallowed = 0;
+                    while (!erdp_if_spi_transmit_buffer_empty(SpiBase::__spi_info.spi))
+                        ;
+                    if (tx_count < tx_len)
+                    {
+                        erdp_if_spi_send(SpiBase::__spi_info.spi, tx_data[tx_count]);
+                    }
+                    else
+                    {
+                        erdp_if_spi_send(SpiBase::__spi_info.spi, 0x00);
+                    }
+                    tx_count++;
+                }
+                if (rx_count < rx_len)
+                {
+                    while (!erdp_if_spi_receive_buffer_not_empty(SpiBase::__spi_info.spi))
+                        ;
+                    data = static_cast<typename SpiDevBase<DATA_SIZE>::DataType>(erdp_if_spi_recv(SpiBase::__spi_info.spi));
+                    SpiDevBase<DATA_SIZE>::__rx_buffer.push(data);
+                    rx_count++;
+                    txallowed = 1;
+                }
+                else
+                {
+                    txallowed = 1;
+                }
+            }
+            while (!erdp_if_spi_transfer_complete(SpiBase::__spi_info.spi))
+                ;
+            erdp_if_spi_recv(SpiBase::__spi_info.spi);
             return true;
         }
     };
@@ -157,11 +195,10 @@ namespace erdp
             return true;
         }
 
-        bool recv(uint32_t&& len) override
+        bool recv(uint32_t &&len) override
         {
             return true;
         }
-
 
         bool is_send_complete()
         {
