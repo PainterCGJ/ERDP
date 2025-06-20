@@ -62,7 +62,7 @@ namespace erdp
         }
 
         virtual bool send(DataType *data, uint32_t len) = 0;
-        virtual bool recv(uint32_t& len) = 0;
+        virtual bool recv(uint32_t&& len) = 0;
 
     protected:
         void __init(SpiInfo_t &spi_info, ERDP_SpiMode_t mode, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
@@ -114,7 +114,7 @@ namespace erdp
             return true;
         }
 
-        bool recv(uint32_t& len) override
+        bool recv(uint32_t&& len) override
         {
             uint32_t rx_count = 0;
             typename SpiDevBase<DATA_SIZE>::DataType data = 0;
@@ -153,20 +153,12 @@ namespace erdp
 
         bool send(typename SpiDevBase<DATA_SIZE>::DataType *data, uint32_t len) override
         {
-            uint32_t tx_count = 0;
-            while (tx_count < len)
-            {
-                if (!__tx_buffer.push(data[tx_count++]))
-                {
-                    return false;
-                }
-            }
+            __load_tx_buffer(data, len);
             return true;
         }
 
-        bool recv(uint32_t& len) override
+        bool recv(uint32_t&& len) override
         {
-            
             return true;
         }
 
