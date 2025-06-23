@@ -104,6 +104,12 @@ extern "C"
      */
     void erdp_if_rtos_delay_ms(uint32_t nms);
 
+    /**
+     * @brief Gets the current time in milliseconds since the system started
+     * @return Current time in milliseconds
+     */
+    uint32_t erdp_if_rtos_get_1ms_timestamp(void);
+
     /* Queue API */
     typedef QueueHandle_t OS_Queue;
 

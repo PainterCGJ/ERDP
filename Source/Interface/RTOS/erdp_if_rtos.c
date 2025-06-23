@@ -55,6 +55,11 @@ void erdp_if_rtos_delay_ms(uint32_t nms)
     vTaskDelay(pdMS_TO_TICKS(nms));
 }
 
+uint32_t erdp_if_rtos_get_1ms_timestamp(void)
+{
+    return xTaskGetTickCount()*portTICK_PERIOD_MS;
+}
+
 void *erdp_if_rtos_malloc(size_t size)
 {
     return pvPortMalloc(size);
