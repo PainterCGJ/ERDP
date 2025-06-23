@@ -32,11 +32,7 @@ namespace erdp
 
     } UartConfig_t;
 
-    class VoidClass
-    {
-    };
-
-    class UartBase
+    class UartDev
     {
         friend void erdp_uart_irq_handler(ERDP_Uart_t uart);
 #ifdef ERDP_ENABLE_RTOS
@@ -46,18 +42,18 @@ namespace erdp
 #endif
 
     public:
-        UartBase() {}
-        UartBase(UartConfig_t &config) {}
+        UartDev() {}
+        UartDev(UartConfig_t &config) {}
 
         ERDP_Uart_t __uart = ERDP_UART0;            // Default to UART0
-        static UartBase *__instance[ERDP_UART_NUM]; // Array to hold instances for each UART
-        static UartBase *__debug_com;
+        static UartDev *__instance[ERDP_UART_NUM]; // Array to hold instances for each UART
+        static UartDev *__debug_com;
         uint8_t __data;
 
         void init(UartConfig_t &config, size_t recv_buffer_size)
 
         {
-            __init(config,recv_buffer_size);
+            __init(config, recv_buffer_size);
         }
 
         void send(uint8_t *data, uint32_t len)
@@ -70,6 +66,11 @@ namespace erdp
             return __recv_buffer.pop(data);
         }
 
+        void set_usr_irq_handler(std::function<void()> usr_irq_handler)
+        {
+            __usr_irq_handler = usr_irq_handler;
+        }
+
         void set_as_debug_com()
         {
             __debug_com = this;
@@ -77,10 +78,11 @@ namespace erdp
 
     private:
         Buffer __recv_buffer;
+        std::function<void()> __usr_irq_handler = nullptr;
 
         void __init(UartConfig_t &config, size_t recv_buffer_size)
         {
-            if(!__recv_buffer.init(recv_buffer_size))
+            if (!__recv_buffer.init(recv_buffer_size))
             {
                 return;
             }
@@ -103,49 +105,9 @@ namespace erdp
         {
             erdp_if_uart_read_byte(__uart, &__data);
             __recv_buffer.push(__data);
-            // erdp_if_uart_send_bytes(__uart, &__data, 1);
-            __usr_irq_service(); // Call the user-defined IRQ service
-        }
-
-        virtual void __usr_irq_service() = 0;
-    };
-
-    template <class T = VoidClass>
-    class UartDev;
-
-    template <class T>
-    class UartDev : public UartBase
-    {
-    public:
-        UartDev() : UartBase() {}
-        UartDev(UartConfig_t &config, size_t recv_buffer_size) : UartBase(config)
-        {
-            init(config, recv_buffer_size);
-        }
-
-        template <class U = T, class = std::enable_if_t<!std::is_same_v<U, VoidClass>>>
-        void set_usr_irq_handler(T *obj, void (T::*func)(void))
-        {
-            __obj = obj;
-            __usr_irq_handler = func;
-        }
-
-    private:
-        template <class U = T>
-        using obj_type = std::conditional_t<!std::is_same_v<U, VoidClass>, T *, void *>;
-        obj_type<> __obj = nullptr;
-        template <class U = T>
-        using handler_type = std::conditional_t<!std::is_same_v<U, VoidClass>, void (T::*)(), void *>;
-        handler_type<> __usr_irq_handler = nullptr;
-
-        void __usr_irq_service() override
-        {
-            if constexpr (!std::is_same_v<T, VoidClass>)
+            if (__usr_irq_handler != nullptr)
             {
-                if (__usr_irq_handler != nullptr)
-                {
-                    (__obj->*__usr_irq_handler)(); // Call the user-defined function
-                }
+                __usr_irq_handler(); // Call the user-defined function
             }
         }
     };
