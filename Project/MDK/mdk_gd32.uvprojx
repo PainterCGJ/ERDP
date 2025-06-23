@@ -340,7 +340,7 @@
               <MiscControls>-fexceptions</MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\HAL\EXTI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
+              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\HAL\EXTI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,19 +385,9 @@
           <GroupName>Application</GroupName>
           <Files>
             <File>
-              <FileName>gd32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Application\gd32f4xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>main.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\Source\Application\main.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>systick.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Application\systick.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -663,6 +653,16 @@
               <FileName>system_gd32f4xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Source\system_gd32f4xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Source\Kernel\Driver\gd32f4xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Source\Kernel\Driver\systick.c</FilePath>
             </File>
           </Files>
         </Group>
