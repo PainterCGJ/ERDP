@@ -110,6 +110,26 @@ extern "C"
      */
     uint32_t erdp_if_rtos_get_1ms_timestamp(void);
 
+    /**
+     * @brief Allocates a block of memory on the heap.
+     *        This function requests a block of memory of the specified size from the RTOS memory pool.
+     *        The allocated memory is uninitialized.
+     * @param[in] size The number of bytes to allocate.
+     * @return A pointer to the allocated memory block if successful, NULL otherwise.
+     * @note The allocated memory should be freed using the corresponding free function
+     *       to avoid memory leaks.
+     * @warning Allocating too much memory may lead to memory exhaustion and system instability.
+     */
+    void *erdp_if_rtos_malloc(size_t size);
+
+    /**
+     * @brief Frees a block of memory previously allocated using malloc.
+     *        This function releases a block of memory previously allocated by the malloc function.
+     *        The memory block is returned to the RTOS memory pool and can be reused for future allocations.
+     * @param[in] ptr A pointer to the memory block to free.
+     */
+    void erdp_if_rtos_free(void *ptr);
+
     /* Queue API */
     typedef QueueHandle_t OS_Queue;
 

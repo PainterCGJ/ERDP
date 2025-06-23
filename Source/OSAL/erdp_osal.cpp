@@ -48,22 +48,22 @@ int main(void)
 
 void *operator new(size_t size)
 {
-    return pvPortMalloc(size);
+    return erdp_if_rtos_malloc(size);
 }
 
 void *operator new[](size_t size)
 {
-    return pvPortMalloc(size);
+    return erdp_if_rtos_malloc(size);
 }
 
 void operator delete(void *pointer) noexcept
 {
-    vPortFree(pointer);
+    erdp_if_rtos_free(pointer);
 }
 
 void operator delete[](void *pointer) noexcept
 {
-    vPortFree(pointer);
+    erdp_if_rtos_free(pointer);
 }
 
 #else  // ERDP_ENABLE_RTOS
