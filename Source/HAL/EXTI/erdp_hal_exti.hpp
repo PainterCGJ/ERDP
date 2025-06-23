@@ -33,6 +33,10 @@ namespace erdp
             __usr_irq_hendler = usr_irq_hendler;
         }
 
+        void clear_usr_irq_hendler(){
+            __usr_irq_hendler = nullptr;
+        }
+
     private:
         static Exti *__exti_instance[ERDP_GPIO_PIN_MAX];
         std::function<void()> __usr_irq_hendler = nullptr;
