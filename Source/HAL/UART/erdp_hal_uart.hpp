@@ -1,5 +1,5 @@
-#ifndef ERDP_HAL_UART_GPP
-#define ERDP_HAL_UART_GPP
+#ifndef __ERDP_HAL_UART_GPP__
+#define __ERDP_HAL_UART_GPP__
 
 #include "erdp_hal.hpp"
 #include "erdp_if_uart.h"

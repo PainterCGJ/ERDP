@@ -1,5 +1,5 @@
-#ifndef ERDP_IF_GPIO_H
-#define ERDP_IF_GPIO_H
+#ifndef __ERDP_IF_GPIO_H__
+#define __ERDP_IF_GPIO_H__
 
 #ifdef __cplusplus
 extern "C"

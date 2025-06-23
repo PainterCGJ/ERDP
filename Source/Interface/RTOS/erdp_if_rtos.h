@@ -1,5 +1,5 @@
-#ifndef ERDP_IF_RTOS_H
-#define ERDP_IF_RTOS_H
+#ifndef __ERDP_IF_RTOS_H__
+#define __ERDP_IF_RTOS_H__
 
 #ifdef __cplusplus
 extern "C"
