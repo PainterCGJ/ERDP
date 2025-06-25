@@ -45,18 +45,13 @@ namespace erdp
         UartDev() {}
         UartDev(UartConfig_t &config) {}
 
-        ERDP_Uart_t __uart = ERDP_UART0;            // Default to UART0
-        static UartDev *__instance[ERDP_UART_NUM]; // Array to hold instances for each UART
-        static UartDev *__debug_com;
-        uint8_t __data;
-
         void init(UartConfig_t &config, size_t recv_buffer_size)
 
         {
             __init(config, recv_buffer_size);
         }
 
-        void send(uint8_t *data, uint32_t len)
+        void send(const uint8_t *data, uint32_t len) const
         {
             erdp_if_uart_send_bytes(__uart, data, len);
         }
@@ -76,7 +71,16 @@ namespace erdp
             __debug_com = this;
         }
 
+        static const UartDev * const &get_debug_com()
+        {
+            return __debug_com;
+        }
+
     private:
+        ERDP_Uart_t __uart = ERDP_UART0;           // Default to UART0
+        static UartDev *__instance[ERDP_UART_NUM]; // Array to hold instances for each UART
+        static UartDev *__debug_com;
+        uint8_t __data;
         Buffer __recv_buffer;
         std::function<void()> __usr_irq_handler = nullptr;
 

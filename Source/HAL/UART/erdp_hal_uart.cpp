@@ -13,9 +13,9 @@ namespace erdp
 
         void _putchar(char character)
         {
-            if(UartDev::__debug_com != nullptr)
+            if (UartDev::get_debug_com() != nullptr)
             {
-                UartDev::__debug_com->send((uint8_t *)&character, 1);
+                UartDev::get_debug_com()->send((const uint8_t *)&character, 1);
             }
         }
     }
