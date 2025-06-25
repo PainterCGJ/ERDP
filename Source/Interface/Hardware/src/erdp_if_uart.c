@@ -164,7 +164,7 @@ ERDP_Status_t erdp_if_uart_int_flag_get(ERDP_Uart_t uart, ERDP_UartIrqFlag_t fla
     return ERDP_RESET;
 }
 
-void erdp_if_uart_send_bytes(ERDP_Uart_t uart, uint8_t *data, uint8_t len)
+void erdp_if_uart_send_bytes(ERDP_Uart_t uart, const uint8_t *data, uint8_t len)
 {
     uint32_t uart_base = uart_instance[uart];
     for (uint8_t i = 0; i < len; i++)
