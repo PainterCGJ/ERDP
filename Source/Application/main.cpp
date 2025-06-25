@@ -8,8 +8,11 @@
 #include "gd32f4xx.h"
 #include "systick.h"
 #include "erdp_assert.h"
+#include "erdp_hal_exti.hpp"
 // #include "printf.h"
 #include <vector>
+#include "log_adapter.hpp"
+#include "log_adapter.hpp"
 
 using namespace erdp;
 using namespace std;
@@ -80,7 +83,7 @@ public:
     {
     }
     Semaphore<BINARY_TAG> sem;
-    UartDev<UartTask> uart_dev;
+    UartDev uart_dev;
     void uart_irq_handler()
     {
         sem.give();
@@ -88,7 +91,10 @@ public:
     void thread_code() override
     {
         uart_dev.init(uart_config, 20);
-        uart_dev.set_usr_irq_handler(this, &UartTask::uart_irq_handler);
+        uart_dev.set_usr_irq_handler([this]()
+        {
+            uart_irq_handler();
+        });
         uart_dev.set_as_debug_com();
         vector<uint8_t> rx_buffer;
         // rx_buffer.reserve(10);
@@ -102,7 +108,7 @@ public:
             }
             if (sem.take(0))
             {
-                printf("sem take ok\n");
+                Logger::t("uart","uart sem take ok\n");
             }
             delay_ms(2);
         }
@@ -112,20 +118,30 @@ public:
 class SpiTask : public Thread
 {
 public:
-    SpiTask() : Thread("SpiTask", 3, 512)
+    SpiTask() : Thread("SpiTask", 3, 512),
+                sub_thread([this]()
+                           {
+                    printf("sub_thread constructor\n");
+                    while(1) {
+                        Logger::t("sub_thread","sub_thread running");
+                        delay_ms(1000);
+                    } }, "sub_thread", 4, 512)
     {
+        sub_thread.join();
     }
+
     Semaphore<BINARY_TAG> sem;
-    std::function<void()> __usr_rx_irq_handler;
+    const char str[14] = "hello world\n\0";
+    Thread sub_thread; // Declaration only
     void thread_code() override
     {
         printf("SpiTask constructor\n");
-        
-        SpiMasterBase<ERDP_SPI_DATASIZE_8BIT> spi_master(spi1_info, spi_config, 50);
-        SpiSlaveBase<ERDP_SPI_DATASIZE_8BIT> spi_slave(spi3_info, spi_config, 50, 50);
-        // spi_slave.set_usr_rx_irq_handler([this](uint8_t data) { 
-        //     sem.give();
-        // });
+
+        SpiDev<ERDP_SPI_MODE_MASTER> spi_master(spi1_info, spi_config, 50);
+        SpiDev<ERDP_SPI_MODE_SLAVE> spi_slave(spi3_info, spi_config, 50, 50);
+        spi_slave.set_usr_rx_irq_handler([this](uint8_t data)
+                                         { sem.give(); });
+
         std::vector<uint8_t> master_tx_buffer8 = {0x01, 0x02, 0x03};
         std::vector<uint8_t> slave_tx_buffer8 = {0x0A, 0x0B, 0x0C, 0x0D};
         uint8_t data;
@@ -149,31 +165,80 @@ public:
             {
                 printf("slave data = %x\n", data);
             }
-            if (sem.take(0)){
+            if (sem.take(0))
+            {
                 printf("spi sem take ok\n");
             }
 
-            master_tx_buffer8[0]+=1;
-            master_tx_buffer8[1]+=1;
-            master_tx_buffer8[2]+=1;
-            slave_tx_buffer8[0]+=1;
-            slave_tx_buffer8[1]+=1;
-            slave_tx_buffer8[2]+=1;
-            slave_tx_buffer8[3]+=1;
+            master_tx_buffer8[0] += 1;
+            master_tx_buffer8[1] += 1;
+            master_tx_buffer8[2] += 1;
+            slave_tx_buffer8[0] += 1;
+            slave_tx_buffer8[1] += 1;
+            slave_tx_buffer8[2] += 1;
+            slave_tx_buffer8[3] += 1;
             Thread::delay_ms(500);
         }
     }
 };
+void printRunningTasks()
+{
+    // 需要确保FreeRTOSConfig.h中配置了:
+    // #define configUSE_TRACE_FACILITY 1
+    // #define configUSE_STATS_FORMATTING_FUNCTIONS 1
+
+    char *pcWriteBuffer = (char *)pvPortMalloc(512); // 分配缓冲区
+    if (pcWriteBuffer != NULL)
+    {
+        printf("Task Name\tStatus\tPrio\tStack\tTask#\n");
+        printf("****************************************\n");
+        vTaskList(pcWriteBuffer);      // 获取任务列表
+        printf("%s\n", pcWriteBuffer); // 打印任务信息
+        vPortFree(pcWriteBuffer);      // 释放缓冲区
+    }
+}
+extern "C"
+{
+    void vApplicationMallocFailedHook(void)
+    {
+        // 内存分配失败处理
+        printf("Error: Malloc Failed!\n");
+        taskDISABLE_INTERRUPTS();
+        for (;;)
+            ; // 死循环，可根据需要改为其他错误处理
+    }
+}
 
 void Thread::main_thread(void *parm)
 {
+
+    Logger log_service;
+    log_service.start();
 
     GpioDev Led(ERDP_GPIOC, ERDP_GPIO_PIN_6, ERDP_GPIO_PIN_MODE_OUTPUT, ERDP_GPIO_PIN_PULL_NONE, ERDP_GPIO_SPEED_HIGH);
     UartTask uart_task;
     uart_task.join();
 
     SpiTask spi_task;
-    spi_task.join();
+    // spi_task.join();
+    while (UartDev::get_debug_com() == nullptr)
+    {
+        Thread::delay_ms(100);
+    }
+
+    Semaphore<BINARY_TAG> sem;
+    Exti exti;
+    exti.init(ERDP_GPIOA, ERDP_GPIO_PIN_8, ERDP_EXTI_FALLING_EDGE, 6);
+    exti.set_usr_irq_hendler([&sem]()
+                             { sem.give(); });
+
+    
+
+    Logger::i("main","Logger started");
+    Logger::t("main","Logger started");
+    Logger::d("main","Logger started");
+    Logger::w("main","Logger started");
+    Logger::e("main","Logger started");
 
     while (1)
     {
@@ -181,6 +246,11 @@ void Thread::main_thread(void *parm)
         Thread::delay_ms(500);
         Led.write(ERDP_RESET);
         Thread::delay_ms(500);
+        if (sem.take(0))
+        {
+            Logger::t("main","exti sem take ok\n");
+        }
+        // printRunningTasks();
     }
 }
 #else

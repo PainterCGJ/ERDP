@@ -14,12 +14,49 @@ public:
     virtual void log_output(const uint8_t *message, uint32_t len) = 0;
 };
 
+enum class LogLevel : uint8_t
+{
+    ERROR = 0,
+    WARN,
+    DEBUG,
+    INFO,
+    TRACE
+};
+
 template <typename Interface, size_t MSG_MAX_SIZE = 256>
 class Log
 {
 public:
     Log() = default;
     ~Log() = default;
+
+    LogLevel level = LogLevel::TRACE;
+
+    void set_level(LogLevel new_level)
+    {
+        level = new_level;
+    }
+    void set_tag(LogLevel level, const std::string &tag)
+    {
+        switch (level)
+        {
+        case LogLevel::TRACE:
+            trace_tag = tag;
+            break;
+        case LogLevel::DEBUG:
+            debug_tag = tag;
+            break;
+        case LogLevel::INFO:
+            info_tag = tag;
+            break;
+        case LogLevel::WARN:
+            warn_tag = tag;
+            break;
+        case LogLevel::ERROR:
+            error_tag = tag;
+            break;
+        }
+    }
 
     // 设置日志输出格式的函数
     void set_pattern(const std::string &pattern)
@@ -29,42 +66,58 @@ public:
 
     void trace(const char *module, const char *format, ...)
     {
+        if (level < LogLevel::TRACE)
+            return; // 如果当前日志级别低于TRACE，则不输出日志
         va_list args;
         va_start(args, format);
-        log_with_level("TRACE", module, format, args);
+        log_with_level(trace_tag.c_str(), module, format, args);
         va_end(args);
     }
     void debug(const char *module, const char *format, ...)
     {
+        if (level < LogLevel::DEBUG)
+            return; // 如果当前日志级别低于DEBUG，则不输出日志
         va_list args;
         va_start(args, format);
-        log_with_level("DEBUG", module, format, args);
+        log_with_level(debug_tag.c_str(), module, format, args);
         va_end(args);
     }
     void info(const char *module, const char *format, ...)
     {
+        if (level < LogLevel::INFO)
+            return; // 如果当前日志级别低于INFO，则不输出日志
         va_list args;
         va_start(args, format);
-        log_with_level("INFO", module, format, args);
+        log_with_level(info_tag.c_str(), module, format, args);
         va_end(args);
     }
     void warn(const char *module, const char *format, ...)
     {
+        if (level < LogLevel::WARN)
+            return; // 如果当前日志级别低于WARN，则不输出日志
         va_list args;
         va_start(args, format);
-        log_with_level("WARN", module, format, args);
+        log_with_level(warn_tag.c_str(), module, format, args);
         va_end(args);
     }
     void error(const char *module, const char *format, ...)
     {
+        if (level < LogLevel::ERROR)
+            return; // 如果当前日志级别低于ERROR，则不输出日志
         va_list args;
         va_start(args, format);
-        log_with_level("ERROR", module, format, args);
+        log_with_level(error_tag.c_str(), module, format, args);
         va_end(args);
     }
 
 private:
-    std::string log_pattern; // 存储日志输出格式
+    std::string log_pattern;         // 存储日志输出格式
+    std::string info_tag = "INFO";   // 默认日志级别
+    std::string warn_tag = "WARN";   // 默认警告级别
+    std::string error_tag = "ERROR"; // 默认错误级别
+    std::string trace_tag = "TRACE"; // 默认跟踪级别
+    std::string debug_tag = "DEBUG"; // 默认调试级别
+
     char message[MSG_MAX_SIZE];
     char full_message[MSG_MAX_SIZE];
 

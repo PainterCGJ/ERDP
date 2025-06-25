@@ -340,7 +340,7 @@
               <MiscControls>-fexceptions</MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\HAL\EXTI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Common</IncludePath>
+              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\HAL\EXTI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Library\log;..\..\Source\Adapter\log;..\..\Source\Common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -392,12 +392,32 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>Adapter</GroupName>
+          <Files>
+            <File>
+              <FileName>log_adapter.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Source\Adapter\log\log_adapter.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>log_adapter.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Source\Adapter\log\log_adapter.hpp</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Library</GroupName>
           <Files>
             <File>
               <FileName>printf.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Source\Library\printf\printf.c</FilePath>
+            </File>
+            <File>
+              <FileName>log.hpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Source\Library\log\log.hpp</FilePath>
             </File>
           </Files>
         </Group>
