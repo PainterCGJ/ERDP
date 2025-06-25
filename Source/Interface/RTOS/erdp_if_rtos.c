@@ -354,27 +354,4 @@ void erdp_if_rtos_system_config(void)
     nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
     systick_config();
 }
-
-// void task_run(void *parm)
-// {
-//     Thread *thread = static_cast<Thread *>(parm);
-//     thread->thread_code(); // 运行线程代码
-//     thread->kill();        // 结束线程
-// }
-
-// extern void rtos_main(void);
-// void system_config(void);
-
-// static void __main(void *parg)
-// {
-//     rtos_main();
-// }
-// TaskHandle_t MainHandler;
-
-// int main(void)
-// {
-//     system_config();
-//     xTaskCreate(__main, "main", 1280, nullptr, 0, &MainHandler);
-//     RTOS::os_start_scheduler();
-// }
 /* end of file */
