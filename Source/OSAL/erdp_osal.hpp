@@ -122,7 +122,12 @@ namespace erdp
             strcpy(__name, name);
         }
 
-        ~Thread() {}
+        ~Thread() {
+            if (__join_flag)
+            {
+                erdp_if_rtos_task_delete(nullptr);
+            }
+        }
 
         void join()
         {
