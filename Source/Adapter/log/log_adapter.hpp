@@ -3,12 +3,13 @@
 #include "log.hpp"
 #include "erdp_hal_uart.hpp"
 #include "erdp_osal.hpp"
+#include "printf.h"
 
 class Logger : public LogInterface
 {
 public:
     Logger() : log_thread([this]()
-                          { this->log_thread_code(); }, "LoggerThread", 1, 512)
+                          { this->log_thread_code(); }, "LoggerThread", 10, 512)
     {
         set_pattern("[%L][%M]: %m\n");
         set_tag(LogLevel::ERROR, "\033[31mERROR\033[0m");
@@ -17,7 +18,7 @@ public:
         set_tag(LogLevel::INFO, "\033[94mINFO\033[0m");
         set_tag(LogLevel::TRACE, "\033[90mTRACE\033[0m");
 
-        logger.set_level(LogLevel::INFO);
+        logger.set_level(LogLevel::TRACE);
     };
     ~Logger() = default;
     static void t(const char *module, const char *format, ...);

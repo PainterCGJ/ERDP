@@ -4,39 +4,40 @@
 erdp::Queue<uint8_t> Logger::log_queue(1024);
 Log<Logger> Logger::logger;
 
-void Logger::i(const char* module ,const char *format, ...)
+void Logger::i(const char *module, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logger.info(module, format, args);
+    logger.vinfo(module, format, args);
+    va_end(args);
+
+}
+void Logger::d(const char *module, const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    logger.vdebug(module, format, args);
     va_end(args);
 }
-void Logger::d(const char* module ,const char *format, ...)
+void Logger::e(const char *module, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logger.debug(module, format, args);
+    logger.verror(module, format, args);
     va_end(args);
 }
-void Logger::e(const char* module ,const char *format, ...)
+void Logger::w(const char *module, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logger.error(module, format, args);
+    logger.vwarn(module, format, args);
     va_end(args);
 }
-void Logger::w(const char* module ,const char *format, ...)
+void Logger::t(const char *module, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    logger.warn(module, format, args);
-    va_end(args);
-}
-void Logger::t(const char* module ,const char *format, ...)
-{
-    va_list args;
-    va_start(args, format);
-    logger.trace(module, format, args);
+    logger.vtrace(module, format, args);
     va_end(args);
 }
 void Logger::log_output(const uint8_t *message, uint32_t len)
