@@ -43,10 +43,11 @@ namespace erdp
 
     public:
         UartDev() {}
-        UartDev(UartConfig_t &config) {}
+        UartDev(UartConfig_t &config, size_t recv_buffer_size) {
+            __init(config, recv_buffer_size);
+        }
 
         void init(UartConfig_t &config, size_t recv_buffer_size)
-
         {
             __init(config, recv_buffer_size);
         }
