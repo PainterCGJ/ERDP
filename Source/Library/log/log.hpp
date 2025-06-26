@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include "printf.h"
 
 class LogInterface
 {
@@ -67,47 +68,96 @@ public:
     void trace(const char *module, const char *format, ...)
     {
         if (level < LogLevel::TRACE)
-            return; // 如果当前日志级别低于TRACE，则不输出日志
+            return;
         va_list args;
         va_start(args, format);
-        log_with_level(trace_tag.c_str(), module, format, args);
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(trace_tag.c_str(), module, message);
         va_end(args);
     }
+
+    void vtrace(const char *module, const char *format, va_list args)
+    {
+        if (level < LogLevel::TRACE)
+            return;
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(trace_tag.c_str(), module, message);
+    }
+
     void debug(const char *module, const char *format, ...)
     {
         if (level < LogLevel::DEBUG)
-            return; // 如果当前日志级别低于DEBUG，则不输出日志
+            return;
         va_list args;
         va_start(args, format);
-        log_with_level(debug_tag.c_str(), module, format, args);
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(debug_tag.c_str(), module, message);
         va_end(args);
     }
+
+    void vdebug(const char *module, const char *format, va_list args)
+    {
+        if (level < LogLevel::DEBUG)
+            return;
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(debug_tag.c_str(), module, message);
+    }
+
     void info(const char *module, const char *format, ...)
     {
         if (level < LogLevel::INFO)
-            return; // 如果当前日志级别低于INFO，则不输出日志
+            return;
         va_list args;
         va_start(args, format);
-        log_with_level(info_tag.c_str(), module, format, args);
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(info_tag.c_str(), module, message);
         va_end(args);
     }
+
+    void vinfo(const char *module, const char *format, va_list args)
+    {
+        if (level < LogLevel::INFO)
+            return;
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(info_tag.c_str(), module, message);
+    }
+
     void warn(const char *module, const char *format, ...)
     {
         if (level < LogLevel::WARN)
-            return; // 如果当前日志级别低于WARN，则不输出日志
+            return;
         va_list args;
         va_start(args, format);
-        log_with_level(warn_tag.c_str(), module, format, args);
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(warn_tag.c_str(), module, message);
         va_end(args);
     }
+
+    void vwarn(const char *module, const char *format, va_list args)
+    {
+        if (level < LogLevel::WARN)
+            return;
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(warn_tag.c_str(), module, message);
+    }
+
     void error(const char *module, const char *format, ...)
     {
         if (level < LogLevel::ERROR)
-            return; // 如果当前日志级别低于ERROR，则不输出日志
+            return;
         va_list args;
         va_start(args, format);
-        log_with_level(error_tag.c_str(), module, format, args);
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(error_tag.c_str(), module, message);
         va_end(args);
+    }
+
+    void verror(const char *module, const char *format, va_list args)
+    {
+        if (level < LogLevel::ERROR)
+            return;
+        vsnprintf(message, sizeof(message), format, args);
+        log_with_level(error_tag.c_str(), module, message);
     }
 
 private:
@@ -121,12 +171,9 @@ private:
     char message[MSG_MAX_SIZE];
     char full_message[MSG_MAX_SIZE];
 
-    void log_with_level(const char *level, const char *module, const char *format, va_list args)
+    void log_with_level(const char *level, const char *module, const char *message)
     {
         memset(full_message, 0, sizeof(full_message));
-        int len = vsnprintf(message, sizeof(message), format, args);
-        if (len <= 0)
-            return;
 
         const char *pos = log_pattern.c_str();
         while (*pos)
