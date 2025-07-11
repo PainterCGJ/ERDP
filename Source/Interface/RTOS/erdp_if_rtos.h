@@ -110,6 +110,18 @@ extern "C"
      */
     uint32_t erdp_if_rtos_get_1ms_timestamp(void);
 
+    /* Memory Management */
+    /**
+     * @brief Gets the total size of the system heap in bytes.
+     *        This function returns the total size of the system heap, which is the total amount of memory
+     *        available for dynamic memory allocation.
+     * @return Total size of the system heap in bytes.
+     * @note The size of the system heap can be used to determine the maximum amount of memory that can be
+     *       allocated dynamically. It is important to monitor the size of the system heap to avoid memory
+     *       exhaustion and ensure proper memory management.
+     */
+    uint32_t erdp_if_rtos_get_system_heap_size(void);
+
     /**
      * @brief Allocates a block of memory on the heap.
      *        This function requests a block of memory of the specified size from the RTOS memory pool.

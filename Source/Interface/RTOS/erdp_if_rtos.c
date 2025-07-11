@@ -60,6 +60,11 @@ uint32_t erdp_if_rtos_get_1ms_timestamp(void)
     return xTaskGetTickCount()*portTICK_PERIOD_MS;
 }
 
+uint32_t erdp_if_rtos_get_system_heap_size(void)
+{
+    return xPortGetFreeHeapSize();
+}
+
 void *erdp_if_rtos_malloc(size_t size)
 {
     return pvPortMalloc(size);

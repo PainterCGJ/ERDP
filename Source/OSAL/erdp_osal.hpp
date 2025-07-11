@@ -179,6 +179,11 @@ namespace erdp
             erdp_if_rtos_start_scheduler();
         }
 
+        static uint32_t get_system_1ms_ticks()
+        {
+            return erdp_if_rtos_get_1ms_timestamp();
+        }
+
         virtual void thread_code()
         {
             if (__thread_code)
@@ -372,10 +377,23 @@ namespace erdp
         OS_Semaphore __handler = nullptr;
     };
 
-    class Mutex : public Semaphore<MUTEX_TAG>
+    class Mutex : private Semaphore<MUTEX_TAG>
     {
     public:
         Mutex() : Semaphore<MUTEX_TAG>() {}
+
+        bool lock(uint32_t ticks_to_wait = portMAX_DELAY)
+        {
+            return take(ticks_to_wait);
+        }
+        bool try_lock()
+        {
+            return take(0);
+        }
+        bool unlock()
+        {
+            return give();
+        }
     };
 
     class Event

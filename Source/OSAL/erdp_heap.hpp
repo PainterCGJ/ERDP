@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __ERDP_HEAP_HPP__
+#define __ERDP_HEAP_HPP__
 #include <cstddef>
 #include <stdint.h>
 #include "erdp_assert.h"
@@ -235,4 +236,5 @@ private:
     size_t max_alloc_count_ = 0;
 };
 #endif // !ERDP_ENABLE_RTOS
+#endif // __ERDP_HEAP_HPP__
 

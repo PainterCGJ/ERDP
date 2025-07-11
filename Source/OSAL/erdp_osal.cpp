@@ -33,7 +33,7 @@ namespace erdp
 
     void create_main_task()
     {
-        Thread::__main_task = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 1);
+        Thread::__main_task = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 20);
     }
 } // namespace erdp
 int main(void)
