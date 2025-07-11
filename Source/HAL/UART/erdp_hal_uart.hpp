@@ -7,6 +7,7 @@
 #include "printf.h"
 
 #include <type_traits>
+#include <vector>
 namespace erdp
 {
     extern "C"
@@ -36,18 +37,21 @@ namespace erdp
     {
         friend void erdp_uart_irq_handler(ERDP_Uart_t uart);
 #ifdef ERDP_ENABLE_RTOS
+#define GET_SYS_TICK() Thread::get_system_1ms_ticks()
         using Buffer = Queue<uint8_t>;
 #else
         using Buffer = RingBuffer<uint8_t>;
+#define GET_SYS_TICK() erdp_if_rtos_get_system_1ms_ticks()
 #endif
 
     public:
         UartDev() {}
-        UartDev(UartConfig_t &config, size_t recv_buffer_size) {
+        UartDev(const UartConfig_t &config, size_t recv_buffer_size)
+        {
             __init(config, recv_buffer_size);
         }
 
-        void init(UartConfig_t &config, size_t recv_buffer_size)
+        void init(const UartConfig_t &config, size_t recv_buffer_size)
         {
             __init(config, recv_buffer_size);
         }
@@ -57,6 +61,29 @@ namespace erdp
             erdp_if_uart_send_bytes(__uart, data, len);
         }
 
+        void send(const std::vector<uint8_t> &data) const{
+            erdp_if_uart_send_bytes(__uart, data.data(), data.size());
+        }
+
+        bool recv(std::vector<uint8_t> &buffer, uint32_t timeout = 5)
+        {
+            bool ret = false;
+            uint8_t data;
+            buffer.clear();
+            uint32_t start_time = GET_SYS_TICK();
+
+            while (GET_SYS_TICK() - start_time < timeout)
+            {
+                if (__recv_buffer.pop(data))
+                {
+                    buffer.push_back(data);
+                    ret = true;
+                    start_time = GET_SYS_TICK(); // Reset the timer on successful receive
+                }
+            }
+
+            return ret;
+        }
         bool recv(uint8_t &data)
         {
             return __recv_buffer.pop(data);
@@ -72,7 +99,7 @@ namespace erdp
             __debug_com = this;
         }
 
-        static const UartDev * const &get_debug_com()
+        static const UartDev *const &get_debug_com()
         {
             return __debug_com;
         }
@@ -85,10 +112,11 @@ namespace erdp
         Buffer __recv_buffer;
         std::function<void()> __usr_irq_handler = nullptr;
 
-        void __init(UartConfig_t &config, size_t recv_buffer_size)
+        void __init(const UartConfig_t &config, size_t recv_buffer_size)
         {
             if (!__recv_buffer.init(recv_buffer_size))
             {
+                erdp_assert(false);
                 return;
             }
             ERDP_UartGpioCfg_t gpio_cfg = {
@@ -109,7 +137,11 @@ namespace erdp
         void __irq_handler()
         {
             erdp_if_uart_read_byte(__uart, &__data);
-            __recv_buffer.push(__data);
+            if(__recv_buffer.push(__data))
+            {
+                
+            }
+			
             if (__usr_irq_handler != nullptr)
             {
                 __usr_irq_handler(); // Call the user-defined function
