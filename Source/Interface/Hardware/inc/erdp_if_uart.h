@@ -78,7 +78,7 @@ void erdp_if_uart_init(ERDP_Uart_t uart, uint32_t baudrate, ERDP_UartMode_t mode
  * @param[in] len: Length of data to send (in bytes)
  * @return None
  */
-void erdp_if_uart_send_bytes(ERDP_Uart_t uart, const uint8_t* data, uint8_t len);
+void erdp_if_uart_send_bytes(ERDP_Uart_t uart, const uint8_t* data, uint32_t len);
 
 /**
  * @brief Read a single byte from specified UART
