@@ -46,7 +46,7 @@ namespace erdp
         Buffer &rx_buffer = __rx_buffer;
 
         SpiDevBase() {}
-        SpiDevBase(SpiInfo_t &spi_info, ERDP_SpiMode_t mode, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        SpiDevBase(const SpiInfo_t &spi_info, ERDP_SpiMode_t mode, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
         {
             __init(spi_info, mode, spi_cfg, rx_buffer_size);
         }
@@ -65,7 +65,7 @@ namespace erdp
         virtual bool recv(uint32_t &&len) = 0;
 
     protected:
-        void __init(SpiInfo_t &spi_info, ERDP_SpiMode_t mode, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        void __init(const SpiInfo_t &spi_info, ERDP_SpiMode_t mode, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
         {
             __spi_info = spi_info;
             __spi_cfg = spi_cfg;
@@ -83,8 +83,8 @@ namespace erdp
     class SpiMasterBase : public SpiDevBase<DATA_SIZE>
     {
     public:
-        SpiMasterBase() = default;  // Add default constructor
-        SpiMasterBase(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        SpiMasterBase() = default; // Add default constructor
+        SpiMasterBase(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
             : SpiDevBase<DATA_SIZE>(spi_info, ERDP_SPI_MODE_MASTER, spi_cfg, rx_buffer_size)
         {
         }
@@ -118,6 +118,7 @@ namespace erdp
         {
             uint32_t rx_count = 0;
             typename SpiDevBase<DATA_SIZE>::DataType data = 0;
+            erdp_if_spi_recv(SpiBase::__spi_info.spi);
             while (rx_count < len)
             {
                 while (!erdp_if_spi_transmit_buffer_empty(SpiBase::__spi_info.spi))
@@ -130,6 +131,27 @@ namespace erdp
                 SpiDevBase<DATA_SIZE>::__rx_buffer.push(data);
                 rx_count++;
             }
+            while (!erdp_if_spi_transfer_complete(SpiBase::__spi_info.spi))
+                ;
+            return true;
+        }
+
+        bool recv(typename SpiDevBase<DATA_SIZE>::DataType *buffer, uint32_t len)
+        {
+            uint32_t rx_count = 0;
+            typename SpiDevBase<DATA_SIZE>::DataType data = 0;
+            while (rx_count < len)
+            {
+                while (!erdp_if_spi_transmit_buffer_empty(SpiBase::__spi_info.spi))
+                    ;
+                erdp_if_spi_send(SpiBase::__spi_info.spi, 0x00);
+                while (!erdp_if_spi_receive_buffer_not_empty(SpiBase::__spi_info.spi))
+                    ;
+                data = static_cast<typename SpiDevBase<DATA_SIZE>::DataType>(erdp_if_spi_recv(SpiBase::__spi_info.spi));
+                buffer[rx_count++] = data;
+            }
+            while (!erdp_if_spi_transfer_complete(SpiBase::__spi_info.spi))
+                ;
             return true;
         }
 
@@ -178,7 +200,7 @@ namespace erdp
         }
 
     protected:
-        void __init(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        void __init(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
         {
             SpiDevBase<DATA_SIZE>::__init(spi_info, ERDP_SPI_MODE_MASTER, spi_cfg, rx_buffer_size);
         }
@@ -188,8 +210,8 @@ namespace erdp
     class SpiSlaveBase : public SpiDevBase<DATA_SIZE>
     {
     public:
-        SpiSlaveBase() = default;  // Add default constructor
-        SpiSlaveBase(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
+        SpiSlaveBase() = default; // Add default constructor
+        SpiSlaveBase(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
             : SpiDevBase<DATA_SIZE>(spi_info, ERDP_SPI_MODE_SLAVE, spi_cfg, rx_buffer_size)
         {
             __tx_buffer.init(tx_buffer_size);
@@ -222,7 +244,7 @@ namespace erdp
         }
 
     protected:
-        void __init(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
+        void __init(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
         {
             SpiDevBase<DATA_SIZE>::__init(spi_info, ERDP_SPI_MODE_SLAVE, spi_cfg, rx_buffer_size);
             __tx_buffer.init(tx_buffer_size);
@@ -272,7 +294,7 @@ namespace erdp
             }
         }
     };
-    template <ERDP_SpiMode_t MODE ,
+    template <ERDP_SpiMode_t MODE,
               ERDP_SpiDataSize_t DATA_SIZE = ERDP_SPI_DATASIZE_8BIT>
     class SpiDev : public std::conditional_t<MODE == ERDP_SPI_MODE_MASTER,
                                              SpiMasterBase<DATA_SIZE>,
@@ -284,24 +306,24 @@ namespace erdp
 
         // Master mode constructor
         template <ERDP_SpiMode_t M = MODE, typename = std::enable_if_t<M == ERDP_SPI_MODE_MASTER>>
-        SpiDev(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        SpiDev(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
             : SpiMasterBase<DATA_SIZE>(spi_info, spi_cfg, rx_buffer_size) {}
 
         // Slave mode constructor
         template <ERDP_SpiMode_t M = MODE, typename = std::enable_if_t<M == ERDP_SPI_MODE_SLAVE>>
-        SpiDev(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
+        SpiDev(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
             : SpiSlaveBase<DATA_SIZE>(spi_info, spi_cfg, rx_buffer_size, tx_buffer_size) {}
 
         // Master mode init
         template <ERDP_SpiMode_t M = MODE, typename = std::enable_if_t<M == ERDP_SPI_MODE_MASTER>>
-        void init(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
+        void init(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size)
         {
             SpiMasterBase<DATA_SIZE>::__init(spi_info, spi_cfg, rx_buffer_size);
         }
 
         // Slave mode init
         template <ERDP_SpiMode_t M = MODE, typename = std::enable_if_t<M == ERDP_SPI_MODE_SLAVE>>
-        void init(SpiInfo_t &spi_info, SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
+        void init(const SpiInfo_t &spi_info, const SpiConfig_t &spi_cfg, uint32_t rx_buffer_size, uint32_t tx_buffer_size)
         {
             SpiSlaveBase<DATA_SIZE>::__init(spi_info, spi_cfg, rx_buffer_size, tx_buffer_size);
         }
