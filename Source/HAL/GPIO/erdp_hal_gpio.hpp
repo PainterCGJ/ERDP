@@ -14,10 +14,10 @@ namespace erdp
         {
             erdp_if_gpio_init(port, pin, mode, pull, speed);
         }
-        ~GpioDev(){}
+        ~GpioDev() {}
 
         void init(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_GpioPinMode_t mode,
-                  ERDP_GpioPinPull_t pull, ERDP_GpioSpeed_t speed)
+                  ERDP_GpioPinPull_t pull = ERDP_GPIO_PIN_PULL_NONE, ERDP_GpioSpeed_t speed = ERDP_GPIO_SPEED_HIGH)
         {
             erdp_if_gpio_init(port, pin, mode, pull, speed);
             __port = port;
@@ -41,22 +41,7 @@ namespace erdp
         ERDP_GpioPort_t __port = ERDP_GPIOA;    // Default to GPIOA
         ERDP_GpioPin_t __pin = ERDP_GPIO_PIN_0; // Default to pin 0
     };
-    class LED : private GpioDev
-    {
-    public:
-        LED(ERDP_GpioPort_t port, ERDP_GpioPin_t pin) : GpioDev(port, pin, ERDP_GPIO_PIN_MODE_OUTPUT,
-                                                                ERDP_GPIO_PIN_PULL_NONE, ERDP_GPIO_SPEED_LOW)
-        {
-        }
-
-        void on()
-        {
-            write(ERDP_SET);
-        }
-        void off(){
-            write(ERDP_RESET);
-        }
-    };
+    
 } // namespace erdp
 
 #endif
