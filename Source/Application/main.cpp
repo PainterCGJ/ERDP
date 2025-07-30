@@ -187,15 +187,15 @@ void printRunningTasks()
     // #define configUSE_TRACE_FACILITY 1
     // #define configUSE_STATS_FORMATTING_FUNCTIONS 1
 
-    char *pcWriteBuffer = (char *)pvPortMalloc(512); // 分配缓冲区
-    if (pcWriteBuffer != NULL)
-    {
-        printf("Task Name\tStatus\tPrio\tStack\tTask#\n");
-        printf("****************************************\n");
-        vTaskList(pcWriteBuffer);      // 获取任务列表
-        printf("%s\n", pcWriteBuffer); // 打印任务信息
-        vPortFree(pcWriteBuffer);      // 释放缓冲区
-    }
+    // char *pcWriteBuffer = (char *)pvPortMalloc(512); // 分配缓冲区
+    // if (pcWriteBuffer != NULL)
+    // {
+    //     printf("Task Name\tStatus\tPrio\tStack\tTask#\n");
+    //     printf("****************************************\n");
+    //     vTaskList(pcWriteBuffer);      // 获取任务列表
+    //     printf("%s\n", pcWriteBuffer); // 打印任务信息
+    //     vPortFree(pcWriteBuffer);      // 释放缓冲区
+    // }
 }
 extern "C"
 {
