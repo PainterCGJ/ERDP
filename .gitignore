@@ -9,6 +9,7 @@ Build
 Listings
 *.uvoptx
 *.uvguix.*
+.vscode
 
 # Source/Kernel
 # Source/Application
