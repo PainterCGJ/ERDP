@@ -382,17 +382,27 @@
       </TargetOption>
       <Groups>
         <Group>
+          <GroupName>Config</GroupName>
+          <Files>
+            <File>
+              <FileName>erdp_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\erdp_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>thread_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\thread_config.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Application</GroupName>
           <Files>
             <File>
               <FileName>main.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\Source\Application\main.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>erdp_config.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Source\erdp_config.h</FilePath>
             </File>
           </Files>
         </Group>
