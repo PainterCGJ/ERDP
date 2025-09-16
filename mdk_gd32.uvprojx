@@ -14,16 +14,16 @@
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
-          <Device>GD32F470VK</Device>
+          <Device>GD32F470ZI</Device>
           <Vendor>GigaDevice</Vendor>
           <PackID>GigaDevice.GD32F4xx_DFP.3.2.0</PackID>
           <PackURL>https://gd32mcu.com/data/documents/pack/</PackURL>
-          <Cpu>IRAM(0x20000000,0x030000) IRAM2(0x10000000,0x010000) IROM(0x08000000,0x0300000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
+          <Cpu>IRAM(0x20000000,0x0B0000) IRAM2(0x10000000,0x010000) IROM(0x08000000,0x0200000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
-          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0GD32F4xx_3MB -FS08000000 -FL0300000 -FP0($$Device:GD32F470VK$Flash\GD32F4xx_3MB.FLM))</FlashDriverDll>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0GD32F4xx_2MB -FS08000000 -FL0200000 -FP0($$Device:GD32F470ZI$Flash\GD32F4xx_2MB.FLM))</FlashDriverDll>
           <DeviceId>0</DeviceId>
-          <RegisterFile>$$Device:GD32F470VK$Device\F4XX\Include\gd32f4xx.h</RegisterFile>
+          <RegisterFile>$$Device:GD32F470ZI$Device\F4XX\Include\gd32f4xx.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
@@ -33,7 +33,7 @@
           <SLE66CMisc></SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>$$Device:GD32F470VK$SVD\GD32F4xx.svd</SFDFile>
+          <SFDFile>$$Device:GD32F470ZI$SVD\GD32F4xx.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
@@ -48,7 +48,7 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\Objects\</OutputDirectory>
+          <OutputDirectory>.\Build\</OutputDirectory>
           <OutputName>mdk_gd32</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
@@ -247,12 +247,12 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x30000</Size>
+                <Size>0xb0000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x300000</Size>
+                <Size>0x200000</Size>
               </IROM>
               <XRAM>
                 <Type>0</Type>
@@ -277,7 +277,7 @@
               <OCR_RVCT4>
                 <Type>1</Type>
                 <StartAddress>0x8000000</StartAddress>
-                <Size>0x300000</Size>
+                <Size>0x200000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
                 <Type>1</Type>
@@ -302,7 +302,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0x30000</Size>
+                <Size>0xb0000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>2</Optim>
+            <Optim>3</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls>-fexceptions</MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\Source;..\..\Source\Application;..\..\Source\Kernel\Driver;..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;..\..\Source\Kernel\Driver\CMSIS;..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;..\..\Source\Kernel\RTOS\FreeRTOS;..\..\Source\Kernel\RTOS\FreeRTOS\inc;..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\..\Source\Interface;..\..\Source\Interface\Hardware\inc;..\..\Source\Interface\RTOS;..\..\Source\HAL;..\..\Source\HAL\GPIO;..\..\Source\HAL\UART;..\..\Source\HAL\SPI;..\..\Source\HAL\EXTI;..\..\Source\OSAL;..\..\Source\Library;..\..\Source\Library\printf;..\..\Source\Library\log;..\..\Source\Adapter\log;..\..\Source\Common</IncludePath>
+              <IncludePath>Source;Source\Kernel\Driver;Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Include;Source\Kernel\Driver\CMSIS;Source\Kernel\Driver\GD32F4xx_standard_peripheral\Include;Source\Kernel\RTOS\FreeRTOS;Source\Kernel\RTOS\FreeRTOS\inc;Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;Source\Interface;Source\Interface\Hardware\inc;Source\Interface\RTOS;Source\HAL;Source\HAL\GPIO;Source\HAL\UART;Source\HAL\SPI;Source\HAL\EXTI;Source\OSAL;Source\Library;Source\Library\printf;Source\Library\log;Source\Adapter\log;Source\Common;Source\Board</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -387,37 +387,45 @@
             <File>
               <FileName>main.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\Application\main.cpp</FilePath>
+              <FilePath>.\Source\Application\main.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>erdp_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\erdp_config.h</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>Adapter</GroupName>
+          <GroupName>Service</GroupName>
           <Files>
             <File>
               <FileName>log_adapter.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\Adapter\log\log_adapter.cpp</FilePath>
+              <FilePath>.\Source\Adapter\log\log_adapter.cpp</FilePath>
             </File>
             <File>
               <FileName>log_adapter.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\Adapter\log\log_adapter.hpp</FilePath>
+              <FilePath>.\Source\Adapter\log\log_adapter.hpp</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>Board</GroupName>
         </Group>
         <Group>
           <GroupName>Library</GroupName>
           <Files>
             <File>
-              <FileName>printf.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Library\printf\printf.c</FilePath>
+              <FileName>log.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\Library\log\log.hpp</FilePath>
             </File>
             <File>
-              <FileName>log.hpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\Source\Library\log\log.hpp</FilePath>
+              <FileName>printf.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Library\printf\printf.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -425,44 +433,49 @@
           <GroupName>HAL</GroupName>
           <Files>
             <File>
+              <FileName>erdp_hal.hpp</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Source\HAL\erdp_hal.hpp</FilePath>
+            </File>
+            <File>
               <FileName>erdp_hal_gpio.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\HAL\GPIO\erdp_hal_gpio.cpp</FilePath>
+              <FilePath>.\Source\HAL\GPIO\erdp_hal_gpio.cpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_gpio.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\HAL\GPIO\erdp_hal_gpio.hpp</FilePath>
+              <FilePath>.\Source\HAL\GPIO\erdp_hal_gpio.hpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_uart.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\HAL\UART\erdp_hal_uart.cpp</FilePath>
+              <FilePath>.\Source\HAL\UART\erdp_hal_uart.cpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_uart.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\HAL\UART\erdp_hal_uart.hpp</FilePath>
+              <FilePath>.\Source\HAL\UART\erdp_hal_uart.hpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_spi.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\HAL\SPI\erdp_hal_spi.cpp</FilePath>
+              <FilePath>.\Source\HAL\SPI\erdp_hal_spi.cpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_spi.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\HAL\SPI\erdp_hal_spi.hpp</FilePath>
+              <FilePath>.\Source\HAL\SPI\erdp_hal_spi.hpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_exti.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\HAL\EXTI\erdp_hal_exti.cpp</FilePath>
+              <FilePath>.\Source\HAL\EXTI\erdp_hal_exti.cpp</FilePath>
             </File>
             <File>
               <FileName>erdp_hal_exti.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\HAL\EXTI\erdp_hal_exti.hpp</FilePath>
+              <FilePath>.\Source\HAL\EXTI\erdp_hal_exti.hpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -472,17 +485,17 @@
             <File>
               <FileName>erdp_osal.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\..\Source\OSAL\erdp_osal.cpp</FilePath>
+              <FilePath>.\Source\OSAL\erdp_osal.cpp</FilePath>
             </File>
             <File>
               <FileName>erdp_osal.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\OSAL\erdp_osal.hpp</FilePath>
+              <FilePath>.\Source\OSAL\erdp_osal.hpp</FilePath>
             </File>
             <File>
               <FileName>erdp_heap.hpp</FileName>
               <FileType>5</FileType>
-              <FilePath>..\..\Source\OSAL\erdp_heap.hpp</FilePath>
+              <FilePath>.\Source\OSAL\erdp_heap.hpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -490,29 +503,29 @@
           <GroupName>Interface</GroupName>
           <Files>
             <File>
-              <FileName>erdp_if_gpio.c</FileName>
+              <FileName>erdp_if_exti.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_gpio.c</FilePath>
+              <FilePath>.\Source\Interface\Hardware\src\erdp_if_exti.c</FilePath>
             </File>
             <File>
-              <FileName>erdp_if_uart.c</FileName>
+              <FileName>erdp_if_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_uart.c</FilePath>
+              <FilePath>.\Source\Interface\Hardware\src\erdp_if_gpio.c</FilePath>
             </File>
             <File>
               <FileName>erdp_if_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_spi.c</FilePath>
+              <FilePath>.\Source\Interface\Hardware\src\erdp_if_spi.c</FilePath>
             </File>
             <File>
-              <FileName>erdp_if_exti.c</FileName>
+              <FileName>erdp_if_uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\Hardware\src\erdp_if_exti.c</FilePath>
+              <FilePath>.\Source\Interface\Hardware\src\erdp_if_uart.c</FilePath>
             </File>
             <File>
               <FileName>erdp_if_rtos.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Interface\RTOS\erdp_if_rtos.c</FilePath>
+              <FilePath>.\Source\Interface\RTOS\erdp_if_rtos.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -520,169 +533,169 @@
           <GroupName>Driver</GroupName>
           <Files>
             <File>
-              <FileName>gd32f4xx_adc.c</FileName>
+              <FileName>system_gd32f4xx.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_crc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_ctc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_ctc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dac.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_dbg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dbg.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_dci.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dci.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_enet.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_enet.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_exmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_exmc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_exti.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_exti.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_fmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_fmc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_fwdgt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_fwdgt.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_ipa.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_ipa.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_iref.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_iref.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_pmu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_pmu.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_rcu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_rcu.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_sdio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_sdio.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_syscfg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_syscfg.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_timer.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_tli.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_tli.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_trng.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_trng.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>gd32f4xx_wwdgt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_wwdgt.c</FilePath>
+              <FilePath>.\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Source\system_gd32f4xx.c</FilePath>
             </File>
             <File>
               <FileName>startup_gd32f450_470.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Source\ARM\startup_gd32f450_470.s</FilePath>
-            </File>
-            <File>
-              <FileName>system_gd32f4xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Source\system_gd32f4xx.c</FilePath>
+              <FilePath>.\Source\Kernel\Driver\CMSIS\GD\GD32F4xx\Source\ARM\startup_gd32f450_470.s</FilePath>
             </File>
             <File>
               <FileName>gd32f4xx_it.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\gd32f4xx_it.c</FilePath>
+              <FilePath>.\Source\Kernel\Driver\gd32f4xx_it.c</FilePath>
             </File>
             <File>
               <FileName>systick.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\Driver\systick.c</FilePath>
+              <FilePath>.\Source\Kernel\Driver\systick.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_ctc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_ctc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_dbg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dbg.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_dci.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dci.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_enet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_enet.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_exmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_exmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_fmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_fmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_fwdgt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_fwdgt.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_ipa.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_ipa.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_iref.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_iref.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_pmu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_pmu.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_rcu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_rcu.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_syscfg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_syscfg.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_tli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_tli.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_trng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_trng.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>gd32f4xx_wwdgt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\Driver\GD32F4xx_standard_peripheral\Source\gd32f4xx_wwdgt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -690,54 +703,49 @@
           <GroupName>RTOS</GroupName>
           <Files>
             <File>
-              <FileName>heap_4.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\port\MemMang\heap_4.c</FilePath>
-            </File>
-            <File>
-              <FileName>port.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F\port.c</FilePath>
-            </File>
-            <File>
               <FileName>croutine.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\croutine.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\croutine.c</FilePath>
             </File>
             <File>
               <FileName>event_groups.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\event_groups.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\event_groups.c</FilePath>
             </File>
             <File>
               <FileName>list.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\list.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\list.c</FilePath>
             </File>
             <File>
               <FileName>queue.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\queue.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\queue.c</FilePath>
             </File>
             <File>
               <FileName>stream_buffer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\stream_buffer.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\stream_buffer.c</FilePath>
             </File>
             <File>
               <FileName>tasks.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\tasks.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\tasks.c</FilePath>
             </File>
             <File>
               <FileName>timers.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\src\timers.c</FilePath>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\src\timers.c</FilePath>
             </File>
             <File>
-              <FileName>FreeRTOSConfig.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Source\Kernel\RTOS\FreeRTOS\FreeRTOSConfig.h</FilePath>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F\port.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\Kernel\RTOS\FreeRTOS\port\MemMang\heap_4.c</FilePath>
             </File>
           </Files>
         </Group>
