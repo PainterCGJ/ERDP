@@ -5,6 +5,10 @@ Project/MDK/*.uvguix.*
 Project/MDK/*.uvoptx
 Project/MDK/Listings
 Project/MDK/*.scvd
+Build
+Listings
+*.uvoptx
+*.uvguix.*
 
 # Source/Kernel
 # Source/Application
