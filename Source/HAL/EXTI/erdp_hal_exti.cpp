@@ -1,5 +1,4 @@
 #include "erdp_hal_exti.hpp"
-
 namespace erdp
 {
     Exti *Exti::__exti_instance[ERDP_GPIO_PIN_MAX] = {nullptr};
