@@ -1,0 +1,150 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "arm-none-eabi-gcc",
+                "CMAKE_CXX_COMPILER": "arm-none-eabi-g++",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "stm32f407vet6-debug",
+            "inherits": "base",
+            "displayName": "STM32F407VET6 Debug",
+            "description": "Debug build for STM32F407VET6",
+            "cacheVariables": {
+                "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
+                "CHIP_TYPE": "STM32F407VET6",
+                "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Og -g3"
+            }
+        },
+        {
+            "name": "stm32f407vet6-release",
+            "inherits": "base",
+            "displayName": "STM32F407VET6 Release",
+            "description": "Release build for STM32F407VET6",
+            "cacheVariables": {
+                "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
+                "CHIP_TYPE": "STM32F407VET6",
+                "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -O3 -DNDEBUG"
+            }
+        },
+        {
+            "name": "gd32f470zit6-debug",
+            "inherits": "base",
+            "displayName": "GD32F470ZIT6 Debug",
+            "description": "Debug build for GD32F470ZIT6",
+            "cacheVariables": {
+                "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
+                "CHIP_TYPE": "GD32F470ZIT6",
+                "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/Linker/GD32F470ZIT6_FLASH.ld",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Og -g3"
+            }
+        },
+        {
+            "name": "gd32f470zit6-release",
+            "inherits": "base",
+            "displayName": "GD32F470ZIT6 Release",
+            "description": "Release build for GD32F470ZIT6",
+            "cacheVariables": {
+                "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
+                "CHIP_TYPE": "GD32F470ZIT6",
+                "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/Linker/GD32F470ZIT6_FLASH.ld",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -O3 -DNDEBUG"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "stm32f407vet6-debug",
+            "configurePreset": "stm32f407vet6-debug",
+            "displayName": "Build STM32F407VET6 Debug",
+            "description": "Build all targets for STM32F407VET6 Debug",
+            "jobs": 8,
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "stm32f407vet6-debug-driver",
+            "configurePreset": "stm32f407vet6-debug",
+            "displayName": "Build STM32F407VET6 Debug Driver",
+            "description": "Build only the STM32F407VET6 debug driver library",
+            "jobs": 8,
+            "targets": [
+                "driver-lib"
+            ]
+        },
+        {
+            "name": "stm32f407vet6-release",
+            "configurePreset": "stm32f407vet6-release",
+            "displayName": "Build STM32F407VET6 Release",
+            "description": "Build all targets for STM32F407VET6 Release",
+            "jobs": 8,
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "stm32f407vet6-release-driver",
+            "configurePreset": "stm32f407vet6-release",
+            "displayName": "Build STM32F407VET6 Release Driver",
+            "description": "Build only the STM32F407VET6 release driver library",
+            "jobs": 8,
+            "targets": [
+                "driver-lib"
+            ]
+        },
+        {
+            "name": "gd32f470zit6-debug",
+            "configurePreset": "gd32f470zit6-debug",
+            "displayName": "Build GD32F470ZIT6 Debug",
+            "description": "Build all targets for GD32F470ZIT6 Debug",
+            "jobs": 8,
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "gd32f470zit6-debug-driver",
+            "configurePreset": "gd32f470zit6-debug",
+            "displayName": "Build GD32F470ZIT6 Debug Driver",
+            "description": "Build only the GD32F470ZIT6 debug driver library",
+            "jobs": 8,
+            "targets": [
+                "driver-lib"
+            ]
+        },
+        {
+            "name": "gd32f470zit6-release",
+            "configurePreset": "gd32f470zit6-release",
+            "displayName": "Build GD32F470ZIT6 Release",
+            "description": "Build all targets for GD32F470ZIT6 Release",
+            "jobs": 8,
+            "targets": [
+                "all"
+            ]
+        },
+        {
+            "name": "gd32f470zit6-release-driver",
+            "configurePreset": "gd32f470zit6-release",
+            "displayName": "Build GD32F470ZIT6 Release Driver",
+            "description": "Build only the GD32F470ZIT6 release driver library",
+            "jobs": 8,
+            "targets": [
+                "driver-lib"
+            ]
+        }
+    ]
+}
