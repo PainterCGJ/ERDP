@@ -1,0 +1,18 @@
+CompileFlags:
+  Add:
+    - "-DSTM32F40_41xxx"
+    - "-DSTM32F4XX"
+    - "-DUSE_STDPERIPH_DRIVER"
+    - "-DGD32F470"
+    - "-DGD32F4XX"
+    - "-mcpu=cortex-m4"
+    - "-mthumb"
+    - "-mfpu=fpv4-sp-d16"
+    - "-mfloat-abi=hard"
+    - "-mthumb"
+  Remove:
+    - "-mabi=*"
+    - "-mfloat-abi=*"
+
+Index:
+  Background: Build
