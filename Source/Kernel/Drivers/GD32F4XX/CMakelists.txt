@@ -1,0 +1,70 @@
+# GD32F4XX 驱动库 CMakeLists.txt
+
+# 设置包含目录
+set(GD32F4XX_INCLUDE_DIRS
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/GD/GD32F4xx/Include
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS
+    ${CMAKE_CURRENT_SOURCE_DIR}/GD32F4xx_standard_peripheral/Include
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# 收集源文件
+set(GD32F4XX_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/GD/GD32F4xx/Source/system_gd32f4xx.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/gd32f4xx_it.c
+)
+
+# 收集标准外设驱动源文件
+file(GLOB_RECURSE GD32F4XX_PERIPH_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/GD32F4xx_standard_peripheral/Source/*.c
+)
+
+# 添加标准外设驱动源文件
+list(APPEND GD32F4XX_SOURCES ${GD32F4XX_PERIPH_SOURCES})
+
+# 创建静态库
+add_library(driver-lib STATIC
+    ${GD32F4XX_SOURCES}
+)
+
+# 生成 Keil MDK 兼容的 .lib 文件
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/driver-lib.lib
+    COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:driver-lib>
+        ${CMAKE_BINARY_DIR}/driver-lib.lib
+    DEPENDS driver-lib
+    COMMENT "Generating Keil MDK compatible driver-lib.lib"
+    VERBATIM
+)
+
+add_custom_target(driver-lib.lib ALL DEPENDS driver-lib.lib)
+
+# 设置编译定义
+target_compile_definitions(driver-lib PRIVATE
+    GD32F4XX
+    GD32F470
+    USE_STDPERIPH_DRIVER
+)
+
+# 导出库的包含目录，方便其他目标使用
+target_include_directories(driver-lib PUBLIC
+    ${GD32F4XX_INCLUDE_DIRS}
+)
+
+# 设置编译选项
+target_compile_options(driver-lib PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+)
+
+# 设置链接选项
+target_link_options(driver-lib PRIVATE
+    -Wl,--print-memory-usage
+)
+
+# 添加测试代码（如果存在）
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Test/CMakeLists.txt)
+    add_subdirectory(Test)
+endif()

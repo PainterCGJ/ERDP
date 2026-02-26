@@ -31,6 +31,17 @@ add_library(driver-lib STATIC
     ${STM32F4XX_SOURCES}
 )
 
+# 生成 Keil MDK 兼容的 .lib 文件
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/driver-lib.lib
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/libdriver-lib.a
+        ${CMAKE_BINARY_DIR}/driver-lib.lib
+    DEPENDS driver-lib
+    COMMENT "Generating Keil MDK compatible driver-lib.lib"
+    VERBATIM
+)
+
 # 设置编译定义
 target_compile_definitions(driver-lib PRIVATE
     STM32F4XX
@@ -59,3 +70,6 @@ target_link_options(driver-lib PRIVATE
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Test/CMakeLists.txt)
     add_subdirectory(Test)
 endif()
+
+# 添加 .lib 文件目标
+add_custom_target(driver-lib.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/driver-lib.lib)
