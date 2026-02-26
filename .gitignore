@@ -11,6 +11,7 @@ Listings
 *.uvguix.*
 .vscode
 .cache
+compile_commands.json
 
 # Source/Kernel
 # Source/Application

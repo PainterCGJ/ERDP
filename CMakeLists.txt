@@ -16,8 +16,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 if(DEFINED DRIVER_PATH)
     message(STATUS "Using driver path: ${DRIVER_PATH}")
 else()
-    message(STATUS "DRIVER_PATH not defined, using default: Source/Kernel/Driver/stm32f4xx")
-    set(DRIVER_PATH "${CMAKE_SOURCE_DIR}/Source/Kernel/Driver/stm32f4xx")
+    message(STATUS "DRIVER_PATH not defined, using default: Source/Kernel/Drivers/STM32F4XX")
+    set(DRIVER_PATH "${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/STM32F4XX")
 endif()
 
 if(DEFINED CHIP_TYPE)
@@ -31,50 +31,19 @@ if(DEFINED LINKER_SCRIPT)
     message(STATUS "Using linker script: ${LINKER_SCRIPT}")
 else()
     message(STATUS "LINKER_SCRIPT not defined, using default")
-    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/Source/Kernel/Driver/stm32f4xx/Linker/STM32F407VET6_FLASH.ld")
+    set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld")
 endif()
 
-# 芯片系列配置
-if(CHIP_TYPE MATCHES "STM32F4.*")
-    set(CHIP_SERIES "STM32F4")
-    # 设置 STM32 特定的宏
-    if(CHIP_TYPE MATCHES "STM32F407.*")
-        set(STM32_CHIP "STM32F407xx")
-        add_definitions(-DSTM32F40_41xxx)
-    elseif(CHIP_TYPE MATCHES "STM32F429.*")
-        set(STM32_CHIP "STM32F429xx")
-        add_definitions(-DSTM32F427_437xx)
-    else()
-        set(STM32_CHIP "STM32F407xx")
-        add_definitions(-DSTM32F40_41xxx)
-    endif()
-    
-    # 添加 STM32F4 特定的子目录
-    if(EXISTS "${DRIVER_PATH}/CMakeLists.txt")
-        add_subdirectory(${DRIVER_PATH} ${CMAKE_BINARY_DIR}/driver)
-    else()
-        message(FATAL_ERROR "Driver CMakeLists.txt not found at: ${DRIVER_PATH}")
-    endif()
-elseif(CHIP_TYPE MATCHES "GD32F4.*")
-    set(CHIP_SERIES "GD32F4")
-    # 设置 GD32 特定的宏
-    add_definitions(-DGD32F470)
-    
-    # 未来添加 GD32F4 特定的子目录
-    # if(EXISTS "${DRIVER_PATH}/CMakeLists.txt")
-    #     add_subdirectory(${DRIVER_PATH} ${CMAKE_BINARY_DIR}/driver)
-    # else()
-    #     message(FATAL_ERROR "Driver CMakeLists.txt not found at: ${DRIVER_PATH}")
-    # endif()
+if(DEFINED CPU_PARAMETERS)
+    message(STATUS "Using CPU parameters: ${CPU_PARAMETERS}")
+    set(CMAKE_C_FLAGS "${CPU_PARAMETERS} ${CMAKE_C_FLAGS}")
 else()
-    message(FATAL_ERROR "Unsupported chip type: ${CHIP_TYPE}")
+    message(STATUS "CPU_PARAMETERS not defined, using default")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 endif()
-
-message(STATUS "Using chip series: ${CHIP_SERIES}")
 
 # 编译选项 (ARM GCC)
 add_compile_options(
-    ${CPU_PARAMETERS}
     -Wall
     -Wextra
     -Wpedantic
@@ -87,10 +56,13 @@ add_compile_options(
 
 # 链接选项
 add_link_options(
-    ${CPU_PARAMETERS}
     -Wl,--print-memory-usage
+    -specs=nosys.specs
     -T ${LINKER_SCRIPT}
 )
+
+# 引用 Kernel 层
+add_subdirectory(Source/Kernel)
 
 # 未来模块的框架
 # 应用程序模块
@@ -109,3 +81,14 @@ add_link_options(
 # endif()
 
 message(STATUS "CMake configuration completed for ${CHIP_TYPE}")
+
+# 自动复制 compile_commands.json 到项目根目录（配置阶段执行）
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_BINARY_DIR}/compile_commands.json
+            ${CMAKE_SOURCE_DIR}/compile_commands.json
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+    message(STATUS "Copied compile_commands.json to source directory")
+endif()

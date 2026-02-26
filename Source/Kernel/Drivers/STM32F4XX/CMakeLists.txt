@@ -12,7 +12,7 @@ set(STM32F4XX_INCLUDE_DIRS
 set(STM32F4XX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
     ${CMAKE_CURRENT_SOURCE_DIR}/stm32f4xx_it.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/syscalls.c
+    # ${CMAKE_CURRENT_SOURCE_DIR}/syscalls.c
 )
 
 # 收集标准外设驱动源文件
@@ -54,3 +54,8 @@ target_compile_options(driver-lib PRIVATE
 target_link_options(driver-lib PRIVATE
     -Wl,--print-memory-usage
 )
+
+# 添加测试代码（如果存在）
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Test/CMakeLists.txt)
+    add_subdirectory(Test)
+endif()

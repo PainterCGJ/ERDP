@@ -67,84 +67,42 @@
     ],
     "buildPresets": [
         {
-            "name": "stm32f407vet6-debug",
-            "configurePreset": "stm32f407vet6-debug",
-            "displayName": "Build STM32F407VET6 Debug",
-            "description": "Build all targets for STM32F407VET6 Debug",
+            "name": "base",
+            "hidden": true,
             "jobs": 8,
             "targets": [
-                "all"
+                "all",
+                "driver-lib",
+                "driver-test"
             ]
         },
         {
-            "name": "stm32f407vet6-debug-driver",
+            "name": "stm32f407vet6-debug",
+            "inherits": "base",
             "configurePreset": "stm32f407vet6-debug",
-            "displayName": "Build STM32F407VET6 Debug Driver",
-            "description": "Build only the STM32F407VET6 debug driver library",
-            "jobs": 8,
-            "targets": [
-                "driver-lib"
-            ]
+            "displayName": "Build STM32F407VET6 Debug",
+            "description": "Build targets for STM32F407VET6 Debug"
         },
         {
             "name": "stm32f407vet6-release",
+            "inherits": "base",
             "configurePreset": "stm32f407vet6-release",
             "displayName": "Build STM32F407VET6 Release",
-            "description": "Build all targets for STM32F407VET6 Release",
-            "jobs": 8,
-            "targets": [
-                "all"
-            ]
-        },
-        {
-            "name": "stm32f407vet6-release-driver",
-            "configurePreset": "stm32f407vet6-release",
-            "displayName": "Build STM32F407VET6 Release Driver",
-            "description": "Build only the STM32F407VET6 release driver library",
-            "jobs": 8,
-            "targets": [
-                "driver-lib"
-            ]
+            "description": "Build targets for STM32F407VET6 Release"
         },
         {
             "name": "gd32f470zit6-debug",
+            "inherits": "base",
             "configurePreset": "gd32f470zit6-debug",
             "displayName": "Build GD32F470ZIT6 Debug",
-            "description": "Build all targets for GD32F470ZIT6 Debug",
-            "jobs": 8,
-            "targets": [
-                "all"
-            ]
-        },
-        {
-            "name": "gd32f470zit6-debug-driver",
-            "configurePreset": "gd32f470zit6-debug",
-            "displayName": "Build GD32F470ZIT6 Debug Driver",
-            "description": "Build only the GD32F470ZIT6 debug driver library",
-            "jobs": 8,
-            "targets": [
-                "driver-lib"
-            ]
+            "description": "Build targets for GD32F470ZIT6 Debug"
         },
         {
             "name": "gd32f470zit6-release",
+            "inherits": "base",
             "configurePreset": "gd32f470zit6-release",
             "displayName": "Build GD32F470ZIT6 Release",
-            "description": "Build all targets for GD32F470ZIT6 Release",
-            "jobs": 8,
-            "targets": [
-                "all"
-            ]
-        },
-        {
-            "name": "gd32f470zit6-release-driver",
-            "configurePreset": "gd32f470zit6-release",
-            "displayName": "Build GD32F470ZIT6 Release Driver",
-            "description": "Build only the GD32F470ZIT6 release driver library",
-            "jobs": 8,
-            "targets": [
-                "driver-lib"
-            ]
+            "description": "Build targets for GD32F470ZIT6 Release"
         }
     ]
 }
