@@ -1,19 +1,16 @@
+.cache
+.vscode
+Build
+
 Project/MDK/.vscode
 Project/MDK/Objects
 
 Project/MDK/*.uvguix.*
 Project/MDK/*.uvoptx
 Project/MDK/Listings
-Project/MDK/*.scvd
-Build
+*.scvd
 Listings
 *.uvoptx
 *.uvguix.*
-.vscode
-.cache
-compile_commands.json
 
-# Source/Kernel
-# Source/Application
-# Source/HAL
-# Source/Interface
+compile_commands.json
