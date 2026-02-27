@@ -4,10 +4,6 @@ set(GD32F4XX_IF_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_SOURCE_DIR}/Source/Interface
     ${CMAKE_SOURCE_DIR}/Source/Common
-    ${CMAKE_SOURCE_DIR}/Source
-    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/GD32F4XX/CMSIS/GD/GD32F4xx/Include
-    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/GD32F4XX/CMSIS
-    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/GD32F4XX/GD32F4xx_standard_peripheral/Include
 )
 
 set(GD32F4XX_IF_SOURCES
@@ -19,12 +15,6 @@ set(GD32F4XX_IF_SOURCES
 
 add_library(interface STATIC
     ${GD32F4XX_IF_SOURCES}
-)
-
-target_compile_definitions(interface PRIVATE
-    GD32F4XX
-    GD32F470
-    USE_STDPERIPH_DRIVER
 )
 
 target_include_directories(interface PUBLIC
@@ -56,3 +46,35 @@ add_custom_command(
 )
 
 add_custom_target(interface.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/interface.lib)
+
+# Interface Test
+set(INTERFACE_TEST_SOURCE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_test.c
+    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/GD32F4XX/CMSIS/GD/GD32F4xx/Source/GCC/startup_gd32f450_470.s
+)
+
+add_executable(interface-test.elf ${INTERFACE_TEST_SOURCE})
+
+target_include_directories(interface-test.elf PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${CMAKE_SOURCE_DIR}/Source/Interface
+)
+
+target_link_libraries(interface-test.elf
+    interface
+    driver-lib
+)
+
+target_compile_options(interface-test.elf PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+)
+
+add_custom_command(
+    OUTPUT interface-test.hex
+    COMMAND ${CMAKE_OBJCOPY} -O ihex interface-test.elf interface-test.hex
+    DEPENDS interface-test.elf
+    COMMENT "Generating interface-test HEX file..."
+)
+add_custom_target(interface-test ALL DEPENDS interface-test.hex)

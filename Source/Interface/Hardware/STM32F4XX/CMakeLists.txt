@@ -47,3 +47,29 @@ add_custom_command(
 )
 
 add_custom_target(interface.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/interface.lib)
+
+# Interface Test
+set(INTERFACE_TEST_SOURCE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_test.c
+    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/STM32F4XX/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+)
+
+add_executable(interface-test.elf ${INTERFACE_TEST_SOURCE})
+
+target_include_directories(interface-test.elf PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${CMAKE_SOURCE_DIR}/Source/Interface
+)
+
+target_link_libraries(interface-test.elf
+    interface
+    driver-lib
+)
+
+add_custom_command(
+    OUTPUT interface-test.hex
+    COMMAND ${CMAKE_OBJCOPY} -O ihex interface-test.elf interface-test.hex
+    DEPENDS interface-test.elf
+    COMMENT "Generating interface-test HEX file..."
+)
+add_custom_target(interface-test ALL DEPENDS interface-test.hex)

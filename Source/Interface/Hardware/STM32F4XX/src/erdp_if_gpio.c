@@ -6,19 +6,19 @@
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_rcc.h"
 
-const static uint32_t port_instance[ERDP_GPIO_MAX] = {
+static const uint32_t port_instance[ERDP_GPIO_MAX] = {
     (uint32_t)GPIOA, (uint32_t)GPIOB, (uint32_t)GPIOC, (uint32_t)GPIOD, (uint32_t)GPIOE,
     (uint32_t)GPIOF, (uint32_t)GPIOG, (uint32_t)GPIOH, (uint32_t)GPIOI,
 };
 
-const static uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
+static const uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
     (uint32_t)GPIO_Pin_0,  (uint32_t)GPIO_Pin_1,  (uint32_t)GPIO_Pin_2,  (uint32_t)GPIO_Pin_3,
     (uint32_t)GPIO_Pin_4,  (uint32_t)GPIO_Pin_5,  (uint32_t)GPIO_Pin_6,  (uint32_t)GPIO_Pin_7,
     (uint32_t)GPIO_Pin_8,  (uint32_t)GPIO_Pin_9,  (uint32_t)GPIO_Pin_10, (uint32_t)GPIO_Pin_11,
     (uint32_t)GPIO_Pin_12, (uint32_t)GPIO_Pin_13, (uint32_t)GPIO_Pin_14, (uint32_t)GPIO_Pin_15,
 };
 
-const static uint32_t gpio_pclk[ERDP_GPIO_MAX] = {
+static const uint32_t gpio_pclk[ERDP_GPIO_MAX] = {
     RCC_AHB1Periph_GPIOA,    // GPIOA,
     RCC_AHB1Periph_GPIOB,    // GPIOB,
     RCC_AHB1Periph_GPIOC,    // GPIOC,
@@ -98,7 +98,7 @@ void erdp_if_gpio_init(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_GpioPinMod
     GPIO_InitStructure.GPIO_Mode = gpio_mode;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = gpio_speed;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_PuPd = gpio_pull;
     GPIO_Init((GPIO_TypeDef*)gpio_periph, &GPIO_InitStructure);
 }
 
