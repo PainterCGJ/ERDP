@@ -5,7 +5,6 @@
 extern "C"
 {
 #endif // __cplusplus
-
 #include <stdint.h>
 #include <stdbool.h>
 #include "erdp_assert.h"

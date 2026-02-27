@@ -6,7 +6,7 @@
 
 extern void erdp_exti_irq_handler(ERDP_GpioPin_t pin);
 
-const static uint32_t exti_line[ERDP_GPIO_PIN_MAX] = {
+static const uint32_t exti_line[ERDP_GPIO_PIN_MAX] = {
     (uint32_t)EXTI_0,
     (uint32_t)EXTI_1,
     (uint32_t)EXTI_2,
@@ -25,7 +25,7 @@ const static uint32_t exti_line[ERDP_GPIO_PIN_MAX] = {
     (uint32_t)EXTI_15,
 };
 
-const static uint8_t exti_source_port[ERDP_GPIO_MAX] = {
+static const uint8_t exti_source_port[ERDP_GPIO_MAX] = {
     (uint8_t)EXTI_SOURCE_GPIOA, // port A
     (uint8_t)EXTI_SOURCE_GPIOB, // port B
     (uint8_t)EXTI_SOURCE_GPIOC, // port C
@@ -37,7 +37,7 @@ const static uint8_t exti_source_port[ERDP_GPIO_MAX] = {
     (uint8_t)EXTI_SOURCE_GPIOI, // port I
 };
 
-const static uint8_t exti_irq_id[ERDP_GPIO_PIN_MAX] = {
+static const uint8_t exti_irq_id[ERDP_GPIO_PIN_MAX] = {
     (uint8_t)EXTI0_IRQn,     // port 0
     (uint8_t)EXTI1_IRQn,     // port 1
     (uint8_t)EXTI2_IRQn,     // port 2
@@ -57,7 +57,7 @@ const static uint8_t exti_irq_id[ERDP_GPIO_PIN_MAX] = {
 
 };
 
-const static uint8_t exti_source_pin[ERDP_GPIO_PIN_MAX] = {
+static const uint8_t exti_source_pin[ERDP_GPIO_PIN_MAX] = {
     (uint8_t)EXTI_SOURCE_PIN0,  // pin 0
     (uint8_t)EXTI_SOURCE_PIN1,  // pin 1
     (uint8_t)EXTI_SOURCE_PIN2,  // pin 2
@@ -79,7 +79,7 @@ const static uint8_t exti_source_pin[ERDP_GPIO_PIN_MAX] = {
 void erdp_if_exti_init(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_ExtiEdage_t edge, uint8_t priority)
 {
     uint32_t pull_up_down;
-    exti_trig_type_enum exti_trig;
+    exti_trig_type_enum exti_trig = EXTI_TRIG_RISING;
     uint32_t gpio_periph = erdp_if_gpio_get_port(port);
     uint32_t gpio_pin = erdp_if_gpio_get_pin(pin);
     switch (edge)

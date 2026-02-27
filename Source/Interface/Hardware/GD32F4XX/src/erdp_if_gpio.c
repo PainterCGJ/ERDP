@@ -6,7 +6,7 @@
 #include "gd32f4xx_gpio.h"
 #include "gd32f4xx_rcu.h"
 
-const static uint32_t port_instance[ERDP_GPIO_MAX] = {
+static const uint32_t port_instance[ERDP_GPIO_MAX] = {
     (uint32_t)GPIOA,
     (uint32_t)GPIOB,
     (uint32_t)GPIOC,
@@ -18,7 +18,7 @@ const static uint32_t port_instance[ERDP_GPIO_MAX] = {
     (uint32_t)GPIOI,
 };
 
-const static uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
+static const uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
     (uint32_t)GPIO_PIN_0,
     (uint32_t)GPIO_PIN_1,
     (uint32_t)GPIO_PIN_2,
@@ -37,7 +37,7 @@ const static uint32_t pin_instance[ERDP_GPIO_PIN_MAX] = {
     (uint32_t)GPIO_PIN_15,
 };
 
-const static uint32_t port_clk[ERDP_GPIO_MAX] = {
+static const uint32_t port_clk[ERDP_GPIO_MAX] = {
     (uint32_t)RCU_GPIOA,
     (uint32_t)RCU_GPIOB,
     (uint32_t)RCU_GPIOC,

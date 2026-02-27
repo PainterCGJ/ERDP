@@ -1,5 +1,4 @@
 #include "erdp_if_gpio.h"
-#include "gd32f4xx.h"
 
 int main(void)
 {
