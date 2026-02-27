@@ -1,5 +1,6 @@
 CompileFlags:
   Add:
+    - "--target=arm-none-eabi"
     - "-DSTM32F40_41xxx"
     - "-DSTM32F4XX"
     - "-DUSE_STDPERIPH_DRIVER"

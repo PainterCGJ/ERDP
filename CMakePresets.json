@@ -113,53 +113,59 @@
     ],
     "buildPresets": [
         {
-            "name": "base",
+            "name": "dev-base",
             "hidden": true,
             "jobs": 8,
             "targets": [
                 "all",
                 "driver-lib",
-                "driver-test"
+                "driver-test",
+                "interface"
+            ]
+        },
+        {
+            "name": "rtos-base",
+            "hidden": true,
+            "jobs": 8,
+            "targets": [
+                "rtos",
+                "rtos.lib"
             ]
         },
         {
             "name": "stm32f407vet6-debug",
-            "inherits": "base",
+            "inherits": "dev-base",
             "configurePreset": "stm32f407vet6-debug",
             "displayName": "Build STM32F407VET6 Debug",
             "description": "Build targets for STM32F407VET6 Debug"
         },
         {
             "name": "stm32f407vet6-release",
-            "inherits": "base",
+            "inherits": "dev-base",
             "configurePreset": "stm32f407vet6-release",
             "displayName": "Build STM32F407VET6 Release",
             "description": "Build targets for STM32F407VET6 Release"
         },
         {
             "name": "gd32f470zit6-debug",
-            "inherits": "base",
+            "inherits": "dev-base",
             "configurePreset": "gd32f470zit6-debug",
             "displayName": "Build GD32F470ZIT6 Debug",
             "description": "Build targets for GD32F470ZIT6 Debug"
         },
         {
             "name": "gd32f470zit6-release",
-            "inherits": "base",
+            "inherits": "dev-base",
             "configurePreset": "gd32f470zit6-release",
             "displayName": "Build GD32F470ZIT6 Release",
             "description": "Build targets for GD32F470ZIT6 Release"
         },
         {
             "name": "freertos-release",
-            "inherits": "base",
+            "inherits": "rtos-base",
             "configurePreset": "freertos-release",
             "displayName": "Build FreeRTOS Release",
-            "description": "Build FreeRTOS static library",
-            "targets": [
-                "freertos",
-                "freertos.lib"
-            ]
+            "description": "Build FreeRTOS static library"
         }
     ]
 }

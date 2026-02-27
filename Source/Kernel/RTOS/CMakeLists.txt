@@ -1,6 +1,6 @@
-# FreeRTOS CMakeLists.txt
+# RTOS CMakeLists.txt
 
-set(FREERTOS_INC_DIRS
+set(RTOS_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/port/GCC/ARM_CM4F
@@ -12,7 +12,7 @@ set(FREERTOS_INC_DIRS
     ${CMAKE_SOURCE_DIR}/Source
 )
 
-set(FREERTOS_SOURCES
+set(RTOS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/src/croutine.c
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/src/event_groups.c
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/src/list.c
@@ -24,11 +24,11 @@ set(FREERTOS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/FreeRTOS/port/MemMang/heap_4.c
 )
 
-add_library(freertos STATIC
-    ${FREERTOS_SOURCES}
+add_library(rtos STATIC
+    ${RTOS_SOURCES}
 )
 
-target_compile_definitions(freertos PRIVATE
+target_compile_definitions(rtos PRIVATE
     FREERTOS
     __GNUC__
     ARM_MATH_CM4
@@ -36,28 +36,28 @@ target_compile_definitions(freertos PRIVATE
     USE_STDPERIPH_DRIVER
 )
 
-target_include_directories(freertos PUBLIC
-    ${FREERTOS_INC_DIRS}
+target_include_directories(rtos PUBLIC
+    ${RTOS_INC_DIRS}
 )
 
-target_compile_options(freertos PRIVATE
+target_compile_options(rtos PRIVATE
     -Wall
     -Wextra
     -Wpedantic
 )
 
-target_link_options(freertos PRIVATE
+target_link_options(rtos PRIVATE
     -Wl,--print-memory-usage
 )
 
-add_custom_target(freertos.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/freertos.lib)
+add_custom_target(rtos.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/rtos.lib)
 
 add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/freertos.lib
+    OUTPUT ${CMAKE_BINARY_DIR}/rtos.lib
     COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_BINARY_DIR}/libfreertos.a
-        ${CMAKE_BINARY_DIR}/freertos.lib
-    DEPENDS freertos
-    COMMENT "Generating Keil MDK compatible freertos.lib"
+        ${CMAKE_CURRENT_BINARY_DIR}/librtos.a
+        ${CMAKE_BINARY_DIR}/rtos.lib
+    DEPENDS rtos
+    COMMENT "Generating Keil MDK compatible rtos.lib"
     VERBATIM
 )

@@ -5,6 +5,7 @@ set(GD32F4XX_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/GD/GD32F4xx/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS
     ${CMAKE_CURRENT_SOURCE_DIR}/GD32F4xx_standard_peripheral/Include
+    ${CMAKE_SOURCE_DIR}/Source
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -41,7 +42,7 @@ add_custom_command(
 add_custom_target(driver-lib.lib ALL DEPENDS driver-lib.lib)
 
 # 设置编译定义
-target_compile_definitions(driver-lib PRIVATE
+target_compile_definitions(driver-lib PUBLIC
     GD32F4XX
     GD32F470
     USE_STDPERIPH_DRIVER

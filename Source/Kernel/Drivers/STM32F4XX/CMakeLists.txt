@@ -5,6 +5,7 @@ set(STM32F4XX_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Device/ST/STM32F4xx/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/STM32F4xx_StdPeriph_Driver/inc
+    ${CMAKE_SOURCE_DIR}/Source
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
@@ -43,7 +44,7 @@ add_custom_command(
 )
 
 # 设置编译定义
-target_compile_definitions(driver-lib PRIVATE
+target_compile_definitions(driver-lib PUBLIC
     STM32F4XX
     STM32F40_41xxx
     USE_STDPERIPH_DRIVER

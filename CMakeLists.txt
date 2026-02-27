@@ -64,6 +64,9 @@ add_link_options(
 # 引用 Kernel 层
 add_subdirectory(Source/Kernel)
 
+# 引用 Interface 层
+add_subdirectory(Source/Interface)
+
 # 未来模块的框架
 # 应用程序模块
 # if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Application/CMakeLists.txt")
