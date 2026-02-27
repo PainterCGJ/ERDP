@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "STM32 Debug",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceFolder}/Scripts/OpenOCD/openocd_stm32f407.cfg"
+            ],
+            "gdbPath": "arm-none-eabi-gdb",
+            "runToEntryPoint": "main",
+            "load": {}
+        },
+        {
+            "name": "GD32 Debug",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceFolder}/Scripts/OpenOCD/openocd_gd32f470.cfg"
+            ],
+            "gdbPath": "arm-none-eabi-gdb",
+            "runToEntryPoint": "main",
+            "load": {}
+        }
+    ]
+}
