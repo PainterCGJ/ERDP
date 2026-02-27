@@ -1,5 +1,7 @@
 .cache
-.vscode
+.vscode/c_cpp_properties.json
+.vscode/keil-*.*
+.vscode/uv4.*
 Build
 
 Project/MDK/.vscode
