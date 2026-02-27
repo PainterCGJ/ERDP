@@ -3,12 +3,25 @@
 
 set(OPENOCD_EXECUTABLE "openocd")
 
-# 根据芯片类型选择 OpenOCD 配置和目录
+# 调试器类型: CMSIS-DAP 或 STLINK (默认 CMSIS-DAP)
+if(NOT DEFINED DEBUGGER_TYPE)
+  set(DEBUGGER_TYPE "CMSIS-DAP")
+endif()
+
+# 根据芯片类型和调试器类型选择 OpenOCD 配置
 if(CHIP_TYPE STREQUAL "STM32F407VET6")
-  set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_stm32f407.cfg")
+  if(DEBUGGER_TYPE STREQUAL "STLINK")
+    set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_stm32f407_stlink.cfg")
+  else()
+    set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_stm32f407.cfg")
+  endif()
   set(CHIP_DIR "STM32F4XX")
 elseif(CHIP_TYPE STREQUAL "GD32F470ZIT6")
-  set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_gd32f470.cfg")
+  if(DEBUGGER_TYPE STREQUAL "STLINK")
+    set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_gd32f470_stlink.cfg")
+  else()
+    set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_gd32f470.cfg")
+  endif()
   set(CHIP_DIR "GD32F4XX")
 else()
   message(FATAL_ERROR "Unknown CHIP_TYPE: ${CHIP_TYPE}, please check CMakePresets.json")
@@ -29,6 +42,7 @@ set(FIRMWARE_SEARCH_PATHS
 message(STATUS "===========================================")
 message(STATUS "Flash Configuration:")
 message(STATUS "  Chip: ${CHIP_TYPE}")
+message(STATUS "  Debugger: ${DEBUGGER_TYPE}")
 message(STATUS "  Build: ${BUILD_DIR_NAME}")
 message(STATUS "  OpenOCD Config: ${OPENOCD_CFG}")
 message(STATUS "===========================================")
