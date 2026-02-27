@@ -68,6 +68,7 @@
             "cacheVariables": {
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
                 "CHIP_TYPE": "STM32F407VET6",
+                "DEBUGGER_TYPE": "STLINK",
                 "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld"
             }
         },
@@ -79,6 +80,7 @@
             "cacheVariables": {
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
                 "CHIP_TYPE": "STM32F407VET6",
+                "DEBUGGER_TYPE": "STLINK",
                 "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld"
             }
         },
@@ -90,6 +92,7 @@
             "cacheVariables": {
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
                 "CHIP_TYPE": "GD32F470ZIT6",
+                "DEBUGGER_TYPE": "CMSIS-DAP",
                 "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/Linker/GD32F470ZIT6_FLASH.ld"
             }
         },
@@ -101,6 +104,7 @@
             "cacheVariables": {
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
                 "CHIP_TYPE": "GD32F470ZIT6",
+                "DEBUGGER_TYPE": "CMSIS-DAP",
                 "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/Linker/GD32F470ZIT6_FLASH.ld"
             }
         },

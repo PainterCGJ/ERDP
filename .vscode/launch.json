@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "STM32 Debug",
+            "name": "STM32 Debug (CMSIS-DAP)",
             "type": "cortex-debug",
             "request": "launch",
             "executable": "${command:cmake.launchTargetPath}",
@@ -16,7 +16,21 @@
             "load": {}
         },
         {
-            "name": "GD32 Debug",
+            "name": "STM32 Debug (ST-Link)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceFolder}/Scripts/OpenOCD/openocd_stm32f407_stlink.cfg"
+            ],
+            "gdbPath": "arm-none-eabi-gdb",
+            "runToEntryPoint": "main",
+            "load": {}
+        },
+        {
+            "name": "GD32 Debug (CMSIS-DAP)",
             "type": "cortex-debug",
             "request": "launch",
             "executable": "${command:cmake.launchTargetPath}",
@@ -24,6 +38,20 @@
             "servertype": "openocd",
             "configFiles": [
                 "${workspaceFolder}/Scripts/OpenOCD/openocd_gd32f470.cfg"
+            ],
+            "gdbPath": "arm-none-eabi-gdb",
+            "runToEntryPoint": "main",
+            "load": {}
+        },
+        {
+            "name": "GD32 Debug (ST-Link)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "executable": "${command:cmake.launchTargetPath}",
+            "cwd": "${workspaceFolder}",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceFolder}/Scripts/OpenOCD/openocd_gd32f470_stlink.cfg"
             ],
             "gdbPath": "arm-none-eabi-gdb",
             "runToEntryPoint": "main",
