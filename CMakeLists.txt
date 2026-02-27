@@ -68,7 +68,6 @@ add_subdirectory(Source/Kernel)
 add_subdirectory(Source/Interface)
 
 # 烧录功能（通过 cmake install 调用）
-set(TARGET_NAME "interface-test")
 include(${CMAKE_SOURCE_DIR}/cmake/flash_by_install.cmake)
 
 # 未来模块的框架

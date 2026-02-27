@@ -26,4 +26,13 @@ add_custom_command(
     DEPENDS driver-test.elf
     COMMENT "Generating HEX file..."
 )
-add_custom_target(driver-test ALL DEPENDS driver-test.hex)
+add_custom_target(driver-test DEPENDS driver-test.hex)
+
+# 在构建后记录固件路径
+add_custom_command(TARGET driver-test POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:driver-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
+    COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/driver-test.hex"
+)
+
+# 移除 ALL，使目标不会在构建 all 时自动编译
+set_target_properties(driver-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
