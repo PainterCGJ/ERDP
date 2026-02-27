@@ -120,7 +120,8 @@
                 "all",
                 "driver-lib",
                 "driver-test",
-                "interface"
+                "interface",
+                "interface-test"
             ]
         },
         {
