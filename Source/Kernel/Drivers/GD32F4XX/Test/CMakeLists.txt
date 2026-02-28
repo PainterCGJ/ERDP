@@ -5,7 +5,7 @@ set(DRIVER_TEST_SOURCE
 )
 
 add_executable(driver-test.elf ${DRIVER_TEST_SOURCE})
-target_link_libraries(driver-test.elf driver-lib)
+target_link_libraries(driver-test.elf driver)
 
 add_custom_command(
     OUTPUT driver-test.hex

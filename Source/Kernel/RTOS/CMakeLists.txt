@@ -28,6 +28,19 @@ add_library(rtos STATIC
     ${RTOS_SOURCES}
 )
 
+# 生成 Keil MDK 兼容的 .lib 文件
+add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/rtos.lib
+    COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/librtos.a
+        ${CMAKE_BINARY_DIR}/rtos.lib
+    DEPENDS rtos
+    COMMENT "Generating Keil MDK compatible rtos.lib"
+    VERBATIM
+)
+
+add_custom_target(rtos.lib ALL DEPENDS rtos.lib)
+
 target_compile_definitions(rtos PRIVATE
     FREERTOS
     __GNUC__
@@ -48,16 +61,4 @@ target_compile_options(rtos PRIVATE
 
 target_link_options(rtos PRIVATE
     -Wl,--print-memory-usage
-)
-
-add_custom_target(rtos.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/rtos.lib)
-
-add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/rtos.lib
-    COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_BINARY_DIR}/librtos.a
-        ${CMAKE_BINARY_DIR}/rtos.lib
-    DEPENDS rtos
-    COMMENT "Generating Keil MDK compatible rtos.lib"
-    VERBATIM
 )

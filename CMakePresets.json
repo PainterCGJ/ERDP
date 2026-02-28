@@ -122,7 +122,7 @@
             "jobs": 8,
             "targets": [
                 "all",
-                "driver-lib",
+                "driver",
                 "driver-test",
                 "interface",
                 "interface-test"
@@ -133,8 +133,7 @@
             "hidden": true,
             "jobs": 8,
             "targets": [
-                "rtos",
-                "rtos.lib"
+                "rtos"
             ]
         },
         {

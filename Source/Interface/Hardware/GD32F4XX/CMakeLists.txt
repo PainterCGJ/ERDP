@@ -22,7 +22,7 @@ target_include_directories(interface PUBLIC
 )
 
 target_link_libraries(interface PUBLIC
-    driver-lib
+    driver
 )
 
 target_compile_options(interface PRIVATE
@@ -62,7 +62,7 @@ target_include_directories(interface-test.elf PRIVATE
 
 target_link_libraries(interface-test.elf
     interface
-    driver-lib
+    driver
 )
 
 target_compile_options(interface-test.elf PRIVATE

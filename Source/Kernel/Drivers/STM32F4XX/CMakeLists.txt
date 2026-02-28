@@ -28,42 +28,44 @@ list(REMOVE_ITEM STM32F4XX_PERIPH_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/STM32F4xx
 list(APPEND STM32F4XX_SOURCES ${STM32F4XX_PERIPH_SOURCES})
 
 # 创建静态库
-add_library(driver-lib STATIC
+add_library(driver STATIC
     ${STM32F4XX_SOURCES}
 )
 
 # 生成 Keil MDK 兼容的 .lib 文件
 add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/driver-lib.lib
+    OUTPUT ${CMAKE_BINARY_DIR}/driver.lib
     COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_BINARY_DIR}/libdriver-lib.a
-        ${CMAKE_BINARY_DIR}/driver-lib.lib
-    DEPENDS driver-lib
-    COMMENT "Generating Keil MDK compatible driver-lib.lib"
+        ${CMAKE_CURRENT_BINARY_DIR}/libdriver.a
+        ${CMAKE_BINARY_DIR}/driver.lib
+    DEPENDS driver
+    COMMENT "Generating Keil MDK compatible driver.lib"
     VERBATIM
 )
 
+add_custom_target(driver.lib ALL DEPENDS driver)
+
 # 设置编译定义
-target_compile_definitions(driver-lib PUBLIC
+target_compile_definitions(driver PUBLIC
     STM32F4XX
     STM32F40_41xxx
     USE_STDPERIPH_DRIVER
 )
 
 # 导出库的包含目录，方便其他目标使用
-target_include_directories(driver-lib PUBLIC
+target_include_directories(driver PUBLIC
     ${STM32F4XX_INCLUDE_DIRS}
 )
 
 # 设置编译选项
-target_compile_options(driver-lib PRIVATE
+target_compile_options(driver PRIVATE
     -Wall
     -Wextra
     -Wpedantic
 )
 
 # 设置链接选项
-target_link_options(driver-lib PRIVATE
+target_link_options(driver PRIVATE
     -Wl,--print-memory-usage
 )
 
@@ -71,6 +73,3 @@ target_link_options(driver-lib PRIVATE
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/Test/CMakeLists.txt)
     add_subdirectory(Test)
 endif()
-
-# 添加 .lib 文件目标
-add_custom_target(driver-lib.lib ALL DEPENDS ${CMAKE_BINARY_DIR}/driver-lib.lib)

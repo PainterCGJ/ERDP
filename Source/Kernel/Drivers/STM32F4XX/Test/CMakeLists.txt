@@ -18,7 +18,7 @@ target_compile_definitions(driver-test.elf PRIVATE
     USE_STDPERIPH_DRIVER
 )
 
-target_link_libraries(driver-test.elf driver-lib)
+target_link_libraries(driver-test.elf driver)
 
 add_custom_command(
     OUTPUT driver-test.hex

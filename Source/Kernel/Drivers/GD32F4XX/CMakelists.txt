@@ -24,44 +24,44 @@ file(GLOB_RECURSE GD32F4XX_PERIPH_SOURCES
 list(APPEND GD32F4XX_SOURCES ${GD32F4XX_PERIPH_SOURCES})
 
 # 创建静态库
-add_library(driver-lib STATIC
+add_library(driver STATIC
     ${GD32F4XX_SOURCES}
 )
 
 # 生成 Keil MDK 兼容的 .lib 文件
 add_custom_command(
-    OUTPUT ${CMAKE_BINARY_DIR}/driver-lib.lib
+    OUTPUT ${CMAKE_BINARY_DIR}/driver.lib
     COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:driver-lib>
-        ${CMAKE_BINARY_DIR}/driver-lib.lib
-    DEPENDS driver-lib
-    COMMENT "Generating Keil MDK compatible driver-lib.lib"
+        $<TARGET_FILE:driver>
+        ${CMAKE_BINARY_DIR}/driver.lib
+    DEPENDS driver
+    COMMENT "Generating Keil MDK compatible driver.lib"
     VERBATIM
 )
 
-add_custom_target(driver-lib.lib ALL DEPENDS driver-lib.lib)
+add_custom_target(driver.lib ALL DEPENDS driver)
 
 # 设置编译定义
-target_compile_definitions(driver-lib PUBLIC
+target_compile_definitions(driver PUBLIC
     GD32F4XX
     GD32F470
     USE_STDPERIPH_DRIVER
 )
 
 # 导出库的包含目录，方便其他目标使用
-target_include_directories(driver-lib PUBLIC
+target_include_directories(driver PUBLIC
     ${GD32F4XX_INCLUDE_DIRS}
 )
 
 # 设置编译选项
-target_compile_options(driver-lib PRIVATE
+target_compile_options(driver PRIVATE
     -Wall
     -Wextra
     -Wpedantic
 )
 
 # 设置链接选项
-target_link_options(driver-lib PRIVATE
+target_link_options(driver PRIVATE
     -Wl,--print-memory-usage
 )
 
