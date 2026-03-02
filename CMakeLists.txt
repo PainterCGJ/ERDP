@@ -7,7 +7,7 @@ set(CMAKE_SYSTEM_PROCESSOR ARM)
 # 告诉 CMake 不要尝试链接可执行文件（嵌入式系统）
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-project(ERDP LANGUAGES C ASM)
+project(ERDP LANGUAGES C ASM CXX)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -66,6 +66,16 @@ add_subdirectory(Source/Kernel)
 
 # 引用 Interface 层
 add_subdirectory(Source/Interface)
+
+# 引用 OSAL 层
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/OSAL/CMakeLists.txt")
+    add_subdirectory(Source/OSAL)
+endif()
+
+# 引用 Test 层
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Test/CMakeLists.txt")
+    add_subdirectory(Source/Test)
+endif()
 
 # 烧录功能（通过 cmake install 调用）
 include(${CMAKE_SOURCE_DIR}/cmake/flash_by_install.cmake)

@@ -33,6 +33,7 @@
             "inherits": "debug-base",
             "hidden": true,
             "cacheVariables": {
+                "CPU_TYPE": "cortex-m4",
                 "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -Og -g3"
             }
         },
@@ -41,6 +42,7 @@
             "inherits": "release-base",
             "hidden": true,
             "cacheVariables": {
+                "CPU_TYPE": "cortex-m4",
                 "CPU_PARAMETERS": "-mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -O3 -DNDEBUG"
             }
         },
@@ -49,6 +51,7 @@
             "inherits": "debug-base",
             "hidden": true,
             "cacheVariables": {
+                "CPU_TYPE": "cortex-m3",
                 "CPU_PARAMETERS": "-mcpu=cortex-m3 -mthumb -Og -g3"
             }
         },
@@ -57,15 +60,17 @@
             "inherits": "release-base",
             "hidden": true,
             "cacheVariables": {
+                "CPU_TYPE": "cortex-m3",
                 "CPU_PARAMETERS": "-mcpu=cortex-m3 -mthumb -O3 -DNDEBUG"
             }
         },
         {
-            "name": "stm32f407vet6-debug",
+            "name": "stm32f407vet6+freertos-debug",
             "inherits": "cortex-m4-debug",
-            "displayName": "STM32F407VET6 Debug",
-            "description": "Debug build for STM32F407VET6",
+            "displayName": "STM32F407VET6+FreeRTOS Debug",
+            "description": "Debug build for STM32F407VET6 with freertos",
             "cacheVariables": {
+                "RTOS_TYPE": "FREERTOS",
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
                 "CHIP_TYPE": "STM32F407VET6",
                 "DEBUGGER_TYPE": "STLINK",
@@ -73,11 +78,12 @@
             }
         },
         {
-            "name": "stm32f407vet6-release",
+            "name": "stm32f407vet6+freertos-release",
             "inherits": "cortex-m4-release",
-            "displayName": "STM32F407VET6 Release",
-            "description": "Release build for STM32F407VET6",
+            "displayName": "STM32F407VET6+FreeRTOS Release",
+            "description": "Release build for STM32F407VET6 with freertos",
             "cacheVariables": {
+                "RTOS_TYPE": "FREERTOS",
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/",
                 "CHIP_TYPE": "STM32F407VET6",
                 "DEBUGGER_TYPE": "STLINK",
@@ -85,11 +91,12 @@
             }
         },
         {
-            "name": "gd32f470zit6-debug",
+            "name": "gd32f470zit6+freertos-debug",
             "inherits": "cortex-m4-debug",
-            "displayName": "GD32F470ZIT6 Debug",
-            "description": "Debug build for GD32F470ZIT6",
+            "displayName": "GD32F470ZIT6+FreeRTOS Debug",
+            "description": "Debug build for GD32F470ZIT6 with freertos",
             "cacheVariables": {
+                "RTOS_TYPE": "FREERTOS",
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
                 "CHIP_TYPE": "GD32F470ZIT6",
                 "DEBUGGER_TYPE": "CMSIS-DAP",
@@ -97,11 +104,12 @@
             }
         },
         {
-            "name": "gd32f470zit6-release",
+            "name": "gd32f470zit6+freertos-release",
             "inherits": "cortex-m4-release",
-            "displayName": "GD32F470ZIT6 Release",
-            "description": "Release build for GD32F470ZIT6",
+            "displayName": "GD32F470ZIT6+FreeRTOS Release",
+            "description": "Release build for GD32F470ZIT6 with freertos",
             "cacheVariables": {
+                "RTOS_TYPE": "FREERTOS",
                 "DRIVER_PATH": "${sourceDir}/Source/Kernel/Drivers/GD32F4XX/",
                 "CHIP_TYPE": "GD32F470ZIT6",
                 "DEBUGGER_TYPE": "CMSIS-DAP",
@@ -113,6 +121,12 @@
             "inherits": "cortex-m4-release",
             "displayName": "FreeRTOS Release",
             "description": "Build FreeRTOS static library"
+        },
+        {
+            "name": "freertos-debug",
+            "inherits": "cortex-m4-debug",
+            "displayName": "FreeRTOS Debug",
+            "description": "Build FreeRTOS static library (Debug)"
         }
     ],
     "buildPresets": [
@@ -121,12 +135,34 @@
             "hidden": true,
             "jobs": 8,
             "targets": [
-                "all",
                 "driver",
                 "driver-test",
-                "interface",
-                "interface-test"
+                "interface-driver",
+                "interface-driver-test",
+                "interface-rtos",
+                "osal",
+                "osal-test"
             ]
+        },
+        {
+            "name": "stm32f407vet6+freertos-debug",
+            "inherits": "dev-base",
+            "configurePreset": "stm32f407vet6+freertos-debug"
+        },
+        {
+            "name": "stm32f407vet6+freertos-release",
+            "inherits": "dev-base",
+            "configurePreset": "stm32f407vet6+freertos-release"
+        },
+        {
+            "name": "gd32f470zit6+freertos-debug",
+            "inherits": "dev-base",
+            "configurePreset": "gd32f470zit6+freertos-debug"
+        },
+        {
+            "name": "gd32f470zit6+freertos-release",
+            "inherits": "dev-base",
+            "configurePreset": "gd32f470zit6+freertos-release"
         },
         {
             "name": "rtos-base",
@@ -137,39 +173,18 @@
             ]
         },
         {
-            "name": "stm32f407vet6-debug",
-            "inherits": "dev-base",
-            "configurePreset": "stm32f407vet6-debug",
-            "displayName": "Build STM32F407VET6 Debug",
-            "description": "Build targets for STM32F407VET6 Debug"
-        },
-        {
-            "name": "stm32f407vet6-release",
-            "inherits": "dev-base",
-            "configurePreset": "stm32f407vet6-release",
-            "displayName": "Build STM32F407VET6 Release",
-            "description": "Build targets for STM32F407VET6 Release"
-        },
-        {
-            "name": "gd32f470zit6-debug",
-            "inherits": "dev-base",
-            "configurePreset": "gd32f470zit6-debug",
-            "displayName": "Build GD32F470ZIT6 Debug",
-            "description": "Build targets for GD32F470ZIT6 Debug"
-        },
-        {
-            "name": "gd32f470zit6-release",
-            "inherits": "dev-base",
-            "configurePreset": "gd32f470zit6-release",
-            "displayName": "Build GD32F470ZIT6 Release",
-            "description": "Build targets for GD32F470ZIT6 Release"
-        },
-        {
             "name": "freertos-release",
             "inherits": "rtos-base",
             "configurePreset": "freertos-release",
             "displayName": "Build FreeRTOS Release",
             "description": "Build FreeRTOS static library"
+        },
+        {
+            "name": "freertos-debug",
+            "inherits": "rtos-base",
+            "configurePreset": "freertos-debug",
+            "displayName": "Build FreeRTOS Debug",
+            "description": "Build FreeRTOS static library (Debug)"
         }
     ]
 }
