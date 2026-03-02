@@ -48,10 +48,8 @@
 
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
 #include <stdint.h>
-#include <stdio.h>
-#include "printf.h"
-#include "gd32f4xx.h"
 #include "erdp_config.h"
+#include "erdp_assert.h"
 extern uint32_t SystemCoreClock;
 #endif
 
@@ -287,7 +285,7 @@ extern uint32_t SystemCoreClock;
  * or heap_4.c are included in the build.  This value is defaulted to 4096 bytes but
  * it must be tailored to each application.  Note the heap will appear in the .bss
  * section.  See https://www.freertos.org/a00111.html. */
-#define configTOTAL_HEAP_SIZE (100 * 1024)
+#define configTOTAL_HEAP_SIZE (ERDP_CONFIG_HEAP_SIZE)
 
 /* Set configAPPLICATION_ALLOCATED_HEAP to 1 to have the application allocate
  * the array used as the FreeRTOS heap.  Set to 0 to have the linker allocate the

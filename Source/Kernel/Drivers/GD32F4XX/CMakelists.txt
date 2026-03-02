@@ -39,7 +39,7 @@ add_custom_command(
     VERBATIM
 )
 
-add_custom_target(driver.lib ALL DEPENDS driver)
+add_custom_target(driver.lib DEPENDS driver)
 
 # 设置编译定义
 target_compile_definitions(driver PUBLIC
