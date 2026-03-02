@@ -1,4 +1,4 @@
-# Source/Interface/Hardware/CMakeLists.txt
+# Source/Interface/Drivers/CMakeLists.txt
 
 if(CHIP_TYPE MATCHES "STM32F4.*")
     add_subdirectory(STM32F4XX)
