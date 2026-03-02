@@ -1,14 +1,12 @@
 # flash_by_install.cmake
-# 烧录脚本 - 读取构建后的固件路径
+# 烧录脚本 - 使用 install 命令
 
 set(OPENOCD_EXECUTABLE "openocd")
 
-# 调试器类型: CMSIS-DAP 或 STLINK (默认 CMSIS-DAP)
 if(NOT DEFINED DEBUGGER_TYPE)
   set(DEBUGGER_TYPE "CMSIS-DAP")
 endif()
 
-# 根据芯片类型和调试器类型选择 OpenOCD 配置
 if(CHIP_TYPE STREQUAL "STM32F407VET6")
   if(DEBUGGER_TYPE STREQUAL "STLINK")
     set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_stm32f407_stlink.cfg")
@@ -24,18 +22,16 @@ elseif(CHIP_TYPE STREQUAL "GD32F470ZIT6")
   endif()
   set(CHIP_DIR "GD32F4XX")
 else()
-  message(FATAL_ERROR "Unknown CHIP_TYPE: ${CHIP_TYPE}, please check CMakePresets.json")
+  message(FATAL_ERROR "Unknown CHIP_TYPE: ${CHIP_TYPE}")
 endif()
 
-# 获取构建目录名称
 get_filename_component(BUILD_DIR_NAME "${CMAKE_BINARY_DIR}" NAME)
-
-# 固件路径缓存文件
 set(FIRMWARE_CACHE_FILE "${CMAKE_BINARY_DIR}/firmware_path.txt")
 
-# 可搜索的固件位置列表
 set(FIRMWARE_SEARCH_PATHS
-  "${CMAKE_BINARY_DIR}/Interface/Hardware/${CHIP_DIR}/interface-test.elf"
+  "${CMAKE_BINARY_DIR}/Interface/Drivers/${CHIP_DIR}/interface-driver-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Interface/Drivers/${CHIP_DIR}/interface-driver-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/${CHIP_DIR}/osal-test.elf"
   "${CMAKE_BINARY_DIR}/Drivers/${CHIP_DIR}/Test/driver-test.elf"
 )
 
@@ -47,7 +43,6 @@ message(STATUS "  Build: ${BUILD_DIR_NAME}")
 message(STATUS "  OpenOCD Config: ${OPENOCD_CFG}")
 message(STATUS "===========================================")
 
-# 执行烧录（使用 install 命令）
 install(
   CODE "
     set(BUILD_DIR \"${CMAKE_BINARY_DIR}\")
@@ -76,7 +71,7 @@ install(
     
     # 验证固件是否存在
     if(NOT TARGET_ELF OR NOT EXISTS \"\${TARGET_ELF}\")
-      message(FATAL_ERROR \"No firmware found!\\nPlease build a target first (e.g., interface-test or driver-test)\")
+      message(FATAL_ERROR \"No firmware found!\nPlease build a target first (e.g., interface-driver-test or driver-test)\")
     endif()
     
     get_filename_component(FIRMWARE_NAME \"\${TARGET_ELF}\" NAME)
@@ -96,4 +91,5 @@ install(
       message(FATAL_ERROR \"Flash failed with exit code: \${FLASH_RESULT}\")
     endif()
   "
+  EXCLUDE_FROM_ALL
 )
