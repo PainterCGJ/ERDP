@@ -13,14 +13,12 @@ if(CHIP_TYPE STREQUAL "STM32F407VET6")
   else()
     set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_stm32f407.cfg")
   endif()
-  set(CHIP_DIR "STM32F4XX")
 elseif(CHIP_TYPE STREQUAL "GD32F470ZIT6")
   if(DEBUGGER_TYPE STREQUAL "STLINK")
     set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_gd32f470_stlink.cfg")
   else()
     set(OPENOCD_CFG "${PROJECT_SOURCE_DIR}/Scripts/OpenOCD/openocd_gd32f470.cfg")
   endif()
-  set(CHIP_DIR "GD32F4XX")
 else()
   message(FATAL_ERROR "Unknown CHIP_TYPE: ${CHIP_TYPE}")
 endif()
@@ -30,10 +28,10 @@ set(FLASH_COPY_DIR "${PROJECT_SOURCE_DIR}/build/flash")
 
 set(FIRMWARE_SEARCH_PATHS
   "${FLASH_COPY_DIR}/flash.elf"
-  "${CMAKE_BINARY_DIR}/Interface/Drivers/${CHIP_DIR}/interface-driver-test.elf"
-  "${CMAKE_BINARY_DIR}/Source/Interface/Drivers/${CHIP_DIR}/interface-driver-test.elf"
-  "${CMAKE_BINARY_DIR}/Source/Test/${CHIP_DIR}/osal-test.elf"
-  "${CMAKE_BINARY_DIR}/Drivers/${CHIP_DIR}/Test/driver-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/interface-driver-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/interface-rtos-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/osal-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/driver-test.elf"
 )
 
 message(STATUS "===========================================")

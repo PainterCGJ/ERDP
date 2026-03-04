@@ -2,19 +2,9 @@
 #include "erdp_if_uart.h"
 #include "erdp_if_rtos.h"
 #include "erdp_if_sys.h"
-#include "stm32f4xx.h"
 #include "stdio.h"
+#include "erdp_test_cfg.h"
 
-
-#define SYS_UART_ERDP ERDP_UART1
-#define SYS_UART_TX_PORT ERDP_GPIOA
-#define SYS_UART_TX_PIN ERDP_GPIO_PIN_9
-#define SYS_UART_RX_PORT ERDP_GPIOA
-#define SYS_UART_RX_PIN ERDP_GPIO_PIN_10
-#define SYS_UART_BAUDRATE 921600
-
-#define SYS_LED_PORT ERDP_GPIOC
-#define SYS_LED_PIN ERDP_GPIO_PIN_0
 
 static ERDP_UartGpioCfg_t uart_gpio_cfg = {
     .tx_port = SYS_UART_TX_PORT,

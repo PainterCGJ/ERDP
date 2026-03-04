@@ -1,0 +1,16 @@
+#ifndef __ERDP_TEST_CFG_H__
+#define __ERDP_TEST_CFG_H__
+
+#include "stm32f4xx.h"
+
+#define SYS_LED_PIN     ERDP_GPIO_PIN_0
+#define SYS_LED_PORT    ERDP_GPIOC
+
+#define SYS_UART_ERDP ERDP_UART1
+#define SYS_UART_TX_PORT ERDP_GPIOA
+#define SYS_UART_TX_PIN ERDP_GPIO_PIN_9
+#define SYS_UART_RX_PORT ERDP_GPIOA
+#define SYS_UART_RX_PIN ERDP_GPIO_PIN_10
+#define SYS_UART_BAUDRATE 921600
+
+#endif

@@ -3,33 +3,15 @@
 */
 #include "erdp_hal_uart.hpp"
 #include "erdp_hal_gpio.hpp"
-#include "erdp_hal_spi.hpp"
 #include "erdp_osal.hpp"
-#include "gd32f4xx.h"
-#include "systick.h"
-#include "erdp_assert.h"
-#include "erdp_hal_exti.hpp"
-#include "printf.h"
 #include <vector>
-#include "log_adapter.hpp"
 #include "log_adapter.hpp"
 
 using namespace erdp;
 using namespace std;
 #define SYS_LED_PORT ERDP_GPIOC
 #define SYS_LED_PIN ERDP_GPIO_PIN_13
-const erdp::UartConfig_t uart_backon_config{
-    .uart = ERDP_UART0,
-    .baudrate = 115200,
-    .mode = ERDP_UART_TX_RX,
-    .tx_port = ERDP_GPIOA,
-    .tx_pin = ERDP_GPIO_PIN_9,
-    .tx_af = GPIO_AF_7,
-    .rx_port = ERDP_GPIOA,
-    .rx_pin = ERDP_GPIO_PIN_10,
-    .rx_af = GPIO_AF_7,
-    .priority = 15,
-};
+
 
 class LED : private GpioDev {
    public:

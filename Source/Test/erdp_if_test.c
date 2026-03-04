@@ -1,5 +1,6 @@
 #include "erdp_if_gpio.h"
-#include "stm32f4xx.h"
+#include "erdp_test_cfg.h"
+
 void SystemInit(void);
 
 void Delay(uint32_t count);
