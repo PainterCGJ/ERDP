@@ -133,16 +133,7 @@
         {
             "name": "dev-base",
             "hidden": true,
-            "jobs": 8,
-            "targets": [
-                "driver",
-                "driver-test",
-                "interface-driver",
-                "interface-driver-test",
-                "interface-rtos",
-                "osal",
-                "osal-test"
-            ]
+            "jobs": 8
         },
         {
             "name": "stm32f407vet6+freertos-debug",
