@@ -87,6 +87,22 @@ void erdp_if_uart_send_bytes(ERDP_Uart_t uart, const uint8_t* data, uint32_t len
  */
 void erdp_if_uart_read_byte(ERDP_Uart_t uart, uint8_t* data);
 
+/**
+ * @brief Set the UART port to use for printf output
+ * @param[in] uart: UART port number to use for printf output
+ * @return None
+ */
+void erdp_if_uart_set_putchar_com(ERDP_Uart_t uart);
+
+/**
+ * @brief Send a single character via specified UART
+ * @param[in] c: Character to send
+ * @return None
+ */
+void erdp_if_uart_putchar(char c);
+
+
+
 #ifdef __cplusplus
  }
  #endif // __cplusplus

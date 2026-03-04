@@ -31,6 +31,7 @@ target_compile_definitions(interface-rtos PUBLIC
 
 target_link_libraries(interface-rtos PUBLIC
     interface-driver
+    rtos
 )
 
 if(CPU_TYPE STREQUAL "cortex-m4")

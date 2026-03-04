@@ -9,9 +9,11 @@ set(STM32F4XX_IF_INC_DIRS
 set(STM32F4XX_IF_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_gpio.c
     # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_exti.c
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_uart.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_uart.c
     # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_spi.c
     # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_i2c.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_sys.c
+
 )
 
 add_library(interface-driver STATIC
@@ -74,10 +76,13 @@ add_custom_command(
 )
 add_custom_target(interface-driver-test DEPENDS interface-driver-test.hex)
 
-# 在构建后记录固件路径
+# 在构建后记录固件路径并复制到 flash 目录
 add_custom_command(TARGET interface-driver-test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:interface-driver-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
     COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/interface-driver-test.hex"
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/flash
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:interface-driver-test.elf> ${CMAKE_SOURCE_DIR}/build/flash/flash.elf
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/interface-driver-test.hex ${CMAKE_SOURCE_DIR}/build/flash/flash.hex
 )
 
 # 移除 ALL，使目标不会在构建 all 时自动编译

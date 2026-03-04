@@ -31,7 +31,7 @@ void erdp_if_rtos_task_resume(OS_TaskHandle task_handle) {
     }
 }
 
-void erdp_if_rtos_start_scheduler() { vTaskStartScheduler(); }
+void erdp_if_rtos_start_scheduler(void) { vTaskStartScheduler(); }
 
 uint32_t erdp_if_rtos_ms_to_ticks(uint32_t nms) { return pdMS_TO_TICKS(nms); }
 

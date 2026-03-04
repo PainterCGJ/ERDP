@@ -1,13 +1,15 @@
 #include "erdp_if_uart.h"
+
 #include "stm32f4xx_usart.h"
 
-extern void erdp_uart_irq_handler(ERDP_Uart_t uart);
 
-const static uint32_t uart_instance[ERDP_UART_NUM] = {
+extern void erdp_uart_irq_handler(ERDP_Uart_t uart);
+static ERDP_Uart_t putchar_com = ERDP_UART_NUM;
+static const uint32_t uart_instance[ERDP_UART_NUM] = {
     0, (uint32_t)USART1, (uint32_t)USART2, (uint32_t)USART3, (uint32_t)UART4, (uint32_t)UART5, (uint32_t)USART6,
 };
 
-const static uint32_t uart_pclk[ERDP_UART_NUM] = {
+static const uint32_t uart_pclk[ERDP_UART_NUM] = {
     0,
     RCC_APB2Periph_USART1,
     RCC_APB1Periph_USART2,
@@ -18,7 +20,7 @@ const static uint32_t uart_pclk[ERDP_UART_NUM] = {
 };
 
 typedef void (*rcc_clock_cmd_func_t)(uint32_t RCC_AHBxPeriph, FunctionalState NewState);
-const static rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_UART_NUM] = {
+static const rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_UART_NUM] = {
     NULL,
     RCC_APB2PeriphClockCmd,
     RCC_APB1PeriphClockCmd,
@@ -27,7 +29,7 @@ const static rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_UART_NUM] = {
     RCC_APB1PeriphClockCmd,
     RCC_APB2PeriphClockCmd,
 };
-const static uint32_t uart_irq[ERDP_UART_NUM] = {
+static const uint32_t uart_irq[ERDP_UART_NUM] = {
     0, USART1_IRQn, USART2_IRQn, USART3_IRQn, UART4_IRQn, UART5_IRQn, USART6_IRQn,
 
 };
@@ -92,8 +94,8 @@ void erdp_if_uart_init(ERDP_Uart_t uart, uint32_t baudrate, ERDP_UartMode_t mode
     USART_InitStructure.USART_StopBits = USART_StopBits_1;                             // 一个停止位
     USART_InitStructure.USART_Parity = USART_Parity_No;                                // 无奇偶校验位
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;    // 无硬件数据流控制
-    USART_Init((USART_TypeDef *)erdp_if_uart_get_base(uart), &USART_InitStructure);    // 初始化串口
-
+    USART_Init((USART_TypeDef *)erdp_if_uart_get_base(uart),
+               &USART_InitStructure);    // 初始化串口
 
     NVIC_InitStructure.NVIC_IRQChannel = erdp_if_uart_get_irq(uart);
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = priority;
@@ -101,8 +103,8 @@ void erdp_if_uart_init(ERDP_Uart_t uart, uint32_t baudrate, ERDP_UartMode_t mode
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
     USART_Cmd((USART_TypeDef *)erdp_if_uart_get_base(uart), ENABLE);    // 使能串口
-    USART_ITConfig((USART_TypeDef *)erdp_if_uart_get_base(uart), USART_IT_RXNE, ENABLE);    // 开启相关中断
-
+    USART_ITConfig((USART_TypeDef *)erdp_if_uart_get_base(uart), USART_IT_RXNE,
+                   ENABLE);    // 开启相关中断
 }
 
 void erdp_if_uart_send_bytes(ERDP_Uart_t uart, const uint8_t *data, uint32_t len) {
@@ -121,6 +123,17 @@ void erdp_if_uart_read_byte(ERDP_Uart_t uart, uint8_t *data) {
     *data = USART_ReceiveData((USART_TypeDef *)uart_instance[uart]);    // Read the received data
 }
 
+void erdp_if_uart_set_putchar_com(ERDP_Uart_t uart) { putchar_com = uart; }
+
+void erdp_if_uart_putchar(char c) {
+    if (putchar_com == ERDP_UART_NUM) {
+        return;
+    }
+    while (USART_GetFlagStatus((USART_TypeDef *)uart_instance[putchar_com], USART_FLAG_TXE) == RESET) {
+        ;    // Wait for transmission complete
+    }
+    USART_SendData((USART_TypeDef *)uart_instance[putchar_com], c);    // 发送数据
+}
 void USART1_IRQHandler(void) { erdp_uart_irq_handler(ERDP_UART1); }
 void USART2_IRQHandler(void) { erdp_uart_irq_handler(ERDP_UART2); }
 void USART3_IRQHandler(void) { erdp_uart_irq_handler(ERDP_UART3); }
