@@ -64,6 +64,7 @@ set_target_properties(osal-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 # interface-rtos-test target
 set(INTERFACE_RTOS_TEST_SOURCE
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_rtos_test.c
+    ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/STM32F4XX/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
     ${CMAKE_SOURCE_DIR}/Source/Common/syscalls.c
 )
 
@@ -72,6 +73,12 @@ add_executable(interface-rtos-test.elf ${INTERFACE_RTOS_TEST_SOURCE})
 target_link_libraries(interface-rtos-test.elf
     interface-driver
     interface-rtos
+)
+
+target_link_options(interface-rtos-test.elf PRIVATE
+    -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/interface-rtos-test.map
+    -Wl,--gc-sections
+    --specs=nano.specs
 )
 
 add_custom_command(
