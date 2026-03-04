@@ -1,0 +1,61 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake --build --preset ${input:buildPreset} --target ${input:buildTarget}",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "close": true
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build"
+        },
+        {
+            "label": "prepare-debug-target",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy", "Bypass",
+                "-File", "${workspaceFolder}/Scripts/prepare_debug_target.ps1",
+                "-BuildDir", "${command:cmake.buildDirectory}"
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared",
+                "close": true
+            },
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "buildPreset",
+            "type": "pickString",
+            "options": [
+                "stm32f407vet6+freertos-debug",
+                "stm32f407vet6+freertos-release",
+                "gd32f470zit6+freertos-debug",
+                "gd32f470zit6+freertos-release"
+            ],
+            "default": "stm32f407vet6+freertos-debug",
+            "description": "选择编译预设"
+        },
+        {
+            "id": "buildTarget",
+            "type": "pickString",
+            "options": [
+                "interface-driver-test",
+                "driver-test",
+                "osal-test",
+                "interface-rtos-test",
+                "all"
+            ],
+            "default": "interface-rtos-test",
+            "description": "选择构建目标"
+        }
+    ]
+}
