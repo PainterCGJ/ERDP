@@ -105,22 +105,22 @@ void os_list_insert_end(OS_List list, OS_ListItem *pxItem) { vListInsertEnd(list
 void erdp_if_rtos_list_printf(OS_List list) {
     OS_ListItem *pxItem = (OS_ListItem *)(list->xListEnd.pxNext);
     printf("\r\n================================\r\n");
-    printf("List:               0x%p\r\n", list);
-    printf("Number of item:     %u\r\n", (uint32_t)list->uxNumberOfItems);
-    printf("xListEnd:           0x%p\r\n", &list->xListEnd);
-    printf("xListEnd->pxNext:   0x%p\r\n", list->xListEnd.pxNext);
+    printf("List:               0x%p\r\n", (void *)list);
+    printf("Number of item:     %lu\r\n", (unsigned long)list->uxNumberOfItems);
+    printf("xListEnd:           0x%p\r\n", (void *)&list->xListEnd);
+    printf("xListEnd->pxNext:   0x%p\r\n", (void *)list->xListEnd.pxNext);
 
     uint8_t i = 0;
     // while (pxItem != (OS_ListItem *)(&list->xListEnd))
     List_Index_Loop(pxItem) {
         printf("\r\n--------------------------------\r\n");
         printf("order:          [%d]\r\n", i++);
-        printf("pxItem:         0x%p\r\n", pxItem);
-        printf("xItemValue:     %d\r\n", pxItem->xItemValue);
-        printf("pxPrevious:     0x%p\r\n", pxItem->pxPrevious);
-        printf("pxContainer:    0x%p\r\n", pxItem->pxContainer);
+        printf("pxItem:         0x%p\r\n", (void *)pxItem);
+        printf("xItemValue:     %lu\r\n", (unsigned long)pxItem->xItemValue);
+        printf("pxPrevious:     0x%p\r\n", (void *)pxItem->pxPrevious);
+        printf("pxContainer:    0x%p\r\n", (void *)pxItem->pxContainer);
         printf("pvOwner:        0x%p\r\n", pxItem->pvOwner);
-        printf("pxNext:         0x%p\r\n", pxItem->pxNext);
+        printf("pxNext:         0x%p\r\n", (void *)pxItem->pxNext);
         // pxItem = pxItem->pxNext;
     }
     printf("\r\n================================\r\n");

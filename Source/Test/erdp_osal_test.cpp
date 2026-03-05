@@ -1,9 +1,15 @@
-#include "erdp_osal.h"
+#include "erdp_osal.hpp"
 #include "erdp_if_gpio.h"
+#include "erdp_if_uart.h"
 using namespace erdp;
 #define SYS_LED_PORT ERDP_GPIOC
 #define SYS_LED_PIN ERDP_GPIO_PIN_0
 
+extern "C" {
+    void erdp_uart_irq_handler(ERDP_Uart_t uart) {
+        (void)uart;
+    }
+}
 void Thread::main_thread(void *parm)
 {
 	// UartDev uart(uart_backon_config,100);

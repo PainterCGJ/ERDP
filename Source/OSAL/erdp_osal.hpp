@@ -1,6 +1,5 @@
 #ifndef __ERDP_OSAL_HPP__
 #define __ERDP_OSAL_HPP__
-#include <cstddef>
 #include <functional>
 
 #include "erdp_assert.h"
@@ -109,7 +108,7 @@ namespace erdp {
             strcpy(__name, name);
         }
 
-        ~Thread() {
+        virtual ~Thread() {
             if (__join_flag) {
                 erdp_if_rtos_task_delete(nullptr);
             }

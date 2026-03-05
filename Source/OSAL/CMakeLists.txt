@@ -15,6 +15,7 @@ target_include_directories(osal PUBLIC
     ${CMAKE_SOURCE_DIR}/Source
     ${CMAKE_SOURCE_DIR}/Source/Common
     ${CMAKE_SOURCE_DIR}/Source/Interface
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(osal PUBLIC

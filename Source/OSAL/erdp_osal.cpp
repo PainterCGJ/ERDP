@@ -1,7 +1,6 @@
 #include "erdp_osal.hpp"
 #include <new>
 #include <cstring>
-#include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
 #include "erdp_if_rtos.h"
@@ -148,6 +147,16 @@ void operator delete(void *pointer) noexcept
 }
 
 void operator delete[](void *pointer) noexcept
+{
+    erdp_if_rtos_free(pointer);
+}
+
+void operator delete(void *pointer, size_t) noexcept
+{
+    erdp_if_rtos_free(pointer);
+}
+
+void operator delete[](void *pointer, size_t) noexcept
 {
     erdp_if_rtos_free(pointer);
 }

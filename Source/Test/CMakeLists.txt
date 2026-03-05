@@ -3,13 +3,13 @@
 # 根据芯片系列设置特定的包含路径和定义
 if(CHIP_DIR STREQUAL "STM32F4XX")
     set(DRIVER_TEST_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}/driver_test.c)
-    set(TEST_INCLUDE_DIRS 
+    list(APPEND TEST_INCLUDE_DIRS
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}
     )
 elseif(CHIP_DIR STREQUAL "GD32F4XX")
     set(DRIVER_TEST_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}/driver_test.c)
-    set(TEST_INCLUDE_DIRS 
+    list(APPEND TEST_INCLUDE_DIRS
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}
     )
@@ -23,29 +23,30 @@ endif()
 set(OSAL_TEST_SOURCE
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_test.cpp
     ${CMAKE_SOURCE_DIR}/Source/Common/syscalls.c
+    ${STARTUP_FILE}
 )
 
 add_executable(osal-test.elf EXCLUDE_FROM_ALL ${OSAL_TEST_SOURCE})
 
-target_include_directories(osal-test.elf PRIVATE ${TEST_INCLUDE_DIRS})
-
-target_compile_options(osal-test.elf PRIVATE
-    -fno-rtti
-    -fno-exceptions
+target_include_directories(osal-test.elf PRIVATE 
+    ${TEST_INCLUDE_DIRS}
 )
 
-if(RTOS_TYPE STREQUAL "FREERTOS")
-    target_link_libraries(osal-test.elf
-        interface-driver
-        rtos
-        osal
-    )
-else()
-    target_link_libraries(osal-test.elf
-        interface-driver
-        osal
-    )
-endif()
+target_compile_options(osal-test.elf PRIVATE
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+)
+
+target_link_libraries(osal-test.elf
+    osal
+)
+
+target_link_options(osal-test.elf PRIVATE
+    -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/osal-test.map
+    -Wl,--gc-sections
+    --specs=nano.specs
+)
+
 
 add_custom_command(
     OUTPUT osal-test.hex
@@ -58,6 +59,9 @@ add_custom_target(osal-test DEPENDS osal-test.hex)
 add_custom_command(TARGET osal-test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:osal-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
     COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/osal-test.hex"
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/flash
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:osal-test.elf> ${CMAKE_SOURCE_DIR}/build/flash/flash.elf
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/osal-test.hex ${CMAKE_SOURCE_DIR}/build/flash/flash.hex
 )
 set_target_properties(osal-test PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
