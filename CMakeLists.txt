@@ -9,6 +9,42 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 project(ERDP LANGUAGES C ASM CXX)
 
+# 自动配置 C++ 系统头文件路径（解决 clangd 找不到标准库的问题）
+if(NOT DEFINED ARM_GNU_PATH)
+    if(DEFINED ENV{ARM_GNU_PATH})
+        set(ARM_GNU_PATH $ENV{ARM_GNU_PATH})
+        message(STATUS "Found ARM_GNU_PATH from environment: ${ARM_GNU_PATH}")
+    else()
+        # 尝试从 C++ 编译器路径推断工具链根目录
+        get_filename_component(CXX_COMPILER_PATH ${CMAKE_CXX_COMPILER} REALPATH)
+        get_filename_component(COMPILER_BIN_DIR ${CXX_COMPILER_PATH} DIRECTORY)
+        get_filename_component(TOOLCHAIN_ROOT ${COMPILER_BIN_DIR} DIRECTORY)
+        if(EXISTS "${TOOLCHAIN_ROOT}/arm-none-eabi/include/c++")
+            set(ARM_GNU_PATH ${TOOLCHAIN_ROOT})
+            message(STATUS "Auto-detected ARM_GNU_PATH from compiler path: ${ARM_GNU_PATH}")
+        endif()
+    endif()
+endif()
+
+if(DEFINED ARM_GNU_PATH)
+    # 如果路径以 bin 结尾，去掉它
+    if(ARM_GNU_PATH MATCHES "/bin$|\\\\bin$")
+        get_filename_component(ARM_GNU_PATH ${ARM_GNU_PATH} DIRECTORY)
+    endif()
+    
+    message(STATUS "Searching for C++ headers in: ${ARM_GNU_PATH}/arm-none-eabi/include/c++")
+    file(GLOB CPP_HEADERS_ROOT "${ARM_GNU_PATH}/arm-none-eabi/include/c++/*")
+    
+    foreach(DIR ${CPP_HEADERS_ROOT})
+        if(IS_DIRECTORY ${DIR} AND DIR MATCHES ".*/c\\+\\+/[0-9]+\\.[0-9]+\\.[0-9]+")
+            message(STATUS "Adding C++ system include path: ${DIR}")
+            include_directories(SYSTEM "${DIR}")
+            include_directories(SYSTEM "${DIR}/arm-none-eabi")
+            include_directories(SYSTEM "${DIR}/backward")
+        endif()
+    endforeach()
+endif()
+
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -68,7 +104,8 @@ add_compile_options(
     -Wundef
     -Wno-unused-parameter
     -Wno-unused-function
-    -Wimplicit-function-declaration
+    $<$<COMPILE_LANGUAGE:C>:-Wimplicit-function-declaration>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
 )
 
 # 链接选项

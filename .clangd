@@ -1,5 +1,16 @@
 CompileFlags:
   Add:
+    - "-mcpu=cortex-m4"
+    - "-mfpu=fpv4-sp-d16"
+    - "-mfloat-abi=hard"
+    - "-mthumb"
+    - "-DSTM32F40_41xxx"
+    - "-DUSE_STDPERIPH_DRIVER"
+    - "-DARM_MATH_CM4"
+    - "-D__FPU_PRESENT=1"
+    - "-D__FPU_USED=1"
+    - "-fno-exceptions"
+    - "-fno-rtti"
     - "-D__arm__"
     - "-D__GNUC__"
     - "-Wno-unknown-warning-option"
@@ -14,12 +25,4 @@ Diagnostics:
     - "pp_file_not_found"
     - "undefined-inline"
     - "undefined-internal"
-
----
-If:
-  PathMatch: .*\.hpp
-CompileFlags:
-  Add:
-    - "-x"
-    - "c++-header"
-    - "-std=c++17"
+    - "expected_func_body"

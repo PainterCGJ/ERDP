@@ -37,6 +37,8 @@ target_compile_options(osal-test.elf PRIVATE
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
 )
 
+target_compile_features(osal-test.elf PRIVATE cxx_std_17)
+
 target_link_libraries(osal-test.elf
     osal
 )
