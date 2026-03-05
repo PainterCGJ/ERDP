@@ -49,15 +49,15 @@ namespace erdp {
 
         void kill(OS_TaskHandle handler = nullptr);
 
-        OS_TaskHandle get_thread_handler();
+        OS_TaskHandle getThreadHandler();
 
-        static void delay_ms(uint32_t ms);
+        static void delayMs(uint32_t ms);
 
-        static void start_scheduler();
+        static void startScheduler();
 
-        static uint32_t get_system_1ms_ticks();
+        static uint32_t getSystem1msTicks();
 
-        virtual void thread_code();
+        virtual void threadCode();
 
        private:
         void (*m_threadCode)(void *p_arg) = nullptr;
@@ -70,7 +70,7 @@ namespace erdp {
         uint8_t m_joinFlag = 0;
 
         static OS_TaskHandle m_mainTask;
-        static void main_thread(void *parm);
+        static void mainThread(void *parm);
     };
 
 #else    // ERDP_ENABLE_RTOS

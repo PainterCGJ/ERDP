@@ -10,7 +10,7 @@ extern "C" {
         (void)uart;
     }
 }
-void Thread::main_thread(void *parm)
+void Thread::mainThread(void *parm)
 {
 	// UartDev uart(uart_backon_config,100);
 	// uart.set_as_debug_com();

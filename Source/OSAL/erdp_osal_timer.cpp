@@ -13,7 +13,7 @@ namespace erdp {
 
     bool Timer::stop() { return erdp_if_rtos_timer_stop(m_handler); }
 
-    bool Timer::set_period(uint32_t period_ms) { return erdp_if_rtos_timer_set_period(m_handler, period_ms); }
+    bool Timer::setPeriod(uint32_t period_ms) { return erdp_if_rtos_timer_set_period(m_handler, period_ms); }
 
     void Timer::m_timerCallback(void *parm) {
         Timer *timer = static_cast<Timer *>(parm);

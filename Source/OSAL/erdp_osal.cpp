@@ -147,25 +147,25 @@ namespace erdp
         }
     }
 
-    void Thread::suspend(Thread *task) { erdp_if_rtos_task_suspend(task->get_thread_handler()); }
+    void Thread::suspend(Thread *task) { erdp_if_rtos_task_suspend(task->getThreadHandler()); }
 
     void Thread::suspend() { erdp_if_rtos_task_suspend(m_handler); }
 
-    void Thread::resume(Thread *task) { erdp_if_rtos_task_resume(task->get_thread_handler()); }
+    void Thread::resume(Thread *task) { erdp_if_rtos_task_resume(task->getThreadHandler()); }
 
     void Thread::resume() { erdp_if_rtos_task_resume(m_handler); }
 
     void Thread::kill(OS_TaskHandle handler) { erdp_if_rtos_task_delete(handler); }
 
-    OS_TaskHandle Thread::get_thread_handler() { return m_handler; }
+    OS_TaskHandle Thread::getThreadHandler() { return m_handler; }
 
-    void Thread::delay_ms(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
+    void Thread::delayMs(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
 
-    void Thread::start_scheduler() { erdp_if_rtos_start_scheduler(); }
+    void Thread::startScheduler() { erdp_if_rtos_start_scheduler(); }
 
-    uint32_t Thread::get_system_1ms_ticks() { return erdp_if_rtos_get_1ms_timestamp(); }
+    uint32_t Thread::getSystem1msTicks() { return erdp_if_rtos_get_1ms_timestamp(); }
 
-    void Thread::thread_code() {
+    void Thread::threadCode() {
         if (m_threadCode) {
             m_threadCode(m_pArg);
         }
@@ -177,20 +177,20 @@ namespace erdp
     void erdp_task_run(void *parm)
     {
         Thread *thead = static_cast<Thread *>(parm);
-        thead->thread_code();
+        thead->threadCode();
         thead->kill();
     }
 
     void create_main_task()
     {
-        Thread::m_mainTask = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 20);
+        Thread::m_mainTask = erdp_if_rtos_task_create(Thread::mainThread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 20);
     }
 } // namespace erdp
 int main(void)
 {
     erdp_if_rtos_system_config();
     erdp::create_main_task();
-    erdp::Thread::start_scheduler();
+    erdp::Thread::startScheduler();
     while (1)
         ;
     return 0;

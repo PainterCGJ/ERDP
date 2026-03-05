@@ -15,7 +15,7 @@ namespace erdp {
 
         bool stop();
 
-        bool set_period(uint32_t period_ms);
+        bool setPeriod(uint32_t period_ms);
 
        private:
         static void m_timerCallback(void *parm);
