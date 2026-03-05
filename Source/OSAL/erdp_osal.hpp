@@ -24,130 +24,40 @@ namespace erdp {
         friend void create_main_task();
 
        public:
-        /**
-         * @brief 创建线程，线程无传入参数，可用于直接创建线程对象
-         * @param[in] task_code 线程代码
-         * @param[in] name 线程名称
-         * @param[in] priority 线程优先值
-         * @param[in] starck_size 堆栈大小，默认值为Default_Starck_size
-         * @example
-         * void task(void* parg)
-         * {
-         *      printf("hello world\r\n");
-         *      //运行结束，自动删除线程
-         * }
-         *
-         * void rtos_main(void)
-         * {
-         *      Thread TASK(task, "task", 1);
-         *      task.join();
-         *      while(1){}
-         * }
-         */
         Thread(void (*task_code)(void *p_arg), const char *name, uint32_t priority,
-               size_t starck_size = DEFAULT_STACK_SIZE)
-            : __thread_code(task_code), __starck_size(starck_size) {
-            strcpy(__name, name);
-        }
+               size_t starck_size = DEFAULT_STACK_SIZE);
 
-        /**
-         * @brief 创建线程，线程有传入参数，可用于直接创建线程对象
-         * @param[in] task_code 线程代码
-         * @param[in] p_arg 线程传入参数
-         * @param[in] name 线程名称
-         * @param[in] priority 线程优先值
-         * @param[in] starck_size 堆栈大小，默认值为Default_Starck_size
-         * @example
-         * void task(void* parg)
-         * {
-         *      printf("a = %d", *((int*)(parg)));
-         *      //运行结束，自动删除线程
-         * }
-         *
-         * void rtos_main(void)
-         * {
-         *      int a = 10;
-         *      Thread TASK(task, (void*)(&a), "task", 1);
-         *      task.join();
-         *      while(1){}
-         * }
-         */
         Thread(void (*task_code)(void *p_arg), void *p_arg, const char *name, uint32_t priority,
-               size_t starck_size = DEFAULT_STACK_SIZE)
-            : __thread_code(task_code), __p_arg(p_arg), __starck_size(starck_size) {
-            strcpy(__name, name);
-        }
+               size_t starck_size = DEFAULT_STACK_SIZE);
 
-        /**
-         * @brief 当选择使用Thread作为基类定义派生类时，无需传入task_code线程代码
-         * 需要在派生类中定义虚函数task_code，作为线程运行的主体，并在调用join后才
-         * 真正的创建该线程，执行task_code里的内容。当task_code结束后，该线程将会被
-         * 自动删除，即FreeRTOS删除任务
-         * @param[in] name 线程名称
-         * @param[in] starck_size 栈大小
-         * @param[in] priority 线程优先值
-         * @example
-         * class TASK: public Thread
-         * {
-         *  public:
-         *  TASK()：Thread("task",1,64){join();}
-         *  virtual void task_code() override
-         *  {
-         *      printf("hello world\r\n");
-         *  }
-         * }
-         */
-        Thread(const char *name, uint32_t priority, size_t starck_size)
-            : __priority(priority), __starck_size(starck_size) {
-            strcpy(__name, name);
-        }
+        Thread(const char *name, uint32_t priority, size_t starck_size);
 
         Thread(std::function<void()> handle, const char *name, uint32_t priority,
-               size_t stack_size = DEFAULT_STACK_SIZE)
-            : __thread_code_lambda(handle), __priority(priority), __starck_size(stack_size) {
-            strcpy(__name, name);
-        }
+               size_t stack_size = DEFAULT_STACK_SIZE);
 
-        virtual ~Thread() {
-            if (__join_flag) {
-                erdp_if_rtos_task_delete(nullptr);
-            }
-        }
+        virtual ~Thread();
 
-        void join() {
-            if (!__join_flag) {
-                __join_flag = 1;
-                __handler = erdp_if_rtos_task_create(erdp_task_run, __name, __starck_size, this, __priority);
-                erdp_assert(__handler != nullptr);
-            }
-        }
+        void join();
 
-        void suspend(Thread *task) { erdp_if_rtos_task_suspend(task->get_thread_handler()); }
+        void suspend(Thread *task);
 
-        void suspend() { erdp_if_rtos_task_suspend(__handler); }
+        void suspend();
 
-        void resume(Thread *task) { erdp_if_rtos_task_resume(task->get_thread_handler()); }
+        void resume(Thread *task);
 
-        void resume() { erdp_if_rtos_task_resume(__handler); }
+        void resume();
 
-        void kill(OS_TaskHandle handler = nullptr) { erdp_if_rtos_task_delete(handler); }
+        void kill(OS_TaskHandle handler = nullptr);
 
-        OS_TaskHandle get_thread_handler() { return __handler; }
+        OS_TaskHandle get_thread_handler();
 
-        static void delay_ms(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
+        static void delay_ms(uint32_t ms);
 
-        static void start_scheduler() { erdp_if_rtos_start_scheduler(); }
+        static void start_scheduler();
 
-        static uint32_t get_system_1ms_ticks() { return erdp_if_rtos_get_1ms_timestamp(); }
+        static uint32_t get_system_1ms_ticks();
 
-        virtual void thread_code() {
-            if (__thread_code) {
-                __thread_code(__p_arg);
-            }
-            if (__thread_code_lambda) {
-                __thread_code_lambda();
-            }
-        }
+        virtual void thread_code();
 
        private:
         void (*__thread_code)(void *p_arg) = nullptr;

@@ -4,7 +4,10 @@
 enable_language(CXX)
 
 set(OSAL_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_heap.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_event.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_timer.cpp
 )
 
 add_library(osal STATIC EXCLUDE_FROM_ALL

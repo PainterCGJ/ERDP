@@ -109,6 +109,71 @@ void *realloc(void *ptr, size_t size)
 namespace erdp
 {
     OS_TaskHandle Thread::__main_task = nullptr;
+
+    Thread::Thread(void (*task_code)(void *p_arg), const char *name, uint32_t priority,
+                   size_t starck_size)
+        : __thread_code(task_code), __starck_size(starck_size) {
+        strcpy(__name, name);
+    }
+
+    Thread::Thread(void (*task_code)(void *p_arg), void *p_arg, const char *name, uint32_t priority,
+                   size_t starck_size)
+        : __thread_code(task_code), __p_arg(p_arg), __starck_size(starck_size) {
+        strcpy(__name, name);
+    }
+
+    Thread::Thread(const char *name, uint32_t priority, size_t starck_size)
+        : __priority(priority), __starck_size(starck_size) {
+        strcpy(__name, name);
+    }
+
+    Thread::Thread(std::function<void()> handle, const char *name, uint32_t priority,
+                   size_t stack_size)
+        : __thread_code_lambda(handle), __priority(priority), __starck_size(stack_size) {
+        strcpy(__name, name);
+    }
+
+    Thread::~Thread() {
+        if (__join_flag) {
+            erdp_if_rtos_task_delete(nullptr);
+        }
+    }
+
+    void Thread::join() {
+        if (!__join_flag) {
+            __join_flag = 1;
+            __handler = erdp_if_rtos_task_create(erdp_task_run, __name, __starck_size, this, __priority);
+            erdp_assert(__handler != nullptr);
+        }
+    }
+
+    void Thread::suspend(Thread *task) { erdp_if_rtos_task_suspend(task->get_thread_handler()); }
+
+    void Thread::suspend() { erdp_if_rtos_task_suspend(__handler); }
+
+    void Thread::resume(Thread *task) { erdp_if_rtos_task_resume(task->get_thread_handler()); }
+
+    void Thread::resume() { erdp_if_rtos_task_resume(__handler); }
+
+    void Thread::kill(OS_TaskHandle handler) { erdp_if_rtos_task_delete(handler); }
+
+    OS_TaskHandle Thread::get_thread_handler() { return __handler; }
+
+    void Thread::delay_ms(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
+
+    void Thread::start_scheduler() { erdp_if_rtos_start_scheduler(); }
+
+    uint32_t Thread::get_system_1ms_ticks() { return erdp_if_rtos_get_1ms_timestamp(); }
+
+    void Thread::thread_code() {
+        if (__thread_code) {
+            __thread_code(__p_arg);
+        }
+        if (__thread_code_lambda) {
+            __thread_code_lambda();
+        }
+    }
+
     void erdp_task_run(void *parm)
     {
         Thread *thead = static_cast<Thread *>(parm);

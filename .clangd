@@ -4,9 +4,13 @@ CompileFlags:
     - "-D__GNUC__"
     - "-Wno-unknown-warning-option"
     - "-Wno-unused-command-line-argument"
+    - "-Wno-error=undefined-inline"
+    - "-Wno-error=undefined-internal"
 
 Diagnostics:
   UnusedIncludes: None
   Suppress:
     - "clang-diagnostic-error"
     - "pp_file_not_found"
+    - "undefined-inline"
+    - "undefined-internal"
