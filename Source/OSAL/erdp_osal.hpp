@@ -1,6 +1,6 @@
 #ifndef __ERDP_OSAL_HPP__
 #define __ERDP_OSAL_HPP__
-#include <functional>
+#include <functional> // NOLINT
 
 #include "erdp_assert.h"
 #include "erdp_config.h"

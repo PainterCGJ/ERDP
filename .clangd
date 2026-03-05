@@ -14,3 +14,12 @@ Diagnostics:
     - "pp_file_not_found"
     - "undefined-inline"
     - "undefined-internal"
+
+---
+If:
+  PathMatch: .*\.hpp
+CompileFlags:
+  Add:
+    - "-x"
+    - "c++-header"
+    - "-std=c++17"
