@@ -1,7 +1,7 @@
 #ifndef __ERDP_OSAL_TIMER_HPP__
 #define __ERDP_OSAL_TIMER_HPP__
+#include <functional> // NOLINT
 #include "erdp_if_rtos.h"
-#include <functional>
 
 namespace erdp {
 #ifdef ERDP_ENABLE_RTOS

@@ -32,34 +32,10 @@ namespace erdp
     }
 
     template <typename _Type>
-    bool Queue<_Type>::push(const _Type &elm_to_push)
-    {
-        erdp_assert(m_handler != nullptr);
-        if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&elm_to_push), 0))
-        {
-            m_queueSize++;
-            return true;
-        }
-        return false;
-    }
-
-    template <typename _Type>
     bool Queue<_Type>::pop(_Type &elm_recv, uint32_t ticks_to_wait)
     {
         erdp_assert(m_handler != nullptr);
         if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&elm_recv), ticks_to_wait))
-        {
-            m_queueSize--;
-            return true;
-        }
-        return false;
-    }
-
-    template <typename _Type>
-    bool Queue<_Type>::pop(_Type &elm_recv)
-    {
-        erdp_assert(m_handler != nullptr);
-        if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&elm_recv), 0))
         {
             m_queueSize--;
             return true;

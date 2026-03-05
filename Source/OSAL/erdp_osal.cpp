@@ -159,7 +159,7 @@ namespace erdp
 
     OS_TaskHandle Thread::getThreadHandler() { return m_handler; }
 
-    void Thread::delayMs(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
+    void Thread::sleep(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
 
     void Thread::startScheduler() { erdp_if_rtos_start_scheduler(); }
 

@@ -19,10 +19,8 @@ namespace erdp
         ~Queue();
 
         bool init(size_t queue_length);
-        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait);
-        bool push(const _Type &elm_to_push);
-        bool pop(_Type &elm_recv, uint32_t ticks_to_wait);
-        bool pop(_Type &elm_recv);
+        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait = 0) override;
+        bool pop(_Type &elm_recv, uint32_t ticks_to_wait = 0) override;
         bool empty() const noexcept;
         bool full() const noexcept;
         uint32_t size() const noexcept;

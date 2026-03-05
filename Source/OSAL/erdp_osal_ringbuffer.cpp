@@ -2,6 +2,8 @@
 
 namespace erdp
 {
+#ifndef ERDP_ENABLE_RTOS
+    // 无 RTOS 版本的 RingBuffer 实现
     template <typename T>
     bool RingBuffer<T>::init(uint8_t *mempool, size_t mempool_size)
     {
@@ -35,8 +37,9 @@ namespace erdp
     bool RingBuffer<T>::empty() const noexcept { return m_head == m_tail; }
 
     template <typename T>
-    bool RingBuffer<T>::push(const T &item) noexcept
+    bool RingBuffer<T>::push(const T &item, uint32_t ticks_to_wait) noexcept
     {
+        (void)ticks_to_wait; // 忽略参数，无 RTOS 版本不使用超时机制
         if (full())
         {
             return false;
@@ -47,8 +50,9 @@ namespace erdp
     }
 
     template <typename T>
-    bool RingBuffer<T>::pop(T &item) noexcept
+    bool RingBuffer<T>::pop(T &item, uint32_t ticks_to_wait) noexcept
     {
+        (void)ticks_to_wait; // 忽略参数，无 RTOS 版本不使用超时机制
         if (empty())
         {
             return false;
@@ -77,6 +81,71 @@ namespace erdp
         erdp_assert(index < size());
         return *reinterpret_cast<const T *>(m_buffer + ((m_head + index) % m_size));
     }
+
+#else
+    // RTOS 版本的 RingBuffer 实现，使用队列接口
+    template <typename T>
+    RingBuffer<T>::~RingBuffer() { 
+        if (m_handler != nullptr) {
+            erdp_if_rtos_queue_delet(m_handler);
+        }
+    }
+
+    template <typename T>
+    bool RingBuffer<T>::init(size_t queue_length)
+    {
+        m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(T));
+        if (m_handler == nullptr)
+        {
+            return false;
+        }
+        m_queueLength = queue_length;
+        m_queueSize = 0;
+        return true;
+    }
+
+    template <typename T>
+    bool RingBuffer<T>::full() const noexcept
+    {
+        return m_queueSize == m_queueLength;
+    }
+
+    template <typename T>
+    bool RingBuffer<T>::empty() const noexcept
+    {
+        return m_queueSize == 0;
+    }
+
+    template <typename T>
+    bool RingBuffer<T>::push(const T &item, uint32_t ticks_to_wait) noexcept
+    {
+        erdp_assert(m_handler != nullptr);
+        if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&item), ticks_to_wait))
+        {
+            m_queueSize++;
+            return true;
+        }
+        return false;
+    }
+
+    template <typename T>
+    bool RingBuffer<T>::pop(T &item, uint32_t ticks_to_wait) noexcept
+    {
+        erdp_assert(m_handler != nullptr);
+        if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&item), ticks_to_wait))
+        {
+            m_queueSize--;
+            return true;
+        }
+        return false;
+    }
+
+    template <typename T>
+    uint32_t RingBuffer<T>::size() const noexcept
+    {
+        return m_queueSize;
+    }
+#endif
 
     // 显式实例化常用的类型
     template class RingBuffer<uint8_t>;

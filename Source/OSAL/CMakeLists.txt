@@ -44,16 +44,26 @@ add_custom_command(
 
 add_custom_target(osal.lib DEPENDS osal)
 
-target_compile_features(osal PRIVATE cxx_std_17)
+target_compile_features(osal PUBLIC cxx_std_17)
 
-target_compile_options(osal PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-    -Wno-implicit-function-declaration
-    -fno-rtti
-    -fno-exceptions
-)
+if(MSVC)
+    target_compile_options(osal PRIVATE
+        /W4
+        /wd4100  # 忽略未使用的参数警告
+        /wd4127  # 忽略条件表达式是常量警告
+        /GR-     # 禁用 RTTI
+        /EHs-c-  # 禁用异常处理
+    )
+else()
+    target_compile_options(osal PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wno-implicit-function-declaration
+        -fno-rtti
+        -fno-exceptions
+    )
+endif()
 
 target_link_options(osal PRIVATE
     -Wl,--print-memory-usage

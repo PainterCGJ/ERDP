@@ -12,8 +12,8 @@ namespace erdp
         ~FifoBase() {}
 
         virtual bool init(size_t size) = 0;
-        virtual bool push(const _Type &elm) = 0;
-        virtual bool pop(_Type &elm) = 0;
+        virtual bool push(const _Type &elm, uint32_t ticks_to_wait = 0) = 0;
+        virtual bool pop(_Type &elm, uint32_t ticks_to_wait = 0) = 0;
         virtual uint32_t size() const noexcept = 0;
         virtual bool empty() const noexcept = 0;
         virtual bool full() const noexcept = 0;

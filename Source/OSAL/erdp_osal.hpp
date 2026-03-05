@@ -51,7 +51,7 @@ namespace erdp {
 
         OS_TaskHandle getThreadHandler();
 
-        static void delayMs(uint32_t ms);
+        static void sleep(uint32_t ms);
 
         static void startScheduler();
 
