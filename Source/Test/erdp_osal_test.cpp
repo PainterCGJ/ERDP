@@ -22,9 +22,9 @@ void Thread::mainThread(void *parm)
         []() {
             while (1) {
                 erdp_if_gpio_write(SYS_LED_PORT, SYS_LED_PIN, ERDP_SET);   
-                Thread::delay_ms(500);
+                Thread::sleep(500);
                 erdp_if_gpio_write(SYS_LED_PORT, SYS_LED_PIN, ERDP_RESET);   
-                Thread::delay_ms(500);
+                Thread::sleep(500);
             }
         },
         "LED", 6, 128);
@@ -32,6 +32,6 @@ void Thread::mainThread(void *parm)
 
     while (1)
     {
-        Thread::delay_ms(10);
+        Thread::sleep(10);
     }
 }
