@@ -26,7 +26,7 @@ namespace erdp
         OS_EventBits sync(OS_EventBits bits_to_set, OS_EventBits bits_wait_for, uint32_t ticks_to_wait = OS_WAIT_FOREVER);
 
     private:
-        OS_Event __handler;
+        OS_Event m_handler;
     };
 #endif // ERDP_ENABLE_RTOS
 } // namespace erdp

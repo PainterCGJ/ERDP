@@ -108,56 +108,56 @@ void *realloc(void *ptr, size_t size)
 #ifdef ERDP_ENABLE_RTOS
 namespace erdp
 {
-    OS_TaskHandle Thread::__main_task = nullptr;
+    OS_TaskHandle Thread::m_mainTask = nullptr;
 
     Thread::Thread(void (*task_code)(void *p_arg), const char *name, uint32_t priority,
                    size_t starck_size)
-        : __thread_code(task_code), __starck_size(starck_size) {
-        strcpy(__name, name);
+        : m_threadCode(task_code), m_stackSize(starck_size) {
+        strcpy(m_name, name);
     }
 
     Thread::Thread(void (*task_code)(void *p_arg), void *p_arg, const char *name, uint32_t priority,
                    size_t starck_size)
-        : __thread_code(task_code), __p_arg(p_arg), __starck_size(starck_size) {
-        strcpy(__name, name);
+        : m_threadCode(task_code), m_pArg(p_arg), m_stackSize(starck_size) {
+        strcpy(m_name, name);
     }
 
     Thread::Thread(const char *name, uint32_t priority, size_t starck_size)
-        : __priority(priority), __starck_size(starck_size) {
-        strcpy(__name, name);
+        : m_priority(priority), m_stackSize(starck_size) {
+        strcpy(m_name, name);
     }
 
     Thread::Thread(std::function<void()> handle, const char *name, uint32_t priority,
                    size_t stack_size)
-        : __thread_code_lambda(handle), __priority(priority), __starck_size(stack_size) {
-        strcpy(__name, name);
+        : m_threadCodeLambda(handle), m_priority(priority), m_stackSize(stack_size) {
+        strcpy(m_name, name);
     }
 
     Thread::~Thread() {
-        if (__join_flag) {
+        if (m_joinFlag) {
             erdp_if_rtos_task_delete(nullptr);
         }
     }
 
     void Thread::join() {
-        if (!__join_flag) {
-            __join_flag = 1;
-            __handler = erdp_if_rtos_task_create(erdp_task_run, __name, __starck_size, this, __priority);
-            erdp_assert(__handler != nullptr);
+        if (!m_joinFlag) {
+            m_joinFlag = 1;
+            m_handler = erdp_if_rtos_task_create(erdp_task_run, m_name, m_stackSize, this, m_priority);
+            erdp_assert(m_handler != nullptr);
         }
     }
 
     void Thread::suspend(Thread *task) { erdp_if_rtos_task_suspend(task->get_thread_handler()); }
 
-    void Thread::suspend() { erdp_if_rtos_task_suspend(__handler); }
+    void Thread::suspend() { erdp_if_rtos_task_suspend(m_handler); }
 
     void Thread::resume(Thread *task) { erdp_if_rtos_task_resume(task->get_thread_handler()); }
 
-    void Thread::resume() { erdp_if_rtos_task_resume(__handler); }
+    void Thread::resume() { erdp_if_rtos_task_resume(m_handler); }
 
     void Thread::kill(OS_TaskHandle handler) { erdp_if_rtos_task_delete(handler); }
 
-    OS_TaskHandle Thread::get_thread_handler() { return __handler; }
+    OS_TaskHandle Thread::get_thread_handler() { return m_handler; }
 
     void Thread::delay_ms(uint32_t ms) { erdp_if_rtos_delay_ms(ms); }
 
@@ -166,11 +166,11 @@ namespace erdp
     uint32_t Thread::get_system_1ms_ticks() { return erdp_if_rtos_get_1ms_timestamp(); }
 
     void Thread::thread_code() {
-        if (__thread_code) {
-            __thread_code(__p_arg);
+        if (m_threadCode) {
+            m_threadCode(m_pArg);
         }
-        if (__thread_code_lambda) {
-            __thread_code_lambda();
+        if (m_threadCodeLambda) {
+            m_threadCodeLambda();
         }
     }
 
@@ -183,7 +183,7 @@ namespace erdp
 
     void create_main_task()
     {
-        Thread::__main_task = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 20);
+        Thread::m_mainTask = erdp_if_rtos_task_create(Thread::main_thread, "main", ERDP_CONFIG_MAIN_THREAD_STACK_SIZE, nullptr, 20);
     }
 } // namespace erdp
 int main(void)
@@ -232,7 +232,7 @@ namespace erdp
 
     Heap4 *default_heap = nullptr;
     static uint8_t memory_pool[ERDP_CONFIG_HEAP_SIZE];
-    Heap4 __heap;
+    Heap4 m_heap;
 
 } // namespace erdp
 
@@ -241,8 +241,8 @@ void *operator new(size_t size)
 {
     if (!erdp::default_heap)
     {
-        erdp::__heap.init(erdp::memory_pool, sizeof(erdp::memory_pool));
-        erdp::default_heap = &erdp::__heap;
+        erdp::m_heap.init(erdp::memory_pool, sizeof(erdp::memory_pool));
+        erdp::default_heap = &erdp::m_heap;
     }
     return erdp::default_heap->allocate(size);
 }

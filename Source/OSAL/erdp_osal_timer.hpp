@@ -18,9 +18,9 @@ namespace erdp {
         bool set_period(uint32_t period_ms);
 
        private:
-        static void __timer_callback(void *parm);
-        std::function<void()> __usr_timer_func;
-        OS_Timer __handler;
+        static void m_timerCallback(void *parm);
+        std::function<void()> m_usrTimerFunc;
+        OS_Timer m_handler;
     };
 #endif    // ERDP_ENABLE_RTOS
 }    // namespace erdp

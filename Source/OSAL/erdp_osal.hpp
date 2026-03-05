@@ -60,16 +60,16 @@ namespace erdp {
         virtual void thread_code();
 
        private:
-        void (*__thread_code)(void *p_arg) = nullptr;
-        std::function<void()> __thread_code_lambda = nullptr;
-        void *__p_arg;
-        char __name[configMAX_TASK_NAME_LEN + 1];
-        uint32_t __priority;
-        size_t __starck_size;
-        OS_TaskHandle __handler;
-        uint8_t __join_flag = 0;
+        void (*m_threadCode)(void *p_arg) = nullptr;
+        std::function<void()> m_threadCodeLambda = nullptr;
+        void *m_pArg;
+        char m_name[configMAX_TASK_NAME_LEN + 1];
+        uint32_t m_priority;
+        size_t m_stackSize;
+        OS_TaskHandle m_handler;
+        uint8_t m_joinFlag = 0;
 
-        static OS_TaskHandle __main_task;
+        static OS_TaskHandle m_mainTask;
         static void main_thread(void *parm);
     };
 

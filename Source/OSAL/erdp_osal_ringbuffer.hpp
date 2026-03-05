@@ -30,29 +30,29 @@ namespace erdp
         {
             erdp_assert(mempool != nullptr);
             erdp_assert(mempool_size % sizeof(T) == 0);
-            __buffer = reinterpret_cast<T *>(mempool);
-            __size = mempool_size / sizeof(T);
-            __head = 0;
-            __tail = 0;
+            m_buffer = reinterpret_cast<T *>(mempool);
+            m_size = mempool_size / sizeof(T);
+            m_head = 0;
+            m_tail = 0;
             return true;
         }
 
         bool init(uint32_t size) noexcept
         {
-            __buffer = new T[size];
-            if (__buffer == nullptr)
+            m_buffer = new T[size];
+            if (m_buffer == nullptr)
             {
                 return false;
             }
-            __size = size;
-            __head = 0;
-            __tail = 0;
+            m_size = size;
+            m_head = 0;
+            m_tail = 0;
             return true;
         }
 
-        bool full() const noexcept { return (__tail + 1) % __size == __head; }
+        bool full() const noexcept { return (m_tail + 1) % m_size == m_head; }
 
-        bool empty() const noexcept { return __head == __tail; }
+        bool empty() const noexcept { return m_head == m_tail; }
 
         bool push(const T &item) noexcept
         {
@@ -60,8 +60,8 @@ namespace erdp
             {
                 return false;
             }
-            __buffer[__tail] = item;
-            __tail = (__tail + 1) % __size;
+            m_buffer[m_tail] = item;
+            m_tail = (m_tail + 1) % m_size;
             return true;
         }
 
@@ -71,32 +71,32 @@ namespace erdp
             {
                 return false;
             }
-            item = __buffer[__head];
-            __head = (__head + 1) % __size;
+            item = m_buffer[m_head];
+            m_head = (m_head + 1) % m_size;
             return true;
         }
 
         uint32_t size() const noexcept
         {
-            return (__tail - __head + __size) % __size;
+            return (m_tail - m_head + m_size) % m_size;
         }
 
     private:
-        T *__buffer;
-        uint32_t __size;
-        volatile uint32_t __head;
-        volatile uint32_t __tail;
+        T *m_buffer;
+        uint32_t m_size;
+        volatile uint32_t m_head;
+        volatile uint32_t m_tail;
 
         T &operator[](uint32_t index)
         {
             erdp_assert(index < size());
-            return *reinterpret_cast<T *>(__buffer + ((__head + index) % __size));
+            return *reinterpret_cast<T *>(m_buffer + ((m_head + index) % m_size));
         }
 
         const T &operator[](uint32_t index) const
         {
             erdp_assert(index < size());
-            return *reinterpret_cast<const T *>(__buffer + ((__head + index) % __size));
+            return *reinterpret_cast<const T *>(m_buffer + ((m_head + index) % m_size));
         }
     };
 } // namespace erdp

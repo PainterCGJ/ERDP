@@ -15,22 +15,22 @@ namespace erdp
         {
             if constexpr (U == BINARY_TAG)
             {
-                __handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
+                m_handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
             }
             else if constexpr (U == MUTEX_TAG)
             {
-                __handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
+                m_handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
             }
             else if constexpr (U == RECURISIVE_TAG)
             {
-                __handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
+                m_handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
             }
         }
 
         template <Semaphore_tag U = T, typename = std::enable_if_t<U == COUNT_TAG>>
         Semaphore(uint32_t max_count, uint32_t initial_count)
         {
-            __handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
+            m_handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
         }
 
         // 获取信号量
@@ -38,11 +38,11 @@ namespace erdp
         {
             if constexpr (T == RECURISIVE_TAG)
             {
-                return erdp_if_rtos_recursive_semaphore_take(__handler, ticks_to_wait);
+                return erdp_if_rtos_recursive_semaphore_take(m_handler, ticks_to_wait);
             }
             else
             {
-                return erdp_if_rtos_semaphore_take(__handler, ticks_to_wait);
+                return erdp_if_rtos_semaphore_take(m_handler, ticks_to_wait);
             }
         }
 
@@ -51,19 +51,19 @@ namespace erdp
         {
             if constexpr (T == RECURISIVE_TAG)
             {
-                return erdp_if_rtos_recursive_semaphore_give(__handler);
+                return erdp_if_rtos_recursive_semaphore_give(m_handler);
             }
             else
             {
-                return erdp_if_rtos_semaphore_give(__handler);
+                return erdp_if_rtos_semaphore_give(m_handler);
             }
         }
 
         ~Semaphore()
         {
-            if (__handler != nullptr)
+            if (m_handler != nullptr)
             {
-                erdp_if_rtos_semaphore_delet(__handler);
+                erdp_if_rtos_semaphore_delet(m_handler);
             }
         }
 
@@ -72,7 +72,7 @@ namespace erdp
         Semaphore &operator=(const Semaphore &) = delete;
 
     private:
-        OS_Semaphore __handler = nullptr;
+        OS_Semaphore m_handler = nullptr;
     };
 
     class Mutex : private Semaphore<MUTEX_TAG>
