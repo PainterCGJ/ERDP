@@ -16,88 +16,16 @@ namespace erdp
         {
             init(queue_length);
         }
-        ~Queue() { erdp_if_rtos_queue_delet(m_handler); }
+        ~Queue();
 
-        bool init(size_t queue_length)
-        {
-            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
-            if (m_handler == nullptr)
-            {
-                return false;
-            }
-            m_queueLength = queue_length;
-            m_queueSize = 0;
-            return true;
-        }
-        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait)
-        {
-            erdp_assert(m_handler != nullptr);
-            if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&elm_to_push), ticks_to_wait))
-            {
-                m_queueSize++;
-                return true;
-            }
-            return false;
-        }
-
-        bool push(const _Type &elm_to_push)
-        {
-            erdp_assert(m_handler != nullptr);
-            if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&elm_to_push), 0))
-            {
-                m_queueSize++;
-                return true;
-            }
-            return false;
-        }
-
-        bool pop(_Type &elm_recv, uint32_t ticks_to_wait)
-        {
-            erdp_assert(m_handler != nullptr);
-            if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&elm_recv), ticks_to_wait))
-            {
-                m_queueSize--;
-                return true;
-            }
-            return false;
-        }
-
-        bool pop(_Type &elm_recv)
-        {
-            erdp_assert(m_handler != nullptr);
-            if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&elm_recv), 0))
-            {
-                m_queueSize--;
-                return true;
-            }
-            return false;
-        }
-
-        bool empty() const noexcept
-        {
-            erdp_assert(m_handler != nullptr);
-            if (m_queueSize == 0)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        bool full() const noexcept
-        {
-            erdp_assert(m_handler != nullptr);
-            if (m_queueSize == m_queueLength)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        uint32_t size() const noexcept
-        {
-            erdp_assert(m_handler != nullptr);
-            return m_queueSize;
-        }
+        bool init(size_t queue_length);
+        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait);
+        bool push(const _Type &elm_to_push);
+        bool pop(_Type &elm_recv, uint32_t ticks_to_wait);
+        bool pop(_Type &elm_recv);
+        bool empty() const noexcept;
+        bool full() const noexcept;
+        uint32_t size() const noexcept;
 
     private:
         OS_Queue m_handler;
