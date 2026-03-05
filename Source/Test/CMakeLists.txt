@@ -1,50 +1,18 @@
 # Test CMakeLists.txt
 
-# 设置通用的包含路径
-set(TEST_INCLUDE_DIRS
-    ${CMAKE_SOURCE_DIR}/Source
-    ${CMAKE_SOURCE_DIR}/Source/Common
-    ${CMAKE_SOURCE_DIR}/Source/OSAL
-    ${CMAKE_SOURCE_DIR}/Source/Interface
-    ${CMAKE_SOURCE_DIR}/Source/Interface/RTOS/FreeRTOS
-    ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS/inc
-    ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS
-)
-
-if(CPU_TYPE STREQUAL "cortex-m4")
-    list(APPEND TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS/port/GCC/ARM_CM4F)
-elseif(CPU_TYPE STREQUAL "cortex-m3")
-    list(APPEND TEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS/port/GCC/ARM_CM3)
-endif()
-
 # 根据芯片系列设置特定的包含路径和定义
 if(CHIP_DIR STREQUAL "STM32F4XX")
-    list(APPEND TEST_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/Source/Interface/Drivers/${CHIP_DIR}/inc
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/CMSIS/Device/ST/STM32F4xx/Include
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/CMSIS/Include
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/STM32F4xx_StdPeriph_Driver/inc
-    )
-    set(TEST_DEFINITIONS
-        STM32F40_41xxx
-        USE_STDPERIPH_DRIVER
-    )
     set(DRIVER_TEST_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}/driver_test.c)
-
+    set(TEST_INCLUDE_DIRS 
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}
+    )
 elseif(CHIP_DIR STREQUAL "GD32F4XX")
-    list(APPEND TEST_INCLUDE_DIRS
-        ${CMAKE_SOURCE_DIR}/Source/Interface/Drivers/${CHIP_DIR}/inc
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/CMSIS/GD/GD32F4xx/Include
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/CMSIS
-        ${CMAKE_SOURCE_DIR}/Source/Kernel/Drivers/${CHIP_DIR}/GD32F4xx_standard_peripheral/Include
-    )
-    set(TEST_DEFINITIONS
-        GD32F4XX
-        GD32F470
-        USE_STDPERIPH_DRIVER
-    )
     set(DRIVER_TEST_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}/driver_test.c)
-
+    set(TEST_INCLUDE_DIRS 
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/${CHIP_DIR}
+    )
 else()
     message(WARNING "No test configuration for chip dir: ${CHIP_DIR}")
 endif()
@@ -60,7 +28,6 @@ set(OSAL_TEST_SOURCE
 add_executable(osal-test.elf EXCLUDE_FROM_ALL ${OSAL_TEST_SOURCE})
 
 target_include_directories(osal-test.elf PRIVATE ${TEST_INCLUDE_DIRS})
-target_compile_definitions(osal-test.elf PRIVATE ${TEST_DEFINITIONS})
 
 target_compile_options(osal-test.elf PRIVATE
     -fno-rtti
@@ -106,7 +73,6 @@ set(INTERFACE_RTOS_TEST_SOURCE
 add_executable(interface-rtos-test.elf ${INTERFACE_RTOS_TEST_SOURCE})
 
 target_include_directories(interface-rtos-test.elf PRIVATE ${TEST_INCLUDE_DIRS})
-target_compile_definitions(interface-rtos-test.elf PRIVATE ${TEST_DEFINITIONS})
 
 target_link_libraries(interface-rtos-test.elf
     interface-driver
@@ -146,7 +112,6 @@ set(INTERFACE_DRIVER_TEST_SOURCE
 add_executable(interface-driver-test.elf ${INTERFACE_DRIVER_TEST_SOURCE})
 
 target_include_directories(interface-driver-test.elf PRIVATE ${TEST_INCLUDE_DIRS})
-target_compile_definitions(interface-driver-test.elf PRIVATE ${TEST_DEFINITIONS})
 
 target_link_libraries(interface-driver-test.elf
     interface-driver
@@ -185,7 +150,6 @@ if(EXISTS ${DRIVER_TEST_SOURCE})
     add_executable(driver-test.elf ${DRIVER_TEST_SOURCES})
 
     target_include_directories(driver-test.elf PRIVATE ${TEST_INCLUDE_DIRS})
-    target_compile_definitions(driver-test.elf PRIVATE ${TEST_DEFINITIONS})
 
     target_link_libraries(driver-test.elf driver)
 

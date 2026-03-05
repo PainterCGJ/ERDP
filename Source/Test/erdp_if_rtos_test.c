@@ -9,10 +9,10 @@
 static ERDP_UartGpioCfg_t uart_gpio_cfg = {
     .tx_port = SYS_UART_TX_PORT,
     .tx_pin = SYS_UART_TX_PIN,
-    .tx_af = 7,
+    .tx_af = SYS_UART_TX_AF,
     .rx_port = SYS_UART_RX_PORT,
     .rx_pin = SYS_UART_RX_PIN,
-    .rx_af = 7
+    .rx_af = SYS_UART_RX_AF
 };
 
 void erdp_uart_irq_handler(ERDP_Uart_t uart) {

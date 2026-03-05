@@ -75,7 +75,7 @@
                 "CHIP_TYPE": "STM32F407VET6",
                 "DEBUGGER_TYPE": "STLINK",
                 "LINKER_SCRIPT": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/Linker/STM32F407VET6_FLASH.ld",
-                "STARTUP_FILE": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/startup_stm32f40_41xxx.s"
+                "STARTUP_FILE": "${sourceDir}/Source/Kernel/Drivers/STM32F4XX/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s"
             }
         },
         {
