@@ -1,9 +1,10 @@
 #ifndef __ERDP_OSAL_HPP__
 #define __ERDP_OSAL_HPP__
+#include "erdp_config.h"
 #include <functional> // NOLINT
 
 #include "erdp_assert.h"
-#include "erdp_config.h"
+
 #include "erdp_heap.hpp"
 #include "erdp_if_rtos.h"
 #include "erdp_osal_event.hpp"

@@ -8,8 +8,6 @@ set(OSAL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_event.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_timer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_queue.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_osal_ringbuffer.cpp
 )
 
 add_library(osal STATIC EXCLUDE_FROM_ALL

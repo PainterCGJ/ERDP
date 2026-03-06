@@ -4,6 +4,7 @@
 #include "erdp_osal_fifo.hpp"
 #include <cstddef>
 #include <cstdint>
+#include "erdp_config.h"
 #ifdef ERDP_ENABLE_RTOS
 #include "erdp_if_rtos.h"
 #endif
@@ -11,7 +12,6 @@
 namespace erdp
 {
 #ifndef ERDP_ENABLE_RTOS
-    // 无 RTOS 版本的 RingBuffer
     template <typename T>
     class RingBuffer : public FifoBase<T>
     {
@@ -31,26 +31,83 @@ namespace erdp
             init(size);
         }
 
-        bool init(uint8_t *mempool, size_t mempool_size);
-        bool init(uint32_t size) noexcept;
-        bool full() const noexcept;
-        bool empty() const noexcept;
-        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override;
-        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override;
-        uint32_t size() const noexcept;
+        bool init(uint8_t *mempool, size_t mempool_size)
+        {
+            erdp_assert(mempool != nullptr);
+            erdp_assert(mempool_size % sizeof(T) == 0);
+            m_buffer = reinterpret_cast<T *>(mempool);
+            m_size = mempool_size / sizeof(T);
+            m_head = 0;
+            m_tail = 0;
+            return true;
+        }
+
+        bool init(uint32_t size) noexcept
+        {
+            m_buffer = new T[size];
+            if (m_buffer == nullptr)
+            {
+                return false;
+            }
+            m_size = size;
+            m_head = 0;
+            m_tail = 0;
+            return true;
+        }
+
+        bool full() const noexcept { return (m_tail + 1) % m_size == m_head; }
+
+        bool empty() const noexcept { return m_head == m_tail; }
+
+        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override
+        {
+            (void)ticks_to_wait;
+            if (full())
+            {
+                return false;
+            }
+            m_buffer[m_tail] = item;
+            m_tail = (m_tail + 1) % m_size;
+            return true;
+        }
+
+        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override
+        {
+            (void)ticks_to_wait;
+            if (empty())
+            {
+                return false;
+            }
+            item = m_buffer[m_head];
+            m_head = (m_head + 1) % m_size;
+            return true;
+        }
+
+        uint32_t size() const noexcept
+        {
+            return (m_tail - m_head + m_size) % m_size;
+        }
+
+        T &operator[](uint32_t index)
+        {
+            erdp_assert(index < size());
+            return *reinterpret_cast<T *>(m_buffer + ((m_head + index) % m_size));
+        }
+
+        const T &operator[](uint32_t index) const
+        {
+            erdp_assert(index < size());
+            return *reinterpret_cast<const T *>(m_buffer + ((m_head + index) % m_size));
+        }
 
     private:
         T *m_buffer;
         uint32_t m_size;
         volatile uint32_t m_head;
         volatile uint32_t m_tail;
-
-        T &operator[](uint32_t index);
-        const T &operator[](uint32_t index) const;
     };
 
 #else
-    // RTOS 版本的 RingBuffer，使用队列接口实现
     template <typename T>
     class RingBuffer : public FifoBase<T>
     {
@@ -65,22 +122,69 @@ namespace erdp
             init(queue_length);
         }
 
-        ~RingBuffer();
+        ~RingBuffer()
+        {
+            if (m_handler != nullptr)
+            {
+                erdp_if_rtos_queue_delet(m_handler);
+            }
+        }
 
-        bool init(size_t queue_length);
-        bool full() const noexcept;
-        bool empty() const noexcept;
-        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override;
-        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override;
-        uint32_t size() const noexcept;
+        bool init(size_t queue_length)
+        {
+            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(T));
+            if (m_handler == nullptr)
+            {
+                return false;
+            }
+            m_queueLength = queue_length;
+            m_queueSize = 0;
+            return true;
+        }
+
+        bool full() const noexcept
+        {
+            return m_queueSize == m_queueLength;
+        }
+
+        bool empty() const noexcept
+        {
+            return m_queueSize == 0;
+        }
+
+        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override
+        {
+            erdp_assert(m_handler != nullptr);
+            if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&item), ticks_to_wait))
+            {
+                m_queueSize++;
+                return true;
+            }
+            return false;
+        }
+
+        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override
+        {
+            erdp_assert(m_handler != nullptr);
+            if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&item), ticks_to_wait))
+            {
+                m_queueSize--;
+                return true;
+            }
+            return false;
+        }
+
+        uint32_t size() const noexcept
+        {
+            return m_queueSize;
+        }
 
     private:
         OS_Queue m_handler;
         uint32_t m_queueLength;
         uint32_t m_queueSize;
     };
-#endif
+#endif // ERDP_ENABLE_RTOS
 } // namespace erdp
 
 #endif
-

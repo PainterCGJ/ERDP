@@ -1,68 +1,51 @@
 #ifndef __ERDP_OSAL_SEMAPHORE_HPP__
 #define __ERDP_OSAL_SEMAPHORE_HPP__
-#include "erdp_if_rtos.h"
-#include <type_traits>
-
-namespace erdp
-{
+#include "erdp_config.h"
 #ifdef ERDP_ENABLE_RTOS
+#include <type_traits>
+#include "erdp_if_rtos.h"
+
+namespace erdp {
+
     template <Semaphore_tag T>
-    class Semaphore
-    {
-    public:
+    class Semaphore {
+       public:
         template <Semaphore_tag U = T, typename = std::enable_if_t<U != COUNT_TAG>>
-        Semaphore()
-        {
-            if constexpr (U == BINARY_TAG)
-            {
+        Semaphore() {
+            if constexpr (U == BINARY_TAG) {
                 m_handler = erdp_if_rtos_semaphore_creat(BINARY_TAG);
-            }
-            else if constexpr (U == MUTEX_TAG)
-            {
+            } else if constexpr (U == MUTEX_TAG) {
                 m_handler = erdp_if_rtos_semaphore_creat(MUTEX_TAG);
-            }
-            else if constexpr (U == RECURISIVE_TAG)
-            {
+            } else if constexpr (U == RECURISIVE_TAG) {
                 m_handler = erdp_if_rtos_semaphore_creat(RECURISIVE_TAG);
             }
         }
 
         template <Semaphore_tag U = T, typename = std::enable_if_t<U == COUNT_TAG>>
-        Semaphore(uint32_t max_count, uint32_t initial_count)
-        {
+        Semaphore(uint32_t max_count, uint32_t initial_count) {
             m_handler = erdp_if_rtos_counting_semaphore_creat(max_count, initial_count);
         }
 
         // 获取信号量
-        bool take(uint32_t ticks_to_wait = portMAX_DELAY)
-        {
-            if constexpr (T == RECURISIVE_TAG)
-            {
+        bool take(uint32_t ticks_to_wait = portMAX_DELAY) {
+            if constexpr (T == RECURISIVE_TAG) {
                 return erdp_if_rtos_recursive_semaphore_take(m_handler, ticks_to_wait);
-            }
-            else
-            {
+            } else {
                 return erdp_if_rtos_semaphore_take(m_handler, ticks_to_wait);
             }
         }
 
         // 释放信号量
-        bool give()
-        {
-            if constexpr (T == RECURISIVE_TAG)
-            {
+        bool give() {
+            if constexpr (T == RECURISIVE_TAG) {
                 return erdp_if_rtos_recursive_semaphore_give(m_handler);
-            }
-            else
-            {
+            } else {
                 return erdp_if_rtos_semaphore_give(m_handler);
             }
         }
 
-        ~Semaphore()
-        {
-            if (m_handler != nullptr)
-            {
+        ~Semaphore() {
+            if (m_handler != nullptr) {
                 erdp_if_rtos_semaphore_delet(m_handler);
             }
         }
@@ -71,30 +54,19 @@ namespace erdp
         Semaphore(const Semaphore &) = delete;
         Semaphore &operator=(const Semaphore &) = delete;
 
-    private:
+       private:
         OS_Semaphore m_handler = nullptr;
     };
 
-    class Mutex : private Semaphore<MUTEX_TAG>
-    {
-    public:
+    class Mutex : private Semaphore<MUTEX_TAG> {
+       public:
         Mutex() : Semaphore<MUTEX_TAG>() {}
 
-        bool lock(uint32_t ticks_to_wait = portMAX_DELAY)
-        {
-            return take(ticks_to_wait);
-        }
-        bool try_lock()
-        {
-            return take(0);
-        }
-        bool unlock()
-        {
-            return give();
-        }
+        bool lock(uint32_t ticks_to_wait = portMAX_DELAY) { return take(ticks_to_wait); }
+        bool try_lock() { return take(0); }
+        bool unlock() { return give(); }
     };
-#endif // ERDP_ENABLE_RTOS
-} // namespace erdp
+}    // namespace erdp
+#endif    // ERDP_ENABLE_RTOS
 
 #endif
-

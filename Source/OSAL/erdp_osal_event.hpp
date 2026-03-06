@@ -1,7 +1,7 @@
 #ifndef __ERDP_OSAL_EVENT_HPP__
 #define __ERDP_OSAL_EVENT_HPP__
 #include "erdp_if_rtos.h"
-
+#include "erdp_config.h"
 namespace erdp
 {
 #ifdef ERDP_ENABLE_RTOS

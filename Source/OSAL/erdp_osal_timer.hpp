@@ -1,6 +1,6 @@
 #ifndef __ERDP_OSAL_TIMER_HPP__
 #define __ERDP_OSAL_TIMER_HPP__
-#include "erdp_config.hpp"
+#include "erdp_config.h"
 #ifdef ERDP_ENABLE_RTOS
 #include <functional>    // NOLINT
 #include "erdp_if_rtos.h"
@@ -23,7 +23,8 @@ namespace erdp {
         std::function<void()> m_usrTimerFunc;
         OS_Timer m_handler;
     };
-#endif    // ERDP_ENABLE_RTOS
 
 }    // namespace erdp
+#endif    // ERDP_ENABLE_RTOS
+
 #endif
