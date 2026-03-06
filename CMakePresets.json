@@ -9,7 +9,8 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "arm-none-eabi-gcc",
                 "CMAKE_CXX_COMPILER": "arm-none-eabi-g++",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "CMAKE_CXX_FLAGS": "-fno-rtti -fno-exceptions -std=c++17"
             }
         },
         {

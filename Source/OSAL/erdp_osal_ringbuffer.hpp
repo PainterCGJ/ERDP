@@ -12,8 +12,8 @@
 namespace erdp
 {
 #ifndef ERDP_ENABLE_RTOS
-    template <typename T>
-    class RingBuffer : public FifoBase<T>
+    template <typename Type>
+    class RingBuffer : public FifoBase<Type>
     {
     public:
         RingBuffer(const RingBuffer &) = delete;
@@ -34,9 +34,9 @@ namespace erdp
         bool init(uint8_t *mempool, size_t mempool_size)
         {
             erdp_assert(mempool != nullptr);
-            erdp_assert(mempool_size % sizeof(T) == 0);
-            m_buffer = reinterpret_cast<T *>(mempool);
-            m_size = mempool_size / sizeof(T);
+            erdp_assert(mempool_size % sizeof(Type) == 0);
+            m_buffer = reinterpret_cast<Type *>(mempool);
+            m_size = mempool_size / sizeof(Type);
             m_head = 0;
             m_tail = 0;
             return true;
@@ -44,7 +44,7 @@ namespace erdp
 
         bool init(uint32_t size) noexcept
         {
-            m_buffer = new T[size];
+            m_buffer = new Type[size];
             if (m_buffer == nullptr)
             {
                 return false;
@@ -59,7 +59,7 @@ namespace erdp
 
         bool empty() const noexcept { return m_head == m_tail; }
 
-        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override
+        bool push(const Type &item, uint32_t ticks_to_wait = 0) noexcept override
         {
             (void)ticks_to_wait;
             if (full())
@@ -71,7 +71,7 @@ namespace erdp
             return true;
         }
 
-        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override
+        bool pop(Type &item, uint32_t ticks_to_wait = 0) noexcept override
         {
             (void)ticks_to_wait;
             if (empty())
@@ -88,28 +88,28 @@ namespace erdp
             return (m_tail - m_head + m_size) % m_size;
         }
 
-        T &operator[](uint32_t index)
+        Type &operator[](uint32_t index)
         {
             erdp_assert(index < size());
-            return *reinterpret_cast<T *>(m_buffer + ((m_head + index) % m_size));
+            return *reinterpret_cast<Type *>(m_buffer + ((m_head + index) % m_size));
         }
 
-        const T &operator[](uint32_t index) const
+        const Type &operator[](uint32_t index) const
         {
             erdp_assert(index < size());
-            return *reinterpret_cast<const T *>(m_buffer + ((m_head + index) % m_size));
+            return *reinterpret_cast<const Type *>(m_buffer + ((m_head + index) % m_size));
         }
 
     private:
-        T *m_buffer;
+        Type *m_buffer;
         uint32_t m_size;
         volatile uint32_t m_head;
         volatile uint32_t m_tail;
     };
 
 #else
-    template <typename T>
-    class RingBuffer : public FifoBase<T>
+    template <typename Type>
+    class RingBuffer : public FifoBase<Type>
     {
     public:
         RingBuffer(const RingBuffer &) = delete;
@@ -132,7 +132,7 @@ namespace erdp
 
         bool init(size_t queue_length)
         {
-            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(T));
+            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(Type));
             if (m_handler == nullptr)
             {
                 return false;
@@ -152,7 +152,7 @@ namespace erdp
             return m_queueSize == 0;
         }
 
-        bool push(const T &item, uint32_t ticks_to_wait = 0) noexcept override
+        bool push(const Type &item, uint32_t ticks_to_wait = 0) noexcept override
         {
             erdp_assert(m_handler != nullptr);
             if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&item), ticks_to_wait))
@@ -163,7 +163,7 @@ namespace erdp
             return false;
         }
 
-        bool pop(T &item, uint32_t ticks_to_wait = 0) noexcept override
+        bool pop(Type &item, uint32_t ticks_to_wait = 0) noexcept override
         {
             erdp_assert(m_handler != nullptr);
             if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&item), ticks_to_wait))

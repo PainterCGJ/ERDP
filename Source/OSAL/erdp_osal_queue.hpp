@@ -7,8 +7,8 @@
 #ifdef ERDP_ENABLE_RTOS
 #include "erdp_if_rtos.h"
 namespace erdp {
-    template <typename _Type>
-    class Queue : public FifoBase<_Type> {
+    template <typename Type>
+    class Queue : public FifoBase<Type> {
        public:
         Queue() {}
         Queue(uint32_t queue_length) { init(queue_length); }
@@ -20,7 +20,7 @@ namespace erdp {
 
         bool init(size_t queue_length)
         {
-            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(_Type));
+            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(Type));
             if (m_handler == nullptr)
             {
                 return false;
@@ -30,7 +30,7 @@ namespace erdp {
             return true;
         }
 
-        bool push(const _Type &elm_to_push, uint32_t ticks_to_wait = 0) override
+        bool push(const Type &elm_to_push, uint32_t ticks_to_wait = 0) override
         {
             erdp_assert(m_handler != nullptr);
             if (erdp_if_rtos_queue_send(m_handler, (uint8_t *)(&elm_to_push), ticks_to_wait))
@@ -41,7 +41,7 @@ namespace erdp {
             return false;
         }
 
-        bool pop(_Type &elm_recv, uint32_t ticks_to_wait = 0) override
+        bool pop(Type &elm_recv, uint32_t ticks_to_wait = 0) override
         {
             erdp_assert(m_handler != nullptr);
             if (erdp_if_rtos_queue_recv(m_handler, (uint8_t *)(&elm_recv), ticks_to_wait))

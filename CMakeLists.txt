@@ -105,7 +105,6 @@ add_compile_options(
     -Wno-unused-parameter
     -Wno-unused-function
     $<$<COMPILE_LANGUAGE:C>:-Wimplicit-function-declaration>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
 )
 
 # 链接选项
@@ -120,6 +119,11 @@ add_subdirectory(Source/Kernel)
 
 # 引用 Interface 层
 add_subdirectory(Source/Interface)
+
+# 引用 HAL 层
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/HAL/CMakeLists.txt")
+    add_subdirectory(Source/HAL)
+endif()
 
 # 引用 OSAL 层
 if(EXISTS "${CMAKE_SOURCE_DIR}/Source/OSAL/CMakeLists.txt")
