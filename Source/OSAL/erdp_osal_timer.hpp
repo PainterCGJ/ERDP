@@ -1,10 +1,11 @@
 #ifndef __ERDP_OSAL_TIMER_HPP__
 #define __ERDP_OSAL_TIMER_HPP__
-#include <functional> // NOLINT
-#include "erdp_if_rtos.h"
-
-namespace erdp {
+#include "erdp_config.hpp"
 #ifdef ERDP_ENABLE_RTOS
+#include <functional>    // NOLINT
+#include "erdp_if_rtos.h"
+namespace erdp {
+
     class Timer {
        public:
         Timer(std::function<void()> callback, const char *name, uint32_t period_ms, bool auto_reload = true);
@@ -23,7 +24,6 @@ namespace erdp {
         OS_Timer m_handler;
     };
 #endif    // ERDP_ENABLE_RTOS
+
 }    // namespace erdp
-
 #endif
-
