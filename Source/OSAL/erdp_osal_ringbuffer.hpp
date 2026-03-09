@@ -115,11 +115,11 @@ namespace erdp
         RingBuffer(const RingBuffer &) = delete;
         RingBuffer &operator=(const RingBuffer &) = delete;
 
-        RingBuffer() {}
+        RingBuffer():m_handler(nullptr),m_queueLength(0),m_queueSize(0) {}
 
-        RingBuffer(uint32_t queue_length)
+        RingBuffer(size_t size)
         {
-            init(queue_length);
+            init(size);
         }
 
         ~RingBuffer()
@@ -130,14 +130,14 @@ namespace erdp
             }
         }
 
-        bool init(size_t queue_length)
+        bool init(size_t size) override
         {
-            m_handler = erdp_if_rtos_queue_create(queue_length, sizeof(Type));
+            m_handler = erdp_if_rtos_queue_create(size, sizeof(Type));
             if (m_handler == nullptr)
             {
                 return false;
             }
-            m_queueLength = queue_length;
+            m_queueLength = size;
             m_queueSize = 0;
             return true;
         }
