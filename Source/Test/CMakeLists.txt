@@ -35,6 +35,7 @@ target_include_directories(hal-test.elf PRIVATE
 target_link_libraries(hal-test.elf
     osal
     hal-gpio
+    hal-uart
     interface-rtos
 )
 
