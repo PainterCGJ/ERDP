@@ -8,16 +8,16 @@ class LED : private GpioDev {
    public:
     LED(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_Status_t on_level = ERDP_SET)
         : GpioDev(port, pin, ERDP_GPIO_PIN_MODE_OUTPUT, ERDP_GPIO_PIN_PULL_NONE, ERDP_GPIO_SPEED_LOW),
-          m_on_level(on_level),
+          m_onLevel(on_level),
           m_status((ERDP_Status_t)!on_level) {}
 
     void on() {
-        write((ERDP_Status_t)m_on_level);
-        m_status = (ERDP_Status_t)m_on_level;
+        write((ERDP_Status_t)m_onLevel);
+        m_status = (ERDP_Status_t)m_onLevel;
     }
     void off() {
-        write((ERDP_Status_t)!m_on_level);
-        m_status = (ERDP_Status_t)!m_on_level;
+        write((ERDP_Status_t)!m_onLevel);
+        m_status = (ERDP_Status_t)!m_onLevel;
     }
 
     void toggle() {
@@ -26,7 +26,7 @@ class LED : private GpioDev {
     }
 
    private:
-    ERDP_Status_t m_on_level;
+    ERDP_Status_t m_onLevel;
     ERDP_Status_t m_status;
 };
 void erdp::Thread::mainThread(void *parm) {
