@@ -5,7 +5,7 @@
 #include "erdp_hal_gpio.hpp"
 #include "erdp_osal.hpp"
 #include <vector>
-#include "log_adapter.hpp"
+// #include "log_adapter.hpp"
 
 using namespace erdp;
 using namespace std;
@@ -42,16 +42,16 @@ class LED : private GpioDev {
 
 void Thread::mainThread(void *parm)
 {
-	UartDev uart(uart_backon_config,100);
-	uart.set_as_debug_com();
-	printf("gd32 hello word\n");
+	// UartDev uart(uart_backon_config,100);
+	// uart.set_as_debug_com();
+	// printf("gd32 hello word\n");
     LED sys_led(SYS_LED_PORT, SYS_LED_PIN, ERDP_RESET);
 	erdp::Thread LED_thread(
         [&sys_led]() {
             while (1) {
                 sys_led.toggle();    // Toggle the system LED to indicate the
                                      // system is
-                Thread::delay_ms(1000);
+                Thread::sleep(1000);
             }
         },
         "LED", 6, 128);
@@ -59,6 +59,6 @@ void Thread::mainThread(void *parm)
 
     while (1)
     {
-        Thread::delay_ms(10);
+        Thread::sleep(10);
     }
 }
