@@ -56,7 +56,7 @@
                 "interface-rtos-test",
                 "all"
             ],
-            "default": "interface-rtos-test",
+            "default": "app",
             "description": "选择构建目标"
         }
     ]
