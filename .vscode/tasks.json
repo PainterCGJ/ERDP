@@ -48,6 +48,7 @@
             "id": "buildTarget",
             "type": "pickString",
             "options": [
+                "app",
                 "hal-test",
                 "interface-driver-test",
                 "driver-test",
