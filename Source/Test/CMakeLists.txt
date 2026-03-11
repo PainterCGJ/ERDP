@@ -42,6 +42,7 @@ target_link_libraries(hal-test.elf
 target_link_options(hal-test.elf PRIVATE
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/hal-test.map
     -Wl,--gc-sections
+    -Wl,--print-memory-usage
     --specs=nano.specs
 )
 
@@ -56,13 +57,16 @@ add_custom_command(
     OUTPUT hal-test.hex
     COMMAND ${CMAKE_OBJCOPY} -O ihex hal-test.elf hal-test.hex
     DEPENDS hal-test.elf
-    COMMENT "Generating hal-test HEX file..."
+    COMMENT "Generating HAL test HEX file..."
 )
 add_custom_target(hal-test DEPENDS hal-test.hex)
 
 add_custom_command(TARGET hal-test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:hal-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
     COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/hal-test.hex"
+    COMMAND ${CMAKE_COMMAND} -E echo "--- Firmware Size ---"
+    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:hal-test.elf>
+    COMMAND ${CMAKE_COMMAND} -E echo "---------------------"
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/flash
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:hal-test.elf> ${CMAKE_SOURCE_DIR}/build/flash/flash.elf
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/hal-test.hex ${CMAKE_SOURCE_DIR}/build/flash/flash.hex
@@ -98,15 +102,15 @@ target_link_libraries(osal-test.elf
 target_link_options(osal-test.elf PRIVATE
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/osal-test.map
     -Wl,--gc-sections
+    -Wl,--print-memory-usage
     --specs=nano.specs
 )
-
 
 add_custom_command(
     OUTPUT osal-test.hex
     COMMAND ${CMAKE_OBJCOPY} -O ihex osal-test.elf osal-test.hex
     DEPENDS osal-test.elf
-    COMMENT "Generating HEX file..."
+    COMMENT "Generating OSAL test HEX file..."
 )
 add_custom_target(osal-test DEPENDS osal-test.hex)
 
@@ -140,6 +144,7 @@ target_link_libraries(interface-rtos-test.elf
 target_link_options(interface-rtos-test.elf PRIVATE
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/interface-rtos-test.map
     -Wl,--gc-sections
+    -Wl,--print-memory-usage
     --specs=nano.specs
 )
 
@@ -179,6 +184,7 @@ target_link_libraries(interface-driver-test.elf
 target_link_options(interface-driver-test.elf PRIVATE
     -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/interface-driver-test.map
     -Wl,--gc-sections
+    -Wl,--print-memory-usage
     --specs=nano.specs
 )
 
@@ -214,6 +220,7 @@ if(EXISTS ${DRIVER_TEST_SOURCE})
     target_link_options(driver-test.elf PRIVATE
         -Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/driver-test.map
         -Wl,--gc-sections
+        -Wl,--print-memory-usage
         --specs=nano.specs
     )
 
@@ -221,7 +228,7 @@ if(EXISTS ${DRIVER_TEST_SOURCE})
         OUTPUT driver-test.hex
         COMMAND ${CMAKE_OBJCOPY} -O ihex driver-test.elf driver-test.hex
         DEPENDS driver-test.elf
-        COMMENT "Generating HEX file..."
+        COMMENT "Generating driver test HEX file..."
     )
     add_custom_target(driver-test DEPENDS driver-test.hex)
 

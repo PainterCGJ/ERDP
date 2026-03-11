@@ -1,7 +1,5 @@
 # HAL GPIO CMakeLists.txt
 
-enable_language(CXX)
-
 set(HAL_GPIO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_hal_gpio.cpp
 )
