@@ -29,6 +29,7 @@ target_link_libraries(app.elf
     osal
     hal-uart
     hal-gpio
+    log-service
 )
 
 target_compile_features(app.elf PRIVATE cxx_std_17)

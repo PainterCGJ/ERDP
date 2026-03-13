@@ -154,7 +154,7 @@ add_custom_command(
     DEPENDS interface-rtos-test.elf
     COMMENT "Generating interface-rtos-test HEX file..."
 )
-add_custom_target(interface-rtos-test ALL DEPENDS interface-rtos-test.hex)
+add_custom_target(interface-rtos-test DEPENDS interface-rtos-test.hex)
 
 add_custom_command(TARGET interface-rtos-test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:interface-rtos-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt

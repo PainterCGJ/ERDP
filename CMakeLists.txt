@@ -171,14 +171,13 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Application/CMakeLists.txt")
     add_subdirectory(Source/Application)
 endif()
 
+# 服务模块
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Service/CMakeLists.txt")
+    add_subdirectory(Source/Service)
+endif()
+
 # 烧录功能（通过 cmake install 调用）
 include(${CMAKE_SOURCE_DIR}/cmake/flash_by_install.cmake)
-
-# 未来模块的框架
-# 中间件模块
-# if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Middleware/CMakeLists.txt")
-#     add_subdirectory(Source/Middleware)
-# endif()
 
 # 板级支持包
 # if(EXISTS "${CMAKE_SOURCE_DIR}/Source/BSP/CMakeLists.txt")

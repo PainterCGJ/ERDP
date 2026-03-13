@@ -28,9 +28,11 @@ set(FLASH_COPY_DIR "${PROJECT_SOURCE_DIR}/build/flash")
 
 set(FIRMWARE_SEARCH_PATHS
   "${FLASH_COPY_DIR}/flash.elf"
+  "${CMAKE_BINARY_DIR}/Source/Application/app.elf"
   "${CMAKE_BINARY_DIR}/Source/Test/interface-driver-test.elf"
   "${CMAKE_BINARY_DIR}/Source/Test/interface-rtos-test.elf"
   "${CMAKE_BINARY_DIR}/Source/Test/osal-test.elf"
+  "${CMAKE_BINARY_DIR}/Source/Test/hal-test.elf"
   "${CMAKE_BINARY_DIR}/Source/Test/driver-test.elf"
 )
 
@@ -92,10 +94,10 @@ install(
     )
     
     if(NOT \"\${FLASH_STDOUT}\" STREQUAL \"\")
-      message(STATUS \"OpenOCD stdout:\\n\${FLASH_STDOUT}\")
+      message(STATUS \"OpenOCD stdout:\n\${FLASH_STDOUT}\")
     endif()
     if(NOT \"\${FLASH_STDERR}\" STREQUAL \"\")
-      message(STATUS \"OpenOCD stderr:\\n\${FLASH_STDERR}\")
+      message(STATUS \"OpenOCD stderr:\n\${FLASH_STDERR}\")
     endif()
 
     if(NOT \"\${FLASH_RESULT}\" STREQUAL \"0\")
@@ -112,10 +114,10 @@ install(
         ERROR_VARIABLE FLASH_ERASE_STDERR
       )
       if(NOT \"\${FLASH_ERASE_STDOUT}\" STREQUAL \"\")
-        message(STATUS \"OpenOCD erase stdout:\\n\${FLASH_ERASE_STDOUT}\")
+        message(STATUS \"OpenOCD erase stdout:\n\${FLASH_ERASE_STDOUT}\")
       endif()
       if(NOT \"\${FLASH_ERASE_STDERR}\" STREQUAL \"\")
-        message(STATUS \"OpenOCD erase stderr:\\n\${FLASH_ERASE_STDERR}\")
+        message(STATUS \"OpenOCD erase stderr:\n\${FLASH_ERASE_STDERR}\")
       endif()
 
       if(\"\${FLASH_ERASE_RESULT}\" STREQUAL \"0\")
@@ -131,10 +133,10 @@ install(
           ERROR_VARIABLE FLASH_RETRY_STDERR
         )
         if(NOT \"\${FLASH_RETRY_STDOUT}\" STREQUAL \"\")
-          message(STATUS \"OpenOCD retry stdout:\\n\${FLASH_RETRY_STDOUT}\")
+          message(STATUS \"OpenOCD retry stdout:\n\${FLASH_RETRY_STDOUT}\")
         endif()
         if(NOT \"\${FLASH_RETRY_STDERR}\" STREQUAL \"\")
-          message(STATUS \"OpenOCD retry stderr:\\n\${FLASH_RETRY_STDERR}\")
+          message(STATUS \"OpenOCD retry stderr:\n\${FLASH_RETRY_STDERR}\")
         endif()
         set(FLASH_RESULT \"\${FLASH_RETRY_RESULT}\")
       else()

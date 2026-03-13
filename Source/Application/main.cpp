@@ -5,39 +5,39 @@
 #include "erdp_hal_gpio.hpp"
 #include "erdp_osal.hpp"
 #include <vector>
+#include "log_service.hpp"
 // #include "log_adapter.hpp"
 
 using namespace erdp;
 using namespace std;
 #define SYS_LED_PORT ERDP_GPIOC
-#define SYS_LED_PIN ERDP_GPIO_PIN_13
+#define SYS_LED_PIN ERDP_GPIO_PIN_0
 
 
 class LED : private GpioDev {
    public:
-    LED(ERDP_GpioPort_t port, ERDP_GpioPin_t pin,
-        ERDP_Status_t on_level = ERDP_SET)
-        : GpioDev(port, pin, ERDP_GPIO_PIN_MODE_OUTPUT, ERDP_GPIO_PIN_PULL_NONE,
-                  ERDP_GPIO_SPEED_LOW),
-          __on_level(on_level) {}
+    LED(ERDP_GpioPort_t port, ERDP_GpioPin_t pin, ERDP_Status_t on_level = ERDP_SET)
+        : GpioDev(port, pin, ERDP_GPIO_PIN_MODE_OUTPUT, ERDP_GPIO_PIN_PULL_NONE, ERDP_GPIO_SPEED_LOW),
+          m_onLevel(on_level),
+          m_status((ERDP_Status_t)!on_level) {}
 
     void on() {
-        write((ERDP_Status_t)__on_level);
-        __status = (ERDP_Status_t)__on_level;
+        write((ERDP_Status_t)m_onLevel);
+        m_status = (ERDP_Status_t)m_onLevel;
     }
     void off() {
-        write((ERDP_Status_t)!__on_level);
-        __status = (ERDP_Status_t)!__on_level;
+        write((ERDP_Status_t)!m_onLevel);
+        m_status = (ERDP_Status_t)!m_onLevel;
     }
 
     void toggle() {
-        __status = (ERDP_Status_t)!__status;
-        write(__status);
+        m_status = (ERDP_Status_t)!m_status;
+        write(m_status);
     }
 
    private:
-    ERDP_Status_t __on_level;
-    ERDP_Status_t __status;
+    ERDP_Status_t m_onLevel;
+    ERDP_Status_t m_status;
 };
 
 void Thread::mainThread(void *parm)
@@ -51,7 +51,7 @@ void Thread::mainThread(void *parm)
             while (1) {
                 sys_led.toggle();    // Toggle the system LED to indicate the
                                      // system is
-                Thread::sleep(1000);
+                Thread::sleep(500);
             }
         },
         "LED", 6, 128);
