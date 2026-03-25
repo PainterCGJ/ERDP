@@ -107,7 +107,7 @@ namespace erdp
         volatile uint32_t m_tail;
     };
 
-#else
+#else // ERDP_ENABLE_RTOS
     template <typename Type>
     class RingBuffer : public FifoBase<Type>
     {
@@ -117,7 +117,7 @@ namespace erdp
 
         RingBuffer():m_handler(nullptr),m_queueLength(0),m_queueSize(0) {}
 
-        RingBuffer(size_t size)
+        explicit RingBuffer(size_t size)
         {
             init(size);
         }
@@ -142,12 +142,12 @@ namespace erdp
             return true;
         }
 
-        bool full() const noexcept
+        bool full() const noexcept override
         {
             return m_queueSize == m_queueLength;
         }
 
-        bool empty() const noexcept
+        bool empty() const noexcept override
         {
             return m_queueSize == 0;
         }
@@ -174,7 +174,7 @@ namespace erdp
             return false;
         }
 
-        uint32_t size() const noexcept
+        uint32_t size() const noexcept override
         {
             return m_queueSize;
         }
