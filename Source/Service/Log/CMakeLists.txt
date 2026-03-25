@@ -15,6 +15,7 @@ target_include_directories(log-service PUBLIC
 
 target_link_libraries(log-service
     osal
+    hal-uart
 )
 
 set_target_properties(hal-uart PROPERTIES
