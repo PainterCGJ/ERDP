@@ -2,7 +2,7 @@
 namespace erdp
 {
     UartDev *UartDev::m_instance[ERDP_UART_NUM];
-
+    void (*UartDev::putChar)(char c) = erdp_if_uart_putchar;
     extern "C"
     {
         void erdp_uart_irq_handler(ERDP_Uart_t uart)

@@ -65,6 +65,7 @@ namespace erdp {
 
         void setAsDebugCom() { erdp_if_uart_set_putchar_com(m_uart); }
 
+        static void (*putChar)(char c);
        private:
         ERDP_Uart_t m_uart = ERDP_UART0;              // Default to UART0
         static UartDev *m_instance[ERDP_UART_NUM];    // Array to hold instances for each UART
