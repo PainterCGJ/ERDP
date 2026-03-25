@@ -100,7 +100,7 @@ void erdp_if_rtos_list_item_init(OS_ListItem *pxItem, void *pxOwner) {
     listSET_LIST_ITEM_OWNER(pxItem, pxOwner);
 }
 
-void os_list_insert_end(OS_List list, OS_ListItem *pxItem) { vListInsertEnd(list, pxItem); }
+void erdp_if_rtos_list_insert_end(OS_List list, OS_ListItem *pxItem) { vListInsertEnd(list, pxItem); }
 
 void erdp_if_rtos_list_printf(OS_List list) {
     OS_ListItem *pxItem = (OS_ListItem *)(list->xListEnd.pxNext);

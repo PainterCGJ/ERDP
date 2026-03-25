@@ -16,6 +16,7 @@ extern "C" {
 /* Configuration Constants */
 #define DEFAULT_STACK_SIZE 128           /* Default task stack size in words */
 #define OS_WAIT_FOREVER    portMAX_DELAY /* Infinite blocking period */
+#define OS_MAX_PRIORITIES  configMAX_PRIORITIES
 
     typedef TaskHandle_t OS_TaskHandle;
 
