@@ -50,6 +50,8 @@ namespace erdp {
 
         void kill(OS_TaskHandle handler = nullptr);
 
+        char *getName();
+
         OS_TaskHandle getThreadHandler();
 
         static void sleep(uint32_t ms);

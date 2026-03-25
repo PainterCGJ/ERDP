@@ -156,6 +156,8 @@ namespace erdp
     void Thread::resume() { erdp_if_rtos_task_resume(m_handler); }
 
     void Thread::kill(OS_TaskHandle handler) { erdp_if_rtos_task_delete(handler); }
+    
+    char *Thread::getName() { return m_name; }
 
     OS_TaskHandle Thread::getThreadHandler() { return m_handler; }
 
@@ -178,6 +180,7 @@ namespace erdp
     {
         Thread *thead = static_cast<Thread *>(parm);
         thead->threadCode();
+        printf("thread %s exit\n", thead->getName());
         thead->kill();
     }
 
