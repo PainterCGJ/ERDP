@@ -3,7 +3,7 @@
 
 /* ================================< user config >================================ */
 
-#define ERDP_CONFIG_HEAP_SIZE ((size_t)(10 * 1024))
+#define ERDP_CONFIG_HEAP_SIZE ((size_t)(50 * 1024))
 
 #define ERDP_CONFIG_ASSERT_ENABLED 1
 
