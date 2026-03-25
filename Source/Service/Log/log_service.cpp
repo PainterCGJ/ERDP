@@ -14,6 +14,7 @@ namespace erdp {
     char LoggerBase::COLOR_ANSI[5][6];
     LoggerBase::LogBlock LoggerBase::m_logBlock[LOG_BUFFER_COUNT];
     RingBuffer<uint8_t> LoggerBase::m_bufferOrder;
+    Mutex* LoggerBase::m_pMutex = nullptr;
     LoggerBase::~LoggerBase() {
         if (m_pLogThread) {
             m_pLogThread->kill();
@@ -25,6 +26,7 @@ namespace erdp {
     void LoggerBase::start() {
         if (!m_pLogThread) {
             // 初始化日志缓冲区
+            m_pMutex = new Mutex();
             for (int i = 0; i < LOG_BUFFER_COUNT; i++) {
                 m_logBlock[i].pEvent = new erdp::Event();
                 m_logBlock[i].pEvent->set(LOGBUFFER_EVENT_IDLE);
@@ -50,15 +52,19 @@ namespace erdp {
     }
 
     int LoggerBase::findIdleBlock() {
+        int blockIndex = -1;
+        m_pMutex->lock();
         for (int i = 0; i < LOG_BUFFER_COUNT; i++) {
             if (m_logBlock[i].pEvent->get() & LOGBUFFER_EVENT_IDLE) {
                 m_logBlock[i].pEvent->clear(LOGBUFFER_EVENT_IDLE);
                 m_logBlock[i].pEvent->set(LOGBUFFER_EVENT_WRITE);
                 m_logBlock[i].bufferLen = 0;
-                return i;
+                blockIndex = i;
+                break;
             }
         }
-        return -1;
+        m_pMutex->unlock();
+        return blockIndex;
     }
     bool LoggerBase::isBufferEnough(uint8_t blockIndex, uint8_t expectLen) {
         return m_logBlock[blockIndex].bufferLen + expectLen <= LOG_BUFFER_SIZE;
