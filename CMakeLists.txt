@@ -132,6 +132,9 @@ add_compile_options(
     -Wundef
     -Wno-unused-parameter
     -Wno-unused-function
+    -Wno-gnu-variadic-macros
+    $<$<COMPILE_LANGUAGE:CXX>:-Wno-pedantic>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wno-c++11-extensions>
     $<$<COMPILE_LANGUAGE:C>:-Wimplicit-function-declaration>
 )
 
