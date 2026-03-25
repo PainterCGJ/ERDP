@@ -42,7 +42,7 @@ namespace erdp {
         static char LOG_LEVEL_STR[5][2];
         static char COLOR_ANSI[5][6];
         constexpr static char FORMAT[] = ERDP_SET_LOGGER_FORMAT;
-        constexpr static uint32_t FORMAT_SIZE = sizeof(FORMAT) + 9;
+        constexpr static uint32_t FORMAT_SIZE = sizeof(FORMAT) + 12;
         static Thread* m_pLogThread;
         static void logThreadFunc(void* arg);
         static int findIdleBlock();

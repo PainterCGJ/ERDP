@@ -68,11 +68,11 @@ namespace erdp {
         char fmtChar = '\0';
         int blockIndex = -1;
         char messageBuffer[LOG_MAX_LEN];
-        char timeString[12];
+        char timeString[15];
         char* pStrToWrite = nullptr;
 
 #ifdef ERDP_ENABLE_LOGGER_COLOR
-        char format[sizeof(ERDP_SET_LOGGER_FORMAT) + 9];
+        char format[sizeof(ERDP_SET_LOGGER_FORMAT) + 12];
         strcpy(format, COLOR_ANSI[level]);
         strcat(format, ERDP_SET_LOGGER_FORMAT);
         strcat(format, "\033[0m");
@@ -107,9 +107,10 @@ namespace erdp {
                         uint32_t totalSeconds = ticks / 1000;
                         uint32_t hours = totalSeconds / 3600;
                         uint32_t minutes = (totalSeconds / 60) % 60;
+                        uint32_t seconds = totalSeconds % 60;
                         uint32_t milliseconds = ticks % 1000;
-                        snprintf(timeString, 12, "%02lu:%02lu:%03lu", hours, minutes, milliseconds);
-                        expectLen = 9;
+                        snprintf(timeString, 15, "%02lu:%02lu:%02lu.%03lu", hours, minutes, seconds, milliseconds);
+                        expectLen = 12;
                         pStrToWrite = timeString;
                         break;
                     }
