@@ -11,15 +11,22 @@
 
 #define ERDP_CONFIG_MAIN_THREAD_STACK_SIZE (1024)
 
-#define ERDP_LOGGER_FORMAT  "%l-[%t]-[%m]%s\n"
+#define ERDP_SET_LOGGER_FORMAT "%l-[%t]-[%m]%s\n"
+
+#define ERDP_CONFIG_LOGGER_ENABLE_COLOR 0
+
 /* =============================< end of user config >============================ */
 
 #if ERDP_CONFIG_RTOS_ENABLED == 1
-#define ERDP_ENABLE_RTOS 
+#define ERDP_ENABLE_RTOS
 #endif
 
 #if ERDP_CONFIG_ASSERT_ENABLED == 1
 #define ERDP_ENABLE_ASSERT
+#endif
+
+#if ERDP_CONFIG_LOGGER_ENABLE_COLOR == 1
+#define ERDP_ENABLE_LOGGER_COLOR
 #endif
 
 #endif
