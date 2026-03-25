@@ -60,6 +60,8 @@ namespace erdp {
 
         static uint32_t getSystem1msTicks();
 
+        static void setKillThreadHook(std::function<void(Thread*)> hook);
+        
         virtual void threadCode();
 
        private:
@@ -74,6 +76,7 @@ namespace erdp {
 
         static OS_TaskHandle m_mainTask;
         static void mainThread(void *parm);
+        static std::function<void(Thread*)> killThreadHook;
     };
 
 #else    // ERDP_ENABLE_RTOS
