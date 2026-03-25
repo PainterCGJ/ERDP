@@ -10,6 +10,8 @@
 #define ERDP_CONFIG_RTOS_ENABLED 1
 
 #define ERDP_CONFIG_MAIN_THREAD_STACK_SIZE (1024)
+
+#define ERDP_LOGGER_FORMAT  "%l-[%t]-[%m]%s\n"
 /* =============================< end of user config >============================ */
 
 #if ERDP_CONFIG_RTOS_ENABLED == 1
