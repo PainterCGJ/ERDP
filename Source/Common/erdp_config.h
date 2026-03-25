@@ -13,7 +13,7 @@
 
 #define ERDP_SET_LOGGER_FORMAT "%l-[%t]-[%m]%s\n"
 
-#define ERDP_CONFIG_LOGGER_ENABLE_COLOR 0
+#define ERDP_CONFIG_LOGGER_ENABLE_COLOR 1
 
 /* =============================< end of user config >============================ */
 
