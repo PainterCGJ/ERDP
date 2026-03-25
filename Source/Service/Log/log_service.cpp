@@ -8,10 +8,10 @@
 #include "erdp_hal_uart.hpp"
 #include "thread_config.h"
 
-
 namespace erdp {
     Thread* LoggerBase::m_pLogThread = nullptr;
     char LoggerBase::LOG_LEVEL_STR[5][2];
+    char LoggerBase::COLOR_ANSI[5][6];
     LoggerBase::LogBlock LoggerBase::m_logBlock[LOG_BUFFER_COUNT];
     RingBuffer<uint8_t> LoggerBase::m_bufferOrder;
     LoggerBase::~LoggerBase() {
@@ -38,6 +38,12 @@ namespace erdp {
             strcpy(LOG_LEVEL_STR[WARN], "W");
             strcpy(LOG_LEVEL_STR[ERROR], "E");
             strcpy(LOG_LEVEL_STR[FATAL], "F");
+            // 初始化颜色ANSI
+            strcpy(COLOR_ANSI[DEBUG], "\033[90m");    // 白色
+            strcpy(COLOR_ANSI[INFO], "\033[32m");     // 翠绿色
+            strcpy(COLOR_ANSI[WARN], "\033[33m");     // 黄色
+            strcpy(COLOR_ANSI[ERROR], "\033[31m");    // 红色
+            strcpy(COLOR_ANSI[FATAL], "\033[31m");    // 红色
             m_pLogThread = new Thread(logThreadFunc, "LogThread", LOG_SERVICE_PRIO, LOG_THREAD_STACK_SIZE);
             m_pLogThread->join();
         }
@@ -64,16 +70,26 @@ namespace erdp {
         char messageBuffer[LOG_MAX_LEN];
         char timeString[12];
         char* pStrToWrite = nullptr;
+
+#ifdef ERDP_ENABLE_LOGGER_COLOR
+        char format[sizeof(ERDP_SET_LOGGER_FORMAT) + 9];
+        strcpy(format, COLOR_ANSI[level]);
+        strcat(format, ERDP_SET_LOGGER_FORMAT);
+        strcat(format, "\033[0m");
+#else
+        char format[sizeof(ERDP_SET_LOGGER_FORMAT)];
+        strcpy(format, ERDP_SET_LOGGER_FORMAT);
+#endif
         uint8_t expectLen = 0;
         va_list args;
         va_start(args, fmt);
         vsnprintf(messageBuffer, sizeof(messageBuffer), fmt, args);
         va_end(args);
-        for (uint32_t fmtPos = 0; fmtPos < sizeof(FORMAT); fmtPos++) {
-            fmtChar = FORMAT[fmtPos];
+        for (uint32_t fmtPos = 0; fmtPos < sizeof(format); fmtPos++) {
+            fmtChar = format[fmtPos];
             if (fmtChar == '%') {
                 fmtPos++;
-                switch (FORMAT[fmtPos]) {
+                switch (format[fmtPos]) {
                     case 'l':
                         expectLen = strlen(LOG_LEVEL_STR[level]);
                         pStrToWrite = LOG_LEVEL_STR[level];

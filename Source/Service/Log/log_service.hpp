@@ -7,13 +7,13 @@
 #include "erdp_osal.hpp"
 
 #define LOG_MAX_LEN      (128)
-#define LOG_BUFFER_SIZE  (8)
+#define LOG_BUFFER_SIZE  (64)
 #define LOG_BUFFER_COUNT (16)
 
 #define LOGBUFFER_EVENT_IDLE  (uint32_t(1) << 0)
 #define LOGBUFFER_EVENT_WRITE (uint32_t(1) << 1)
 #define LOGBUFFER_EVENT_READY (uint32_t(1) << 2)
-
+// 使用空参数时调用无参版本
 #define Debug(module, fmt, ...) LoggerBase::message(LoggerBase::DEBUG, module, fmt, ##__VA_ARGS__)
 #define Info(module, fmt, ...) LoggerBase::message(LoggerBase::INFO, module, fmt, ##__VA_ARGS__)
 #define Warn(module, fmt, ...) LoggerBase::message(LoggerBase::WARN, module, fmt, ##__VA_ARGS__)
@@ -40,7 +40,8 @@ namespace erdp {
         static LogBlock m_logBlock[LOG_BUFFER_COUNT];
         static RingBuffer<uint8_t> m_bufferOrder;
         static char LOG_LEVEL_STR[5][2];
-        constexpr static char FORMAT[] = ERDP_LOGGER_FORMAT;
+        static char COLOR_ANSI[5][6];
+        constexpr static char FORMAT[] = ERDP_SET_LOGGER_FORMAT;
         constexpr static uint32_t FORMAT_SIZE = sizeof(FORMAT) + 9;
         static Thread* m_pLogThread;
         static void logThreadFunc(void* arg);
