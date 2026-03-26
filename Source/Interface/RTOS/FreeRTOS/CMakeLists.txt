@@ -11,6 +11,7 @@ add_library(interface-rtos STATIC
 target_include_directories(interface-rtos PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/Source/Interface
+    ${CMAKE_SOURCE_DIR}/Source/Interface/RTOS
     ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS/inc
     ${CMAKE_SOURCE_DIR}/Source/Kernel/RTOS/FreeRTOS
 )

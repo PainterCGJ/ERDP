@@ -1,18 +1,18 @@
 # STM32F4XX Interface Hardware CMakeLists.txt
 
 set(STM32F4XX_IF_INC_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${CMAKE_SOURCE_DIR}/Source/Interface
+    ${CMAKE_SOURCE_DIR}/Source/Interface/Drivers
     ${CMAKE_SOURCE_DIR}/Source/Common
 )
 
 set(STM32F4XX_IF_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_gpio.c
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_exti.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_uart.c
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_spi.c
-    # ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_i2c.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/erdp_if_sys.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_gpio.c
+    # ${CMAKE_CURRENT_SOURCE_DIR}//erdp_if_exti.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_uart.c
+    # ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_spi.c
+    # ${CMAKE_CURRENT_SOURCE_DIR}//erdp_if_i2c.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_sys.c
 
 )
 

@@ -3,6 +3,8 @@
 
 extern void erdp_uart_irq_handler(ERDP_Uart_t uart);
 
+static ERDP_Uart_t putchar_com = ERDP_UART_NUM;
+
 const static uint32_t uart_instance[ERDP_UART_NUM]={
     (uint32_t)USART0,
     (uint32_t)USART1,
@@ -12,7 +14,7 @@ const static uint32_t uart_instance[ERDP_UART_NUM]={
     (uint32_t)USART5,
     (uint32_t)UART6,
     (uint32_t)UART7
-};
+}; 
 
 uint32_t erdp_if_uart_get_base(ERDP_Uart_t uart)
 {
@@ -213,4 +215,17 @@ void UART6_IRQHandler(void)
 void UART7_IRQHandler(void)
 {
     erdp_uart_irq_handler(ERDP_UART7);
+}
+
+void erdp_if_uart_set_putchar_com(ERDP_Uart_t uart) { putchar_com = uart; }
+
+void erdp_if_uart_putchar(char c) {
+    if (putchar_com == ERDP_UART_NUM) {
+        return;
+    }
+    uint32_t uart_base = uart_instance[putchar_com];
+    while (usart_flag_get(uart_base, USART_FLAG_TBE) == RESET) {
+        ;    // Wait for transmission complete
+    }
+    usart_data_transmit(uart_base, c);
 }
