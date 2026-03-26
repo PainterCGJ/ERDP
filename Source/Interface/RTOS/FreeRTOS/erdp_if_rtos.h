@@ -274,6 +274,18 @@ extern "C" {
     OS_EventBits erdp_if_rtos_get_event_bits(OS_Event event);
 
     /**
+     * @brief Waits for specified bits in an event group
+     * @param[in] event Handle to the event group
+     * @param[in] bits_to_wait Bits to wait for (bitwise OR)
+     * @param[in] ticks_to_wait Maximum time to wait (in ticks)
+     * @param[in] wait_for_all Whether to wait for all bits to be set (true) or any (false)
+     * @return The event group value at the time the bits were set
+     * @note This blocks the calling task until the specified bits are set
+     */
+    OS_EventBits erdp_if_rtos_wait_event_bits(OS_Event event, OS_EventBits bits_to_wait, uint32_t ticks_to_wait,
+                                              bool wait_for_all);
+
+    /**
      * @brief Synchronizes with an event group (set and wait)
      * @param[in,out] event Handle to the event group
      * @param[in] bits_to_set Bits to set in the event group
@@ -282,8 +294,14 @@ extern "C" {
      * @return The event group value at the time the bits were set
      * @note This atomically sets bits then waits for specified bits to be set
      */
-    OS_EventBits erdp_if_rtos_event_sync(OS_Event event, const OS_EventBits bits_to_set,
-                                         const OS_EventBits bits_wait_for, uint32_t ticks_to_wait);
+    OS_EventBits erdp_if_rtos_event_sync(OS_Event event, OS_EventBits bits_to_set, OS_EventBits bits_wait_for,
+                                         uint32_t ticks_to_wait);
+
+    /**
+     * @brief Deletes an event group
+     * @param[in] event Handle to the event group to delete
+     */
+    void erdp_if_rtos_delete_event(OS_Event event);
 
     /* Semaphore API */
     typedef enum {

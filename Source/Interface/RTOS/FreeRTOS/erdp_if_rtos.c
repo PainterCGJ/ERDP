@@ -185,12 +185,25 @@ OS_EventBits erdp_if_rtos_get_event_bits(OS_Event event) {
     return (OS_EventBits)xEventGroupGetBits(event);
 }
 
-OS_EventBits erdp_if_rtos_event_sync(OS_Event event, const OS_EventBits bits_to_set, const OS_EventBits bits_wait_for,
+OS_EventBits erdp_if_rtos_wait_event_bits(OS_Event event, OS_EventBits bits_to_wait, uint32_t ticks_to_wait, bool wait_for_all) {
+    if (xPortIsInsideInterrupt() == pdTRUE) {
+        // 不能在中断中等待事件
+        erdp_assert(false);
+        return 0;
+    }
+    return (OS_EventBits)xEventGroupWaitBits(event, bits_to_wait, wait_for_all, pdTRUE, ticks_to_wait);
+}
+
+OS_EventBits erdp_if_rtos_event_sync(OS_Event event, OS_EventBits bits_to_set, OS_EventBits bits_wait_for,
                                      uint32_t ticks_to_wait) {
     if (xPortIsInsideInterrupt() == pdFAIL) {
         return xEventGroupSync(event, bits_to_set, bits_wait_for, ticks_to_wait);
     }
     return 0;
+}
+
+void erdp_if_rtos_delete_event(OS_Event event) {
+    vEventGroupDelete(event);
 }
 
 OS_Semaphore erdp_if_rtos_semaphore_creat(Semaphore_tag tag) {
