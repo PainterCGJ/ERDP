@@ -3,15 +3,9 @@
 .vscode/keil-*.*
 .vscode/uv4.*
 Build
-
-Project/MDK/.vscode
-Project/MDK/Objects
-
-Project/MDK/*.uvguix.*
-Project/MDK/*.uvoptx
-Project/MDK/Listings
-*.scvd
 Listings
+DebugConfig
+*.scvd
 *.uvoptx
 *.uvguix.*
 
