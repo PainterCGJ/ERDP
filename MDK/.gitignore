@@ -1,0 +1,9 @@
+.vscode
+Build
+Listings
+DebugConfig
+*.scvd
+*.uvoptx
+*.uvguix.*
+
+
