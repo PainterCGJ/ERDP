@@ -109,13 +109,14 @@ namespace erdp {
                         pStrToWrite = messageBuffer;
                         break;
                     case 't': {
-                        uint32_t ticks = Thread::getSystem1msTicks();
-                        uint32_t totalSeconds = ticks / 1000;
-                        uint32_t hours = totalSeconds / 3600;
-                        uint32_t minutes = (totalSeconds / 60) % 60;
-                        uint32_t seconds = totalSeconds % 60;
-                        uint32_t milliseconds = ticks % 1000;
-                        snprintf(timeString, 15, "%02lu:%02lu:%02lu.%03lu", hours, minutes, seconds, milliseconds);
+                        unsigned int ticks = Thread::getSystem1msTicks();
+                        unsigned int totalSeconds = ticks / 1000;
+                        unsigned int hours = totalSeconds / 3600;
+                        unsigned int minutes = (totalSeconds / 60) % 60;
+                        unsigned int seconds = totalSeconds % 60;
+                        unsigned int milliseconds = ticks % 1000;
+                        
+                        snprintf(timeString, 15, "%02u:%02u:%02u.%03u", hours, minutes, seconds, milliseconds);
                         expectLen = 12;
                         pStrToWrite = timeString;
                         break;
