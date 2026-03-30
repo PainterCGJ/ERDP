@@ -49,11 +49,17 @@ add_custom_command(
 )
 add_custom_target(app DEPENDS app.hex)
 
+if(CMAKE_SIZE)
+    set(APP_SIZE_COMMAND COMMAND ${CMAKE_SIZE} $<TARGET_FILE:app.elf>)
+else()
+    set(APP_SIZE_COMMAND COMMAND ${CMAKE_COMMAND} -E echo "Skip firmware size: arm-none-eabi-size not found")
+endif()
+
 add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:app.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
     COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/app.hex"
     COMMAND ${CMAKE_COMMAND} -E echo "--- Firmware Size ---"
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:app.elf>
+    ${APP_SIZE_COMMAND}
     COMMAND ${CMAKE_COMMAND} -E echo "---------------------"
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/flash
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:app.elf> ${CMAKE_SOURCE_DIR}/build/flash/flash.elf

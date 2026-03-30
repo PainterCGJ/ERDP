@@ -61,11 +61,17 @@ add_custom_command(
 )
 add_custom_target(hal-test DEPENDS hal-test.hex)
 
+if(CMAKE_SIZE)
+    set(HAL_TEST_SIZE_COMMAND COMMAND ${CMAKE_SIZE} $<TARGET_FILE:hal-test.elf>)
+else()
+    set(HAL_TEST_SIZE_COMMAND COMMAND ${CMAKE_COMMAND} -E echo "Skip firmware size: arm-none-eabi-size not found")
+endif()
+
 add_custom_command(TARGET hal-test POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE:hal-test.elf> > ${CMAKE_BINARY_DIR}/firmware_path.txt
     COMMAND ${CMAKE_COMMAND} -E echo "Generated: ${CMAKE_CURRENT_BINARY_DIR}/hal-test.hex"
     COMMAND ${CMAKE_COMMAND} -E echo "--- Firmware Size ---"
-    COMMAND ${CMAKE_SIZE} $<TARGET_FILE:hal-test.elf>
+    ${HAL_TEST_SIZE_COMMAND}
     COMMAND ${CMAKE_COMMAND} -E echo "---------------------"
     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_SOURCE_DIR}/build/flash
     COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:hal-test.elf> ${CMAKE_SOURCE_DIR}/build/flash/flash.elf

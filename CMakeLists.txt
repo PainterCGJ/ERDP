@@ -39,6 +39,16 @@ endif()
 
 project(ERDP C CXX ASM)
 
+# 查找 size 工具，避免在 Windows 上把 .elf 当作可执行文件直接启动
+if(NOT CMAKE_SIZE)
+    find_program(CMAKE_SIZE NAMES arm-none-eabi-size)
+endif()
+if(CMAKE_SIZE)
+    message(STATUS "Using size tool: ${CMAKE_SIZE}")
+else()
+    message(WARNING "arm-none-eabi-size not found, firmware size output will be skipped")
+endif()
+
 if(ARM_GNU_PATH)
     # 添加 C++ 标准库头文件路径
     message(STATUS "Searching for C++ headers in: ${ARM_GNU_PATH}/arm-none-eabi/include/c++")
