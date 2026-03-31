@@ -12,16 +12,10 @@ add_executable(app.elf EXCLUDE_FROM_ALL
     ${APP_SOURCES}
 )
 
-# target_include_directories(app.elf PRIVATE
-#     ${CMAKE_SOURCE_DIR}/Source
-#     ${CMAKE_SOURCE_DIR}/Source/Common
-#     ${CMAKE_SOURCE_DIR}/Source/Interface
-#     ${CMAKE_SOURCE_DIR}/Source/OSAL
-#     ${CMAKE_SOURCE_DIR}/Source/HAL
-#     ${CMAKE_SOURCE_DIR}/Source/HAL/GPIO
-#     ${CMAKE_SOURCE_DIR}/Source/HAL/UART
-#     ${CMAKE_CURRENT_SOURCE_DIR}
-# )
+target_include_directories(app.elf PRIVATE
+    ${CMAKE_SOURCE_DIR}/Source/Board
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 target_link_libraries(app.elf
     interface-driver

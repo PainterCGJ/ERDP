@@ -193,9 +193,9 @@ endif()
 include(${CMAKE_SOURCE_DIR}/cmake/flash_by_install.cmake)
 
 # 板级支持包
-# if(EXISTS "${CMAKE_SOURCE_DIR}/Source/BSP/CMakeLists.txt")
-#     add_subdirectory(Source/BSP)
-# endif()
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Board/CMakeLists.txt")
+    add_subdirectory(Source/Board)
+endif()
 
 message(STATUS "CMake configuration completed for ${CHIP_TYPE}")
 
