@@ -340,7 +340,7 @@
               <MiscControls>-fexceptions</MiscControls>
               <Define>GD32F470</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Source\Kernel\Drivers\GD32F4XX;..\Source\Kernel\Drivers\GD32F4XX\GD32F4xx_standard_peripheral\Include;..\Source\Kernel\Drivers\GD32F4XX\CMSIS;..\Source\Kernel\Drivers\GD32F4XX\CMSIS\GD\GD32F4xx\Include;..\Source\Kernel\RTOS\FreeRTOS;..\Source\Kernel\RTOS\FreeRTOS\inc;..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\Source\Interface;..\Source\Interface\Drivers;..\Source\Interface\RTOS;..\Source\HAL;..\Source\HAL\EXTI;..\Source\HAL\GPIO;..\Source\HAL\SPI;..\Source\HAL\UART;..\Source\Common;..\Source\Service\Log;..\Source\Application;..\Source\OSAL</IncludePath>
+              <IncludePath>..\Source\Kernel\Drivers\GD32F4XX;..\Source\Kernel\Drivers\GD32F4XX\GD32F4xx_standard_peripheral\Include;..\Source\Kernel\Drivers\GD32F4XX\CMSIS;..\Source\Kernel\Drivers\GD32F4XX\CMSIS\GD\GD32F4xx\Include;..\Source\Kernel\RTOS\FreeRTOS;..\Source\Kernel\RTOS\FreeRTOS\inc;..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\Source\Interface;..\Source\Interface\Drivers;..\Source\Interface\RTOS;..\Source\HAL;..\Source\HAL\EXTI;..\Source\HAL\GPIO;..\Source\HAL\SPI;..\Source\HAL\UART;..\Source\Common;..\Source\Service\Log;..\Source\Application;..\Source\OSAL;..\Source\Board</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
