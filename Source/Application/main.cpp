@@ -1,18 +1,18 @@
 /*
 //D:\Users\painter\AppData\Local\Keil_v5\ARM\ARMCLANG\bin\fromelf.exe --bin --output ./Build/erdp.bin ./Build/erdp.axf
 */
-#include "erdp_hal_uart.hpp"
-#include "erdp_hal_gpio.hpp"
-#include "erdp_osal.hpp"
 #include <vector>
+
+#include "erdp_hal_gpio.hpp"
+#include "erdp_hal_uart.hpp"
+#include "erdp_osal.hpp"
 #include "log_service.hpp"
+#include "board.h"
+
 // #include "log_adapter.hpp"
 
 using namespace erdp;
 using namespace std;
-#define SYS_LED_PORT ERDP_GPIOC
-#define SYS_LED_PIN ERDP_GPIO_PIN_0
-
 
 class LED : private GpioDev {
    public:
@@ -40,25 +40,38 @@ class LED : private GpioDev {
     ERDP_Status_t m_status;
 };
 
-void Thread::mainThread(void *parm)
-{
-	// UartDev uart(uart_backon_config,100);
-	// uart.set_as_debug_com();
-	// printf("gd32 hello word\n");
+void Thread::mainThread(void *parm) {
+    UartDev com;
+    com.init(SYS_COM_CFG, 128);
+    com.setAsDebugCom();
+    LoggerBase::start();
+    printf("Hello World!\n");
     LED sys_led(SYS_LED_PORT, SYS_LED_PIN, ERDP_RESET);
-	erdp::Thread LED_thread(
+    erdp::Thread LED_thread(
         [&sys_led]() {
             while (1) {
                 sys_led.toggle();    // Toggle the system LED to indicate the
                                      // system is
                 Thread::sleep(500);
+                Debug("LED", "LED toggle");
             }
         },
-        "LED", 6, 128);
+        "LED", 6, 512);
     LED_thread.join();
-
-    while (1)
-    {
-        Thread::sleep(10);
+    erdp::Thread testThread([]() { printf("testThread run\n"); }, "testThread", 6, 256);
+    testThread.join();
+    Thread::setKillThreadHook([](Thread *task) {
+        Debug("OSAL","killThreadHook %s", task->getName());
+        // printf("killThreadHook %s\n", task->getName());
+    });
+    Debug("test", "debug message");
+    Info("test", "info message");
+    Warn("test", "warn message");
+    Error("test", "error message");
+    Fatal("test", "fatal message");
+    Debug("size", "size %d", sizeof(unsigned int));
+    while (1) {
+        Debug("test", "run...");
+        Thread::sleep(1000);
     }
 }
