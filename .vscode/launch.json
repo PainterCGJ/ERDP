@@ -3,8 +3,41 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/gd32f470zit6+freertos-debug/Source/Application/app.elf",
+            "name": "Cortex-Debug (GD32F470 STLink)",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "Scripts/OpenOCD/openocd_gd32f470_stlink.cfg"
+            ],
+            "searchDir": [
+                "D:/Material/environment/Tools/xpack-openocd-0.11.0-3/scripts"
+            ],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "raw",
+            "preLaunchTask": "build",
+            "preLaunchCommands": [
+                "set remotetimeout 10000"
+            ],
+            "svdFile": "",
+            "rttConfig": {
+                "enabled": false,
+                "polling_interval": 1,
+                "address": "auto",
+                "decoders": [
+                    {
+                        "label": "",
+                        "port": 0,
+                        "type": "console"
+                    }
+                ]
+            }
+        },
+        {
+            "cwd": "${workspaceRoot}",
             "executable": "${workspaceRoot}/build/flash/flash.elf",
-            "name": "Cortex-Debug (STLink)",
+            "name": "Cortex-Debug (STM32F4 STLink)",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
