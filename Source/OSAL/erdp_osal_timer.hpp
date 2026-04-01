@@ -8,7 +8,7 @@ namespace erdp {
 
     class Timer {
        public:
-        Timer(std::function<void()> callback, const char *name, uint32_t period_ms, bool auto_reload = true);
+        Timer(std::function<void()> callback, const char *name, uint32_t periodMs, bool autoReload = true);
 
         ~Timer();
 
@@ -16,10 +16,10 @@ namespace erdp {
 
         bool stop();
 
-        bool setPeriod(uint32_t period_ms);
+        bool setPeriod(uint32_t periodMs);
 
        private:
-        static void m_timerCallback(void *parm);
+        static void timerCallback(void *parm);
         std::function<void()> m_usrTimerFunc;
         OS_Timer m_handler;
     };
