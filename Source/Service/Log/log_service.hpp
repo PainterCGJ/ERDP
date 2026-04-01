@@ -1,8 +1,6 @@
 #ifndef LOG_SERVICE_HPP
 #define LOG_SERVICE_HPP
 
-#include <list>
-
 #include "erdp_config.h"
 #include "erdp_osal.hpp"
 
