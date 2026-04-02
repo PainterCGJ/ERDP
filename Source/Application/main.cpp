@@ -93,9 +93,9 @@ void Thread::mainThread(void *parm) {
     uint8_t data[5] = {0x01,0x02,0x03,0x04,0x05};
     while (1) {
         Debug("test", "run...");
-        spi.cs_low();
+        spi.csLow();
         spi.send(data,5);
-        spi.cs_high();
+        spi.csHigh();
         Thread::sleep(1000);
     }
 }
