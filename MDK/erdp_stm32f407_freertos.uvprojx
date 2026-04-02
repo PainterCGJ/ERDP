@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls>-fexceptions</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Source\Kernel\Drivers\STM32F4XX;..\Source\Kernel\Drivers\STM32F4XX\CMSIS\Include;..\Source\Kernel\Drivers\STM32F4XX\CMSIS\Device\ST\STM32F4xx\Include;..\Source\Kernel\Drivers\STM32F4XX\STM32F4xx_StdPeriph_Driver\inc;..\Source\Kernel\RTOS\FreeRTOS;..\Source\Kernel\RTOS\FreeRTOS\inc;..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\Source\Interface;..\Source\Interface\Drivers;..\Source\Interface\RTOS;..\Source\HAL;..\Source\HAL\EXTI;..\Source\HAL\GPIO;..\Source\HAL\SPI;..\Source\HAL\UART;..\Source\Common;..\Source\Service\Log;..\Source\Application;..\Source\OSAL</IncludePath>
+              <IncludePath>..\Source\Kernel\Drivers\STM32F4XX;..\Source\Kernel\Drivers\STM32F4XX\CMSIS\Include;..\Source\Kernel\Drivers\STM32F4XX\CMSIS\Device\ST\STM32F4xx\Include;..\Source\Kernel\Drivers\STM32F4XX\STM32F4xx_StdPeriph_Driver\inc;..\Source\Kernel\RTOS\FreeRTOS;..\Source\Kernel\RTOS\FreeRTOS\inc;..\Source\Kernel\RTOS\FreeRTOS\port\GCC\ARM_CM4F;..\Source\Interface;..\Source\Interface\Drivers;..\Source\Interface\RTOS;..\Source\HAL;..\Source\HAL\EXTI;..\Source\HAL\GPIO;..\Source\HAL\SPI;..\Source\HAL\UART;..\Source\Common;..\Source\Service\Log;..\Source\Application;..\Source\OSAL;..\Source\Board</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
