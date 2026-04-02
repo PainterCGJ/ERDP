@@ -1,8 +1,7 @@
 #ifndef __ERDP_HAL_SPI_HPP__
 #define __ERDP_HAL_SPI_HPP__
 #include "erdp_if_spi.h"
-#include "erdp_hal.hpp"
-
+#include "erdp_osal.hpp"
 #include <vector>
 
 namespace erdp
@@ -106,10 +105,15 @@ namespace erdp
                 while (!erdp_if_spi_transmit_buffer_empty(SpiBase::__spi_info.spi))
                     ;
                 erdp_if_spi_send(SpiBase::__spi_info.spi, data[tx_count++]);
+                // SPI 全双工: 每发 1 帧都会收到 1 帧，及时读出可避免 RXNE/OVR 影响尾帧完成判定
+                while (!erdp_if_spi_receive_buffer_not_empty(SpiBase::__spi_info.spi))
+                    ;
+                (void)erdp_if_spi_recv(SpiBase::__spi_info.spi);
             }
+            while (!erdp_if_spi_transmit_buffer_empty(SpiBase::__spi_info.spi))
+                ;
             while (!erdp_if_spi_transfer_complete(SpiBase::__spi_info.spi))
                 ;
-            erdp_if_spi_recv(SpiBase::__spi_info.spi);
 
             return true;
         }
