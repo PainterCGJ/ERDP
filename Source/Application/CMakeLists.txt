@@ -23,6 +23,7 @@ target_link_libraries(app.elf
     osal
     hal-uart
     hal-gpio
+    hal-spi
     log-service
 )
 

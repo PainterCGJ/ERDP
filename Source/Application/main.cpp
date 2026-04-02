@@ -3,11 +3,13 @@
 */
 #include <vector>
 
+#include "board.h"
 #include "erdp_hal_gpio.hpp"
+#include "erdp_hal_spi.hpp"
 #include "erdp_hal_uart.hpp"
 #include "erdp_osal.hpp"
 #include "log_service.hpp"
-#include "board.h"
+
 
 // #include "log_adapter.hpp"
 
@@ -39,11 +41,29 @@ class LED : private GpioDev {
     ERDP_Status_t m_onLevel;
     ERDP_Status_t m_status;
 };
+SpiInfo_t info{
+    ERDP_SPI1,
+    ERDP_GPIOA,
+    ERDP_GPIO_PIN_5,
+    GPIO_AF_SPI1,
+    ERDP_GPIOA,
+    ERDP_GPIO_PIN_7,
+    GPIO_AF_SPI1,
+    ERDP_GPIOA,
+    ERDP_GPIO_PIN_6,
+    GPIO_AF_SPI1,
+    ERDP_GPIOA,
+    ERDP_GPIO_PIN_4,
+    GPIO_AF_SPI1,
+};
 
 void Thread::mainThread(void *parm) {
     UartDev com;
     com.init(SYS_COM_CFG, 128);
     com.setAsDebugCom();
+    SpiDev<ERDP_SPI_MODE_MASTER,ERDP_SPI_DATASIZE_8BIT> spi;
+    spi.init(info, SPI_CONFIG,128);
+    
     LoggerBase::start();
     printf("Hello World!\n");
     LED sys_led(SYS_LED_PORT, SYS_LED_PIN, ERDP_RESET);
@@ -61,7 +81,7 @@ void Thread::mainThread(void *parm) {
     erdp::Thread testThread([]() { printf("testThread run\n"); }, "testThread", 6, 256);
     testThread.join();
     Thread::setKillThreadHook([](Thread *task) {
-        Debug("OSAL","killThreadHook %s", task->getName());
+        Debug("OSAL", "killThreadHook %s", task->getName());
         // printf("killThreadHook %s\n", task->getName());
     });
     Debug("test", "debug message");
@@ -70,8 +90,12 @@ void Thread::mainThread(void *parm) {
     Error("test", "error message");
     Fatal("test", "fatal message");
     Debug("size", "size %d", sizeof(unsigned int));
+    uint8_t data[5] = {0x01,0x02,0x03,0x04,0x05};
     while (1) {
         Debug("test", "run...");
+        spi.cs_low();
+        spi.send(data,5);
+        spi.cs_high();
         Thread::sleep(1000);
     }
 }
