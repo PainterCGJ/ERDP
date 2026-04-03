@@ -1,5 +1,5 @@
 #include "erdp_if_uart.h"
-
+#include "erdp_if_stm32f4_def.h"
 #include "stm32f4xx_usart.h"
 
 
@@ -19,7 +19,6 @@ static const uint32_t uart_pclk[ERDP_UART_NUM] = {
     RCC_APB2Periph_USART6,
 };
 
-typedef void (*rcc_clock_cmd_func_t)(uint32_t RCC_AHBxPeriph, FunctionalState NewState);
 static const rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_UART_NUM] = {
     NULL,
     RCC_APB2PeriphClockCmd,

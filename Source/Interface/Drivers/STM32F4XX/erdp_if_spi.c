@@ -2,26 +2,27 @@
 #include "erdp_if_spi.h"
 
 #include "erdp_if_gpio.h"
+#include "erdp_if_stm32f4_def.h"
 
 /* platform include */
 #include "stm32f4xx.h"
 
 extern void erdp_spi_irq_handler(ERDP_Spi_t spi);
 
-const static uint32_t spi_instance[ERDP_SPI_NUM] = {
+static const uint32_t spi_instance[ERDP_SPI_NUM] = {
     (uint32_t)0,
     (uint32_t)SPI1,
     (uint32_t)SPI2,
     (uint32_t)SPI3,
 };
 
-const static uint32_t spi_pclk[ERDP_SPI_NUM] = {
+static const uint32_t spi_pclk[ERDP_SPI_NUM] = {
     (uint32_t)0,
     (uint32_t)RCC_APB2Periph_SPI1,
     (uint32_t)RCC_APB1Periph_SPI2,
     (uint32_t)RCC_APB1Periph_SPI3,
 };
-typedef void (*rcc_clock_cmd_func_t)(uint32_t RCC_AHBxPeriph, FunctionalState NewState);
+
 static const rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_SPI_NUM] = {
     NULL,
     RCC_APB2PeriphClockCmd,
@@ -29,11 +30,27 @@ static const rcc_clock_cmd_func_t rcc_clock_cmd_func[ERDP_SPI_NUM] = {
     RCC_APB1PeriphClockCmd,
 };
 
-const static uint8_t spi_irq_id[ERDP_SPI_NUM] = {
+static const uint8_t spi_irq_id[ERDP_SPI_NUM] = {
     (uint8_t)0,
     (uint8_t)SPI1_IRQn,
     (uint8_t)SPI2_IRQn,
     (uint8_t)SPI3_IRQn,
+};
+
+static const dma_cfg_t spi_dma_cfg[ERDP_SPI_NUM][DMA_DIR] = {
+    {{UNUSED_VAL, UNUSED_VAL, UNUSED_VAL, UNUSED_VAL}, {UNUSED_VAL, UNUSED_VAL, UNUSED_VAL, UNUSED_VAL}},
+    /* SPI1 TX */
+    {{DMA2_Stream3, DMA_Channel_3, (uint32_t)&SPI1->DR, DMA_FLAG_TCIF3},
+     /* SPI1 RX */
+     {DMA2_Stream2, DMA_Channel_3, (uint32_t)&SPI1->DR, DMA_FLAG_TCIF2}},
+    /* SPI2 TX */
+    {{DMA1_Stream4, DMA_Channel_0, (uint32_t)&SPI2->DR, DMA_FLAG_TCIF4},
+     /* SPI2 RX */
+     {DMA1_Stream3, DMA_Channel_0, (uint32_t)&SPI2->DR, DMA_FLAG_TCIF3}},
+    /* SPI3 TX */
+    {{DMA1_Stream0, DMA_Channel_0, (uint32_t)&SPI3->DR, DMA_FLAG_TCIF0},
+     /* SPI3 RX */
+     {DMA1_Stream2, DMA_Channel_0, (uint32_t)&SPI3->DR, DMA_FLAG_TCIF2}},
 };
 
 uint32_t erdp_if_spi_get_PCLK(ERDP_Spi_t spi) { return spi_pclk[spi]; }
@@ -88,6 +105,43 @@ void erdp_if_spi_gpio_init(ERDP_SpiInfo_t *spi_info, ERDP_SpiMode_t mode) {
     }
 }
 
+static void erdp_if_spi_dma_init(ERDP_Spi_t spi, ERDP_SpiCfg_t *spi_cfg) {
+    if ((uint32_t)spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_stream >
+        (uint32_t)DMA2)    // 得到当前stream是属于DMA2还是DMA1
+    {
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);    // DMA2时钟使能
+
+    } else {
+        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);    // DMA1时钟使能
+    }
+    DMA_InitTypeDef DMA_InitStructure;
+    DMA_InitStructure.DMA_Memory0BaseAddr = 0;                                 // DMA 存储器0地址
+    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;                    // 存储器到外设模式
+    DMA_InitStructure.DMA_BufferSize = 0;                                      // 数据传输量
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;           // 外设非增量模式
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;                    // 存储器增量模式
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;    // 外设数据长度:8位
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;            // 存储器数据长度:8位
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;                              // 使用普通模式
+    DMA_InitStructure.DMA_Priority = DMA_Priority_Medium;                      // 中等优先级
+    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;            // 存储器突发单次传输
+    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;    // 外设突发单次传输
+    if (spi_cfg->enable_tx_dma) {
+        DMA_InitStructure.DMA_Channel = spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_channel;    // 通道选择
+        DMA_InitStructure.DMA_PeripheralBaseAddr =
+            spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].peripheral_base_addr;    // DMA外设地址0
+        DMA_Init(spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_stream, &DMA_InitStructure);
+    }
+    if (spi_cfg->enable_rx_dma) {
+        DMA_InitStructure.DMA_Channel = spi_dma_cfg[spi][DMA_DIR_PERIPH_TO_MEMORY].dma_channel;    // 通道选择
+        DMA_InitStructure.DMA_PeripheralBaseAddr =
+            spi_dma_cfg[spi][DMA_DIR_PERIPH_TO_MEMORY].peripheral_base_addr;    // DMA外设地址0
+        DMA_Init(spi_dma_cfg[spi][DMA_DIR_PERIPH_TO_MEMORY].dma_stream, &DMA_InitStructure);
+    }
+}
+
 void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size) {
     SPI_InitTypeDef SPI_InitStructure;
     NVIC_InitTypeDef NVIC_InitStructure;
@@ -139,6 +193,7 @@ void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cf
     SPI_CalculateCRC((SPI_TypeDef *)spi_instance[spi], DISABLE);
     SPI_Init((SPI_TypeDef *)spi_instance[spi], &SPI_InitStructure);
     SPI_Cmd((SPI_TypeDef *)spi_instance[spi], ENABLE);
+    erdp_if_spi_dma_init(spi, spi_cfg);
 }
 
 void erdp_if_spi_deinit(ERDP_Spi_t spi) {
@@ -154,6 +209,24 @@ void erdp_if_spi_enable(ERDP_Spi_t spi, bool enable) {
     }
 }
 void erdp_if_spi_send(ERDP_Spi_t spi, uint16_t data) { SPI_SendData((SPI_TypeDef *)spi_instance[spi], data); }
+
+void erdp_if_spi_send_dma(ERDP_Spi_t spi, uint8_t *data, uint32_t len) {
+    DMA_Stream_TypeDef *s = spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_stream;
+    uint32_t tc_flag = spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].transfer_done_flag;
+    DMA_Cmd(s, DISABLE);
+    while (DMA_GetCmdStatus(s) != DISABLE) {
+    }                             // 等 EN 真正清零
+    DMA_ClearFlag(s, tc_flag);    // 至少清 TCIF，最好把该stream相关错误/半传输也清掉
+    s->M0AR = (uint32_t)data;
+    DMA_SetCurrDataCounter(s, len);
+    SPI_I2S_DMACmd((SPI_TypeDef *)spi_instance[spi], SPI_I2S_DMAReq_Tx, ENABLE);
+    DMA_Cmd(s, ENABLE);
+}
+
+bool erdp_if_spi_dma_transfer_complete(ERDP_Spi_t spi) {
+    return DMA_GetFlagStatus(spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_stream,
+                             spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].transfer_done_flag) == SET;
+}
 
 uint16_t erdp_if_spi_recv(ERDP_Spi_t spi) { return SPI_ReceiveData((SPI_TypeDef *)spi_instance[spi]); }
 

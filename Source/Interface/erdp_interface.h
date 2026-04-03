@@ -2,20 +2,22 @@
 #define ERDP_INTERFACE_H
 
 #ifdef __cplusplus
-extern "C"
-{
-#endif // __cplusplus
-#include <stdint.h>
+extern "C" {
+#endif    // __cplusplus
 #include <stdbool.h>
+#include <stdint.h>
+
 #include "erdp_assert.h"
-    typedef enum
-    {
+
+    typedef enum {
         ERDP_RESET = 0,
         ERDP_SET,
     } ERDP_Status_t;
 
+#define UNUSED_VAL 0
+
 #ifdef __cplusplus
 }
-#endif // __cplusplus
+#endif    // __cplusplus
 
-#endif // ERDP_INTERFACE_H
+#endif    // ERDP_INTERFACE_H

@@ -49,6 +49,8 @@ extern "C"
         ERDP_SpiEndian_t endian;
         uint32_t prescale;
         uint8_t priority;
+        bool enable_tx_dma;
+        bool enable_rx_dma;
     } ERDP_SpiCfg_t;
 
     typedef struct
@@ -88,7 +90,7 @@ extern "C"
      * @param[in] data_size Data size (8/16 bit)
      */
     void erdp_if_spi_init(ERDP_Spi_t spi, ERDP_SpiMode_t mode, ERDP_SpiCfg_t *spi_cfg, ERDP_SpiDataSize_t data_size);
-
+    
     /**
      * @brief Deinitialize SPI peripheral
      * @param[in] spi SPI instance identifier
@@ -115,6 +117,21 @@ extern "C"
      * @return Received data (8/16 bit depending on configuration)
      */
     uint16_t erdp_if_spi_recv(ERDP_Spi_t spi);
+
+    /**
+     * @brief Send data through SPI using DMA
+     * @param[in] spi SPI instance identifier
+     * @param[in] data Pointer to data to be transmitted (8/16 bit depending on configuration)
+     * @param[in] len Number of bytes to be transmitted
+     */
+    void erdp_if_spi_send_dma(ERDP_Spi_t spi, uint8_t *data, uint32_t len);
+
+    /**
+     * @brief Check if SPI DMA transfer is complete
+     * @param[in] spi SPI instance identifier
+     * @return true if DMA transfer is complete, false otherwise
+     */
+    bool erdp_if_spi_dma_transfer_complete(ERDP_Spi_t spi);
 
     /**
      * @brief Check if SPI transfer is complete

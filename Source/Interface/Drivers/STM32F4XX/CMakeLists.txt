@@ -4,6 +4,7 @@ set(STM32F4XX_IF_INC_DIRS
     ${CMAKE_SOURCE_DIR}/Source/Interface
     ${CMAKE_SOURCE_DIR}/Source/Interface/Drivers
     ${CMAKE_SOURCE_DIR}/Source/Common
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set(STM32F4XX_IF_SOURCES
