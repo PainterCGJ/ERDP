@@ -10,8 +10,9 @@
 /*
  * System UART Configuration
  */
-#define SYS_COM_CFG \
-    {ERDP_UART1, 115200, ERDP_UART_TX_RX, ERDP_GPIOA, ERDP_GPIO_PIN_9, GPIO_AF_USART1,  ERDP_GPIOA, ERDP_GPIO_PIN_10, GPIO_AF_USART1, 10}
+#define SYS_COM_CFG                                                                 \
+    {ERDP_UART1,     115200,     ERDP_UART_TX_RX,  ERDP_GPIOA,     ERDP_GPIO_PIN_9, \
+     GPIO_AF_USART1, ERDP_GPIOA, ERDP_GPIO_PIN_10, GPIO_AF_USART1, 10}
 
 /*
  * System LED Configuration
@@ -22,13 +23,13 @@
 /*
  * SPI Configuration
  */
-#define SPI_INFO                                                                                               \
-    {                                                                                                          \
-        ERDP_SPI1,  ERDP_GPIOA,      ERDP_GPIO_PIN_5, GPIO_AF_SPI1,  ERDP_GPIOA,      ERDP_GPIO_PIN_7, GPIO_AF_SPI1, \
-        ERDP_GPIOA, ERDP_GPIO_PIN_6, GPIO_AF_SPI1,       ERDP_GPIOA, ERDP_GPIO_PIN_4, GPIO_AF_SPI1,                  \
+#define SPI_INFO                                                                                                    \
+    {                                                                                                               \
+        ERDP_SPI1,  ERDP_GPIOA,      ERDP_GPIO_PIN_5, GPIO_AF_SPI1, ERDP_GPIOA,      ERDP_GPIO_PIN_7, GPIO_AF_SPI1, \
+        ERDP_GPIOA, ERDP_GPIO_PIN_6, GPIO_AF_SPI1,    ERDP_GPIOA,   ERDP_GPIO_PIN_4, GPIO_AF_SPI1,                  \
     }
-
-#define SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6}
+/*                  clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
+#define SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, true, false}
 
 #elif BOARD_TYPE == GD32_BOARD
 #include "gd32f4xx.h"
