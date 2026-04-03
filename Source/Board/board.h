@@ -23,13 +23,35 @@
 /*
  * SPI Configuration
  */
-#define SPI_INFO                                                                                                    \
+ /* SPI1
+ *  MODE: MASTER
+ *  MOSI: GPIOA, GPIO_PIN_5, GPIO_AF_SPI1
+ *  MISO: GPIOA, GPIO_PIN_7, GPIO_AF_SPI1
+ *  CLK: GPIOA, GPIO_PIN_6, GPIO_AF_SPI1
+ *  CS: GPIOA, GPIO_PIN_4, GPIO_AF_SPI1
+ */
+#define SPI_MASTER_INFO                                                                                             \
     {                                                                                                               \
         ERDP_SPI1,  ERDP_GPIOA,      ERDP_GPIO_PIN_5, GPIO_AF_SPI1, ERDP_GPIOA,      ERDP_GPIO_PIN_7, GPIO_AF_SPI1, \
         ERDP_GPIOA, ERDP_GPIO_PIN_6, GPIO_AF_SPI1,    ERDP_GPIOA,   ERDP_GPIO_PIN_4, GPIO_AF_SPI1,                  \
     }
-/*                  clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
-#define SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, true, false}
+/*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
+#define SPI_MASTER_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, false, false}
+
+ /* SPI2
+ *  MODE: SLAVE
+ *  MOSI: GPIOB, GPIO_PIN_15, GPIO_AF_SPI2
+ *  MISO: GPIOB, GPIO_PIN_14, GPIO_AF_SPI2
+ *  CLK: GPIOB, GPIO_PIN_13, GPIO_AF_SPI2
+ *  CS: GPIOB, GPIO_PIN_12, GPIO_AF_SPI2
+ */
+#define SPI_SLAVE_INFO                                                                                             \
+    {                                                                                                               \
+        ERDP_SPI2,  ERDP_GPIOB,      ERDP_GPIO_PIN_15, GPIO_AF_SPI2, ERDP_GPIOB,      ERDP_GPIO_PIN_14, GPIO_AF_SPI2, \
+        ERDP_GPIOB, ERDP_GPIO_PIN_13, GPIO_AF_SPI2,    ERDP_GPIOB,   ERDP_GPIO_PIN_12, GPIO_AF_SPI2,                  \
+    }
+/*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
+#define SPI_SLAVE_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 7, false, false}
 
 #elif BOARD_TYPE == GD32_BOARD
 #include "gd32f4xx.h"

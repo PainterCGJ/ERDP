@@ -193,7 +193,7 @@ namespace erdp {
        private:
         uint32_t m_txCount = 0;
         typename SpiDevBase<DATA_SIZE>::DataType m_data;
-        typename SpiDevBase<DATA_SIZE>::template RingBuffer<typename SpiDevBase<DATA_SIZE>::DataType> m_txBuffer;
+        RingBuffer<typename SpiDevBase<DATA_SIZE>::DataType> m_txBuffer;
         std::function<void(typename SpiDevBase<DATA_SIZE>::DataType)> m_usrRxIrqFunc = nullptr;
         bool loadTxBuffer(typename SpiDevBase<DATA_SIZE>::DataType *pData, uint32_t len) {
             m_txCount = 0;
