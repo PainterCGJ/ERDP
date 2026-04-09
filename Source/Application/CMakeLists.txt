@@ -18,12 +18,9 @@ target_include_directories(app.elf PRIVATE
 )
 
 target_link_libraries(app.elf
-    interface-driver
-    interface-rtos
     osal
-    hal-uart
-    hal-gpio
-    hal-spi
+    hal
+    library
     log-service
 )
 
