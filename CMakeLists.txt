@@ -179,6 +179,13 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Test/CMakeLists.txt")
     add_subdirectory(Source/Test)
 endif()
 
+# 引用 Library 层
+if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Library/CMakeLists.txt")
+    add_subdirectory(Source/Library)
+endif()
+
+
+
 # 应用程序模块
 if(EXISTS "${CMAKE_SOURCE_DIR}/Source/Application/CMakeLists.txt")
     add_subdirectory(Source/Application)
