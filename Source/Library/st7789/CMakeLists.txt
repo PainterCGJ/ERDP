@@ -4,6 +4,7 @@ set(ST7789_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/port
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/Source/Board
+
 )
 
 set(ST7789_SOURCES
@@ -23,6 +24,7 @@ target_include_directories(st7789 PUBLIC
 target_link_libraries(st7789 PUBLIC
     hal
     osal
+    log-service
 )
 
 target_compile_features(st7789 PUBLIC cxx_std_17)

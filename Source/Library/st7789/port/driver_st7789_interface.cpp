@@ -35,10 +35,17 @@
  */
 
 #include "driver_st7789_interface.h"
+
+#include <stdarg.h>
+
 #include "board.h"
+#include "erdp_hal_gpio.hpp"
 #include "erdp_hal_spi.hpp"
+#include "log_service.hpp"
 using namespace erdp;
-static SpiDev<ERDP_SPI_MODE_MASTER> spi_master;
+static SpiDev<ERDP_SPI_MODE_MASTER>* spiCOM = nullptr;
+static GpioDev* dc = nullptr;
+GpioDev* rst = nullptr;
 extern "C" {
 
     /**
@@ -48,7 +55,14 @@ extern "C" {
      *         - 1 spi init failed
      * @note   none
      */
-    uint8_t st7789_interface_spi_init(void) { return 0; }
+    uint8_t st7789_interface_spi_init(void) {
+        spiCOM = new SpiDev<ERDP_SPI_MODE_MASTER>(SPI_MASTER_INFO, SPI_MASTER_CONFIG, 256);
+        if (spiCOM == nullptr) {
+            return 1;
+        }
+        spiCOM->csHigh();
+        return 0;
+    }
 
     /**
      * @brief  interface spi bus deinit
@@ -57,7 +71,7 @@ extern "C" {
      *         - 1 spi deinit failed
      * @note   none
      */
-    uint8_t st7789_interface_spi_deinit(void) { return 0; }
+    uint8_t st7789_interface_spi_deinit(void) { return 1; }
 
     /**
      * @brief     interface spi bus write
@@ -68,21 +82,36 @@ extern "C" {
      *            - 1 write failed
      * @note      none
      */
-    uint8_t st7789_interface_spi_write_cmd(uint8_t *buf, uint16_t len) { return 0; }
+    uint8_t st7789_interface_spi_write_cmd(uint8_t* buf, uint16_t len) {
+        if (spiCOM == nullptr) {
+            return 1;
+        }
+        spiCOM->csLow();
+        spiCOM->send(buf, len);
+        spiCOM->csHigh();
+        return 0;
+    }
 
     /**
      * @brief     interface delay ms
      * @param[in] ms time
      * @note      none
      */
-    void st7789_interface_delay_ms(uint32_t ms) {}
+    void st7789_interface_delay_ms(uint32_t ms) { Thread::sleep(ms); }
 
     /**
      * @brief     interface print format data
      * @param[in] fmt format data
      * @note      none
      */
-    void st7789_interface_debug_print(const char *const fmt, ...) {}
+    void st7789_interface_debug_print(const char* const fmt, ...) {
+        char buf[256];
+        va_list args;
+        va_start(args, fmt);
+        vsnprintf(buf, sizeof(buf), fmt, args);
+        va_end(args);
+        Debug("st7789", buf);
+    }
 
     /**
      * @brief  interface command && data gpio init
@@ -91,7 +120,13 @@ extern "C" {
      *         - 1 gpio init failed
      * @note   none
      */
-    uint8_t st7789_interface_cmd_data_gpio_init(void) { return 0; }
+    uint8_t st7789_interface_cmd_data_gpio_init(void) {
+        dc = new GpioDev(LCD_DC_PORT, LCD_DC_PIN, ERDP_GPIO_PIN_MODE_OUTPUT);
+        if (dc == nullptr) {
+            return 1;
+        }
+        return 0;
+    }
 
     /**
      * @brief  interface command && data gpio deinit
@@ -100,7 +135,7 @@ extern "C" {
      *         - 1 gpio deinit failed
      * @note   none
      */
-    uint8_t st7789_interface_cmd_data_gpio_deinit(void) { return 0; }
+    uint8_t st7789_interface_cmd_data_gpio_deinit(void) { return 1; }
 
     /**
      * @brief     interface command && data gpio write
@@ -110,7 +145,12 @@ extern "C" {
      *            - 1 gpio write failed
      * @note      none
      */
-    uint8_t st7789_interface_cmd_data_gpio_write(uint8_t value) { return 0; }
+    uint8_t st7789_interface_cmd_data_gpio_write(uint8_t value) { 
+        if (dc == nullptr) {
+            return 1;
+        }
+        dc->write((ERDP_Status_t)value);
+        return 0; }
 
     /**
      * @brief  interface reset gpio init
@@ -119,7 +159,13 @@ extern "C" {
      *         - 1 gpio init failed
      * @note   none
      */
-    uint8_t st7789_interface_reset_gpio_init(void) { return 0; }
+    uint8_t st7789_interface_reset_gpio_init(void) {
+        rst = new GpioDev(LCD_RST_PORT, LCD_RST_PIN, ERDP_GPIO_PIN_MODE_OUTPUT);
+        if (rst == nullptr) {
+            return 1;
+        }
+        return 0;
+    }
 
     /**
      * @brief  interface reset gpio deinit
@@ -138,5 +184,10 @@ extern "C" {
      *            - 1 gpio write failed
      * @note      none
      */
-    uint8_t st7789_interface_reset_gpio_write(uint8_t value) { return 0; }
+    uint8_t st7789_interface_reset_gpio_write(uint8_t value) { 
+        if (rst == nullptr) {
+            return 1;
+        }
+        rst->write((ERDP_Status_t)value);
+        return 0; }
 }
