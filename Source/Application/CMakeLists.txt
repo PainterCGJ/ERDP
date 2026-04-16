@@ -22,6 +22,7 @@ target_link_libraries(app.elf
     hal
     library
     log-service
+    lcd-service
 )
 
 target_compile_features(app.elf PRIVATE cxx_std_17)

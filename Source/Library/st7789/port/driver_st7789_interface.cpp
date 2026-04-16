@@ -56,7 +56,7 @@ extern "C" {
      * @note   none
      */
     uint8_t st7789_interface_spi_init(void) {
-        spiCOM = new SpiDev<ERDP_SPI_MODE_MASTER>(SPI_MASTER_INFO, SPI_MASTER_CONFIG, 256);
+        spiCOM = new SpiDev<ERDP_SPI_MODE_MASTER>(LCD_SPI_INFO, LCD_SPI_CONFIG, 256);
         if (spiCOM == nullptr) {
             return 1;
         }

@@ -23,7 +23,7 @@
 /*
  * SPI Configuration
  */
- /* SPI1
+/* SPI1
  *  MODE: MASTER
  *  MOSI: GPIOA, GPIO_PIN_5, GPIO_AF_SPI1
  *  MISO: GPIOA, GPIO_PIN_7, GPIO_AF_SPI1
@@ -38,20 +38,48 @@
 /*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
 #define SPI_MASTER_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, false, false}
 
- /* SPI2
+/* SPI2
  *  MODE: SLAVE
  *  MOSI: GPIOB, GPIO_PIN_15, GPIO_AF_SPI2
  *  MISO: GPIOB, GPIO_PIN_14, GPIO_AF_SPI2
  *  CLK: GPIOB, GPIO_PIN_13, GPIO_AF_SPI2
  *  CS: GPIOB, GPIO_PIN_12, GPIO_AF_SPI2
  */
-#define SPI_SLAVE_INFO                                                                                             \
-    {                                                                                                               \
-        ERDP_SPI2,  ERDP_GPIOB,      ERDP_GPIO_PIN_15, GPIO_AF_SPI2, ERDP_GPIOB,      ERDP_GPIO_PIN_14, GPIO_AF_SPI2, \
-        ERDP_GPIOB, ERDP_GPIO_PIN_13, GPIO_AF_SPI2,    ERDP_GPIOB,   ERDP_GPIO_PIN_12, GPIO_AF_SPI2,                  \
+#define SPI_SLAVE_INFO                                                                                                  \
+    {                                                                                                                   \
+        ERDP_SPI2,  ERDP_GPIOB,       ERDP_GPIO_PIN_15, GPIO_AF_SPI2, ERDP_GPIOB,       ERDP_GPIO_PIN_14, GPIO_AF_SPI2, \
+        ERDP_GPIOB, ERDP_GPIO_PIN_13, GPIO_AF_SPI2,     ERDP_GPIOB,   ERDP_GPIO_PIN_12, GPIO_AF_SPI2,                   \
     }
 /*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
 #define SPI_SLAVE_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 7, false, false}
+
+/*
+ * LCD Configuration
+ */
+/* SPI3
+ *  MODE: MASTER
+ *  MOSI: GPIOB, GPIO_PIN_5, GPIO_AF_SPI3
+ *  MISO: GPIOB, GPIO_PIN_4, GPIO_AF_SPI3
+ *  CLK: GPIOB, GPIO_PIN_3, GPIO_AF_SPI3
+ *  CS: GPIOA, GPIO_PIN_15, GPIO_AF_SPI3
+ */
+#define LCD_SPI_INFO                                                                                                 \
+    {                                                                                                                \
+        ERDP_SPI3,  ERDP_GPIOB,      ERDP_GPIO_PIN_3, GPIO_AF_SPI3, ERDP_GPIOB,       ERDP_GPIO_PIN_5, GPIO_AF_SPI3, \
+        ERDP_GPIOB, ERDP_GPIO_PIN_4, GPIO_AF_SPI3,    ERDP_GPIOA,   ERDP_GPIO_PIN_15, GPIO_AF_SPI3,                  \
+    }
+
+/*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
+#define LCD_SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, false, false}
+
+#define LCD_DC_PORT ERDP_GPIOD
+#define LCD_DC_PIN  ERDP_GPIO_PIN_13
+
+#define LCD_BL_PORT ERDP_GPIOD
+#define LCD_BL_PIN  ERDP_GPIO_PIN_12
+
+#define LCD_RST_PORT ERDP_GPIOC
+#define LCD_RST_PIN  ERDP_GPIO_PIN_2
 
 #elif BOARD_TYPE == GD32_BOARD
 #include "gd32f4xx.h"
