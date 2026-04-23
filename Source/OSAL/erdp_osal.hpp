@@ -61,6 +61,8 @@ namespace erdp {
         static uint32_t getSystem1msTicks();
 
         static void setKillThreadHook(std::function<void(Thread*)> hook);
+
+        static void setTickHook(OS_Hook *tickHook);
         
         virtual void threadCode();
 

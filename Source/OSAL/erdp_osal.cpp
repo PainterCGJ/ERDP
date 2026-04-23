@@ -153,6 +153,7 @@ namespace erdp {
     uint32_t Thread::getSystem1msTicks() { return erdp_if_rtos_get_1ms_timestamp(); }
 
     void Thread::setKillThreadHook(std::function<void(Thread *)> hook) { killThreadHook = std::move(hook); }
+    void Thread::setTickHook(OS_Hook *tickHook) { erdp_if_rtos_set_tick_hook(tickHook); }
 
     void Thread::threadCode() {
         if (m_threadCode) {
