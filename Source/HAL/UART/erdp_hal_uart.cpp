@@ -1,7 +1,7 @@
 #include "erdp_hal_uart.hpp"
 namespace erdp
 {
-    UartDev *UartDev::m_instance[ERDP_UART_NUM];
+    UartDev *UartDev::m_instance[ERDP_UART_NUM] = {nullptr};
     void (*UartDev::putChar)(char c) = erdp_if_uart_putchar;
     extern "C"
     {
