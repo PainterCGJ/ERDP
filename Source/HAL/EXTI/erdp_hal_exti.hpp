@@ -1,6 +1,7 @@
 #ifndef __ERDP_HAL_EXTI_HPP__
 #define __ERDP_HAL_EXTI_HPP__
 #include "erdp_hal.hpp"
+#include <erdp_osal.hpp>
 #include "erdp_if_exti.h"
 #include "erdp_if_gpio.h"
 
