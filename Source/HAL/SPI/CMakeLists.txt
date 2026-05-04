@@ -20,6 +20,7 @@ target_include_directories(hal-spi PUBLIC
 target_link_libraries(hal-spi PUBLIC
     interface-driver
     osal
+    hal-dma
 )
 
 set_target_properties(hal-spi PROPERTIES

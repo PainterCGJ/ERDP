@@ -1,7 +1,7 @@
 #ifndef __ERDP_HAL_SPI_HPP__
 #define __ERDP_HAL_SPI_HPP__
 #include <vector>
-
+#include "erdp_hal_dma.hpp"
 #include "erdp_if_spi.h"
 #include "erdp_osal.hpp"
 
@@ -21,6 +21,8 @@ namespace erdp {
        protected:
         SpiInfo_t m_spiInfo;
         SpiConfig_t m_spiCfg;
+        DmaDev* m_txDma;
+        DmaDev* m_rxDma;
         static SpiBase *m_spiInstance[ERDP_SPI_NUM];
 
        private:
@@ -44,7 +46,7 @@ namespace erdp {
 
         void disable() { erdp_if_spi_enable(m_spiInfo.spi, false); }
 
-        virtual bool send(DataType *pData, uint32_t len) = 0;
+        virtual bool send(const DataType *pData, uint32_t len) = 0;
         virtual bool recv(uint32_t &&len) = 0;
 
        protected:
@@ -71,10 +73,9 @@ namespace erdp {
         void csHigh() { erdp_if_gpio_write(SpiBase::m_spiInfo.cs_port, SpiBase::m_spiInfo.cs_pin, ERDP_SET); }
         void csLow() { erdp_if_gpio_write(SpiBase::m_spiInfo.cs_port, SpiBase::m_spiInfo.cs_pin, ERDP_RESET); }
 
-        bool send(typename SpiDevBase<DATA_SIZE>::DataType *pData, uint32_t len) override {
+        bool send(const typename SpiDevBase<DATA_SIZE>::DataType *pData, uint32_t len) override {
             if (SpiBase::m_spiCfg.enable_tx_dma == true) {
-                erdp_if_spi_send_dma(SpiBase::m_spiInfo.spi, (uint8_t *)pData, len);
-                while (!erdp_if_spi_dma_transfer_complete(SpiBase::m_spiInfo.spi));
+               
             } else {
                 uint32_t txCount = 0;
                 while (txCount < len) {
@@ -169,7 +170,7 @@ namespace erdp {
             m_txBuffer.init(txBufferSize);
         }
 
-        bool send(typename SpiDevBase<DATA_SIZE>::DataType *data, uint32_t len) override {
+        bool send(const typename SpiDevBase<DATA_SIZE>::DataType *data, uint32_t len) override {
             loadTxBuffer(data, len);
             return true;
         }
