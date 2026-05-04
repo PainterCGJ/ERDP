@@ -1,5 +1,7 @@
 #include "erdp_if_rtos.h"
+
 #include "erdp_if_sys.h"
+
 
 #define List_Index_Loop(item) \
     for (OS_ListItem *__end = (OS_ListItem *)listGET_END_MARKER(item->pxContainer); item != __end; item = item->pxNext)
@@ -185,7 +187,8 @@ OS_EventBits erdp_if_rtos_get_event_bits(OS_Event event) {
     return (OS_EventBits)xEventGroupGetBits(event);
 }
 
-OS_EventBits erdp_if_rtos_wait_event_bits(OS_Event event, OS_EventBits bits_to_wait, uint32_t ticks_to_wait, bool wait_for_all) {
+OS_EventBits erdp_if_rtos_wait_event_bits(OS_Event event, OS_EventBits bits_to_wait, uint32_t ticks_to_wait,
+                                          bool wait_for_all) {
     if (xPortIsInsideInterrupt() == pdTRUE) {
         // 不能在中断中等待事件
         erdp_assert(false);
@@ -202,9 +205,7 @@ OS_EventBits erdp_if_rtos_event_sync(OS_Event event, OS_EventBits bits_to_set, O
     return 0;
 }
 
-void erdp_if_rtos_delete_event(OS_Event event) {
-    vEventGroupDelete(event);
-}
+void erdp_if_rtos_delete_event(OS_Event event) { vEventGroupDelete(event); }
 
 OS_Semaphore erdp_if_rtos_semaphore_creat(Semaphore_tag tag) {
     switch (tag) {
@@ -366,7 +367,25 @@ bool erdp_if_rtos_timer_set_period(OS_Timer timer, uint32_t period_ms) {
     return (bool)xTimerChangePeriod(timer->handle, pdMS_TO_TICKS(period_ms), 0);
 }
 
-void erdp_if_rtos_system_config(void) {
-    erdp_if_sys_init();
+static OS_Hook *m_tick_hook = NULL;
+static OS_Hook *m_stack_overflow_hook = NULL;
+void erdp_if_rtos_set_tick_hook(OS_Hook *tick_hook) { m_tick_hook = tick_hook; }
+void erdp_if_rtos_set_stack_overflow_hook(OS_Hook *stack_overflow_hook) { m_stack_overflow_hook = stack_overflow_hook; }
+void vApplicationTickHook(void) {
+    if (m_tick_hook != NULL) {
+        m_tick_hook->hook(m_tick_hook->param);
+    }
 }
+void vApplicationMallocFailedHook(void) {
+    printf("FreeRTOS malloc failed!\r\n");
+    while (1);
+}
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName) {
+    // printf("Task overflow: %s\r\n", pcTaskName);
+    // if (m_stack_overflow_hook != NULL) {
+    //     m_stack_overflow_hook->hook(m_stack_overflow_hook->param);
+    // }
+}
+
+void erdp_if_rtos_system_config(void) { erdp_if_sys_init(); }
 /* end of file */

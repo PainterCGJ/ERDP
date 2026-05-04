@@ -451,7 +451,25 @@ extern "C" {
      */
     bool erdp_if_rtos_timer_set_period(OS_Timer timer, uint32_t period_ms);
 
-#ifdef __cplusplus
+    typedef void (*os_hook_func)(void* param);
+    typedef struct {
+        os_hook_func hook;
+        void* param;
+    } OS_Hook;
+
+    /**
+     * @brief Sets a tick hook function to be called every tick
+     * @param[in] tick_hook Pointer to the tick hook structure
+     */
+    void erdp_if_rtos_set_tick_hook(OS_Hook *tick_hook);
+
+    /**
+     * @brief Sets a stack overflow hook function to be called when a task overflows its stack
+     * @param[in] stack_overflow_hook Pointer to the stack overflow hook structure
+     */
+    void erdp_if_rtos_set_stack_overflow_hook(OS_Hook *stack_overflow_hook);
+
+   #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
