@@ -70,7 +70,7 @@
     }
 
 /*                         clock mode,         endian,              baudrate,                pri tx_dma, rx_dma*/
-#define LCD_SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, false, false}
+#define LCD_SPI_CONFIG {ERDP_SPI_CLKMODE_0, ERDP_SPI_ENDIAN_MSB, SPI_BaudRatePrescaler_32, 6, true, false}
 
 #define LCD_DC_PORT ERDP_GPIOD
 #define LCD_DC_PIN  ERDP_GPIO_PIN_13

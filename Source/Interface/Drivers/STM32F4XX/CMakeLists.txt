@@ -12,6 +12,7 @@ set(STM32F4XX_IF_SOURCES
     # ${CMAKE_CURRENT_SOURCE_DIR}//erdp_if_exti.c
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_uart.c
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_spi.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_dma.c
     # ${CMAKE_CURRENT_SOURCE_DIR}//erdp_if_i2c.c
     ${CMAKE_CURRENT_SOURCE_DIR}/erdp_if_sys.c
 

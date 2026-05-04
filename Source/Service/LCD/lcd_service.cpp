@@ -1,705 +1,107 @@
 #include "lcd_service.hpp"
-#include "erdp_hal_gpio.hpp"
-#include <memory>
 
-#include "driver_st7789.h"
-
-/**
- * @brief st7789 basic example default definition
- */
-#define ST7789_BASIC_DEFAULT_COLUMN      240 /**< 240 */
-#define ST7789_BASIC_DEFAULT_ROW         280 /**< 320 */
-#define ST7789_BASIC_DEFAULT_GAMMA_CURVE ST7789_GAMMA_CURVE_1
-#define ST7789_BASIC_DEFAULT_ACCESS                                                                          \
-    (ST7789_ORDER_PAGE_TOP_TO_BOTTOM | ST7789_ORDER_COLUMN_LEFT_TO_RIGHT | ST7789_ORDER_PAGE_COLUMN_NORMAL | \
-     ST7789_ORDER_LINE_TOP_TO_BOTTOM | ST7789_ORDER_COLOR_RGB | ST7789_ORDER_REFRESH_LEFT_TO_RIGHT) /**< access */
-#define ST7789_BASIC_DEFAULT_RGB_INTERFACE_COLOR_FORMAT           \
-    ST7789_RGB_INTERFACE_COLOR_FORMAT_262K /**< 262K color format \
-                                            */
-#define ST7789_BASIC_DEFAULT_CONTROL_INTERFACE_COLOR_FORMAT \
-    ST7789_CONTROL_INTERFACE_COLOR_FORMAT_16_BIT                 /**< 16bit color format */
-#define ST7789_BASIC_DEFAULT_BRIGHTNESS        0xFF              /**< 0xFF brightness */
-#define ST7789_BASIC_DEFAULT_BRIGHTNESS_BLOCK  ST7789_BOOL_FALSE /**< disable brightness block */
-#define ST7789_BASIC_DEFAULT_DISPLAY_DIMMING   ST7789_BOOL_FALSE /**< disable display dimming */
-#define ST7789_BASIC_DEFAULT_BACKLIGHT         ST7789_BOOL_FALSE /**< disable backlight */
-#define ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT ST7789_BOOL_TRUE  /**< enable color enhancement */
-#define ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT_MODE                                                                  \
-    ST7789_COLOR_ENHANCEMENT_MODE_USER_INTERFACE                                                 /**< user interface \
-                                                                                                  */
-#define ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT_LEVEL         ST7789_COLOR_ENHANCEMENT_LEVEL_HIGH /**< high level */
-#define ST7789_BASIC_DEFAULT_CABC_MINIMUM_BRIGHTNESS         0x00                                /**< 0x00 */
-#define ST7789_BASIC_DEFAULT_RAM_ACCESS                      ST7789_RAM_ACCESS_MCU               /**< mcu access */
-#define ST7789_BASIC_DEFAULT_DISPLAY_MODE                    ST7789_DISPLAY_MODE_MCU       /**< mcu display mode */
-#define ST7789_BASIC_DEFAULT_FRAME_TYPE                      ST7789_FRAME_TYPE_0           /**< frame type 0 */
-#define ST7789_BASIC_DEFAULT_DATA_MODE                       ST7789_DATA_MODE_MSB          /**< data mode msb */
-#define ST7789_BASIC_DEFAULT_RGB_BUS_WIDTH                   ST7789_RGB_BUS_WIDTH_18_BIT   /**< 18 bits */
-#define ST7789_BASIC_DEFAULT_PIXEL_TYPE                      ST7789_PIXEL_TYPE_0           /**< pixel type 0 */
-#define ST7789_BASIC_DEFAULT_DIRECT_RGB_MODE                 ST7789_DIRECT_RGB_MODE_MEM    /**< rgb mode mem */
-#define ST7789_BASIC_DEFAULT_RGB_IF_ENABLE_MODE              ST7789_RGB_IF_ENABLE_MODE_MCU /**< enable mode mcu */
-#define ST7789_BASIC_DEFAULT_VSPL                            ST7789_PIN_LEVEL_LOW          /**< level low */
-#define ST7789_BASIC_DEFAULT_HSPL                            ST7789_PIN_LEVEL_LOW          /**< level low */
-#define ST7789_BASIC_DEFAULT_DPL                             ST7789_PIN_LEVEL_LOW          /**< level low */
-#define ST7789_BASIC_DEFAULT_EPL                             ST7789_PIN_LEVEL_LOW          /**< level low */
-#define ST7789_BASIC_DEFAULT_VBP                             0x02                          /**< 0x02 */
-#define ST7789_BASIC_DEFAULT_HBP                             0x14                          /**< 0x14 */
-#define ST7789_BASIC_DEFAULT_PORCH_NORMAL_BACK               0x0C                          /**< 0x0C */
-#define ST7789_BASIC_DEFAULT_PORCH_NORMAL_FRONT              0x0C                          /**< 0x0C */
-#define ST7789_BASIC_DEFAULT_PORCH_ENABLE                    ST7789_BOOL_FALSE             /**< disable porch */
-#define ST7789_BASIC_DEFAULT_PORCH_IDEL_BACK                 0x03                          /**< 0x03 */
-#define ST7789_BASIC_DEFAULT_PORCH_IDEL_FRONT                0x03                          /**< 0x03 */
-#define ST7789_BASIC_DEFAULT_PORCH_PART_BACK                 0x03                          /**< 0x03 */
-#define ST7789_BASIC_DEFAULT_PORCH_PART_FRONT                0x03                          /**< 0x03 */
-#define ST7789_BASIC_DEFAULT_SEPARATE_FR                     ST7789_BOOL_FALSE             /**< disable fr */
-#define ST7789_BASIC_DEFAULT_FRAME_RATE_DIVIDED              ST7789_FRAME_RATE_DIVIDED_CONTROL_DIV_1    /**< div 1 */
-#define ST7789_BASIC_DEFAULT_INVERSION_IDLE_MODE             ST7789_INVERSION_IDLE_MODE_DOT             /**< dot mode */
-#define ST7789_BASIC_DEFAULT_IDLE_FRAME_RATE                 0x0F                                       /**< 0x0F */
-#define ST7789_BASIC_DEFAULT_INVERSION_PARTIAL_MODE          ST7789_INVERSION_PARTIAL_MODE_DOT          /**< dot mode */
-#define ST7789_BASIC_DEFAULT_IDLE_PARTIAL_RATE               0x0F                                       /**< 0x0F */
-#define ST7789_BASIC_DEFAULT_NON_DISPLAY_SOURCE_OUTPUT_LEVEL ST7789_NON_DISPLAY_SOURCE_OUTPUT_LEVEL_V63 /**< v63 */
-#define ST7789_BASIC_DEFAULT_NON_DISPLAY_AREA_SCAN_MODE \
-    ST7789_NON_DISPLAY_AREA_SCAN_MODE_NORMAL /**< normal scan mode */
-#define ST7789_BASIC_DEFAULT_NON_DISPLAY_FRAME_FREQUENCY ST7789_NON_DISPLAY_FRAME_FREQUENCY_EVERY /**< every frame */
-#define ST7789_BASIC_DEFAULT_VGHS                        ST7789_VGHS_14P97_V                      /**< 14.97V */
-#define ST7789_BASIC_DEFAULT_VGLS_NEGATIVE               ST7789_VGLS_NEGATIVE_8P23                /**< -8.23 */
-#define ST7789_BASIC_DEFAULT_GATE_ON_TIMING              0x22                                     /**< 0x22 */
-#define ST7789_BASIC_DEFAULT_GATE_OFF_TIMING_RGB         0x07                                     /**< 0x07 */
-#define ST7789_BASIC_DEFAULT_GATE_OFF_TIMING             0x05                                     /**< 0x05 */
-#define ST7789_BASIC_DEFAULT_DIGITAL_GAMMA               ST7789_BOOL_TRUE               /**< enable digital gamma */
-#define ST7789_BASIC_DEFAULT_VCOMS                       1.625f                         /**< 1.625 vcoms */
-#define ST7789_BASIC_DEFAULT_XMY                         ST7789_BOOL_FALSE              /**< disable xmy */
-#define ST7789_BASIC_DEFAULT_XBGR                        ST7789_BOOL_TRUE               /**< enable xbgr */
-#define ST7789_BASIC_DEFAULT_XINV                        ST7789_BOOL_FALSE              /**< disable xinv */
-#define ST7789_BASIC_DEFAULT_XMX                         ST7789_BOOL_TRUE               /**< enable xmx */
-#define ST7789_BASIC_DEFAULT_XMH                         ST7789_BOOL_TRUE               /**< enable xmh */
-#define ST7789_BASIC_DEFAULT_XMV                         ST7789_BOOL_FALSE              /**< disable xmv */
-#define ST7789_BASIC_DEFAULT_XGS                         ST7789_BOOL_FALSE              /**< disable xgs */
-#define ST7789_BASIC_DEFAULT_VDV_VRH_FROM                ST7789_VDV_VRH_FROM_CMD        /**< from cmd */
-#define ST7789_BASIC_DEFAULT_VRHS                        4.8f                           /**< 4.8 */
-#define ST7789_BASIC_DEFAULT_VDV                         0.0f                           /**< 0.0 */
-#define ST7789_BASIC_DEFAULT_VCOMS_OFFSET                0.0f                           /**< 0.0 */
-#define ST7789_BASIC_DEFAULT_INVERSION_SELECTION         ST7789_INVERSION_SELECTION_DOT /**< dot */
-#define ST7789_BASIC_DEFAULT_FRAME_RATE                  ST7789_FRAME_RATE_60_HZ        /**< frame rate 60Hz */
-#define ST7789_BASIC_DEFAULT_LED_ON                      ST7789_BOOL_FALSE              /**< disable led on */
-#define ST7789_BASIC_DEFAULT_LED_PWM_INIT                ST7789_BOOL_FALSE              /**< disable led pwm init */
-#define ST7789_BASIC_DEFAULT_LED_PWM_FIX                 ST7789_BOOL_FALSE              /**< disable led pwm fix */
-#define ST7789_BASIC_DEFAULT_LED_PWM_POLARITY            ST7789_BOOL_FALSE              /**< disable led pwm polarity */
-#define ST7789_BASIC_DEFAULT_PWM_FREQUENCY               ST7789_PWM_FREQUENCY_9P8_KHZ   /**< pwm 9.8KHz */
-#define ST7789_BASIC_DEFAULT_AVDD                        ST7789_AVDD_6P8_V              /**< 6.8V */
-#define ST7789_BASIC_DEFAULT_AVCL_NEGTIVE                ST7789_AVCL_NEGTIVE_4P8_V      /**< -4.8V */
-#define ST7789_BASIC_DEFAULT_VDS                         ST7789_VDS_2P3_V               /**< 2.3V */
-#define ST7789_BASIC_DEFAULT_COMMAND_2_ENABLE            ST7789_BOOL_FALSE              /**< disable command 2 */
-#define ST7789_BASIC_DEFAULT_POSITIVE_VOLTAGE_GAMMA \
-    {0xD0, 0x04, 0x0D, 0x11, 0x13, 0x2B, 0x3F, 0x54, 0x4C, 0x18, 0x0D, 0x0B, 0x1F, 0x23} /**< gamma */
-#define ST7789_BASIC_DEFAULT_NEGATIVA_VOLTAGE_GAMMA \
-    {0xD0, 0x04, 0x0C, 0x11, 0x13, 0x2C, 0x3F, 0x44, 0x51, 0x2F, 0x1F, 0x1F, 0x20, 0x23} /**< gamma */
-#define ST7789_BASIC_DEFAULT_GATE_LINE             320                                   /**< 320 */
-#define ST7789_BASIC_DEFAULT_FIRST_SCAN_LINE       0x00                                  /**< 0x00 */
-#define ST7789_BASIC_DEFAULT_GATE_SCAN_MODE        ST7789_GATE_SCAN_MODE_INTERLACE       /**< interlace */
-#define ST7789_BASIC_DEFAULT_GATE_SCAN_DIRECTION   ST7789_GATE_SCAN_DIRECTION_0_319      /**< 320 */
-#define ST7789_BASIC_DEFAULT_SPI2_LANE             ST7789_BOOL_FALSE                     /**< disable */
-#define ST7789_BASIC_DEFAULT_COMMAND_TABLE_2       ST7789_BOOL_FALSE                     /**< disable command table2 */
-#define ST7789_BASIC_DEFAULT_SBCLK_DIV             ST7789_SBCLK_DIV_3                    /**< div3 */
-#define ST7789_BASIC_DEFAULT_STP14CK_DIV           ST7789_STP14CK_DIV_6                  /**< div6 */
-#define ST7789_BASIC_DEFAULT_SOURCE_EQUALIZE_TIME  0x11                                  /**< 0x11 */
-#define ST7789_BASIC_DEFAULT_SOURCE_PRE_DRIVE_TIME 0x11                                  /**< 0x11 */
-#define ST7789_BASIC_DEFAULT_GATE_EQUALIZE_TIME    0x08                                  /**< 0x08 */
-#define ST7789_BASIC_DEFAULT_PROGRAM_MODE          ST7789_BOOL_FALSE                     /**< disable program mode */
+#include "board.h"
+#include "erdp_if_uart.h"
+#include "erdp_interface.h"
+#include "log_service.hpp"
+#include "lvgl.h"
+#include "thread_config.h"
+#include "erdp_hal_uart.hpp"
 
 using namespace erdp;
+
+OS_Hook LCDService::m_tickHook = {.hook = tickHook, .param = nullptr};
+SpiDev<ERDP_SPI_MODE_MASTER>* LCDService::m_spi = nullptr;
+GpioDev LCDService::m_dc;
+
 LCDService::LCDService() {
-    m_pThread = new Thread([this]() { lcdThreadFunc(); }, "lcd_thread", 10, 1024);
+    m_pThread = std::make_unique<Thread>(
+        Thread([this]() { lcdThreadFunc(); }, "lcd_thread", LCD_SERVICE_PRIO, LCD_THREAD_STACK_SIZE));
 }
 
 LCDService::~LCDService() {}
-void LCDService::start() { 
+
+void LCDService::start() {
     m_pThread->join();
- }
-
-uint8_t LCDService::st7789BasicInit(void) {
-    uint8_t res;
-    uint8_t reg;
-    uint16_t i;
-    uint8_t param_positive[14] = ST7789_BASIC_DEFAULT_POSITIVE_VOLTAGE_GAMMA;
-    uint8_t param_negative[14] = ST7789_BASIC_DEFAULT_NEGATIVA_VOLTAGE_GAMMA;
-    uint8_t params[64];
-
-    /* link functions */
-    DRIVER_ST7789_LINK_INIT(&m_lcdHandle, st7789_handle_t);
-    DRIVER_ST7789_LINK_SPI_INIT(&m_lcdHandle, st7789_interface_spi_init);
-    DRIVER_ST7789_LINK_SPI_DEINIT(&m_lcdHandle, st7789_interface_spi_deinit);
-    DRIVER_ST7789_LINK_SPI_WRITE_COMMAND(&m_lcdHandle, st7789_interface_spi_write_cmd);
-    DRIVER_ST7789_LINK_COMMAND_DATA_GPIO_INIT(&m_lcdHandle, st7789_interface_cmd_data_gpio_init);
-    DRIVER_ST7789_LINK_COMMAND_DATA_GPIO_DEINIT(&m_lcdHandle, st7789_interface_cmd_data_gpio_deinit);
-    DRIVER_ST7789_LINK_COMMAND_DATA_GPIO_WRITE(&m_lcdHandle, st7789_interface_cmd_data_gpio_write);
-    DRIVER_ST7789_LINK_RESET_GPIO_INIT(&m_lcdHandle, st7789_interface_reset_gpio_init);
-    DRIVER_ST7789_LINK_RESET_GPIO_DEINIT(&m_lcdHandle, st7789_interface_reset_gpio_deinit);
-    DRIVER_ST7789_LINK_RESET_GPIO_WRITE(&m_lcdHandle, st7789_interface_reset_gpio_write);
-    DRIVER_ST7789_LINK_DELAY_MS(&m_lcdHandle, st7789_interface_delay_ms);
-    DRIVER_ST7789_LINK_DEBUG_PRINT(&m_lcdHandle, st7789_interface_debug_print);
-
-    /* st7789 init */
-    res = st7789_init(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: init failed.\n");
-
-        return 1;
-    }
-
-    /* set default column */
-    res = st7789_set_column(&m_lcdHandle, ST7789_BASIC_DEFAULT_COLUMN);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set column failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default row */
-    res = st7789_set_row(&m_lcdHandle, ST7789_BASIC_DEFAULT_ROW);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set row failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* sleep out */
-    res = st7789_sleep_out(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: sleep out failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* idle mode off */
-    res = st7789_idle_mode_off(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: idle mode off failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* normal display mode on */
-    res = st7789_normal_display_mode_on(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: normal display mode on failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* display inversion on */
-    res = st7789_display_inversion_on(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: display inversion on failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default gamma */
-    res = st7789_set_gamma(&m_lcdHandle, ST7789_BASIC_DEFAULT_GAMMA_CURVE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set gamma failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default memory data access control */
-    res = st7789_set_memory_data_access_control(&m_lcdHandle, ST7789_BASIC_DEFAULT_ACCESS);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set memory data access control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default pixel format */
-    res = st7789_set_interface_pixel_format(&m_lcdHandle, ST7789_BASIC_DEFAULT_RGB_INTERFACE_COLOR_FORMAT,
-                                            ST7789_BASIC_DEFAULT_CONTROL_INTERFACE_COLOR_FORMAT);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set interface pixel format failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default brightness */
-    res = st7789_set_display_brightness(&m_lcdHandle, ST7789_BASIC_DEFAULT_BRIGHTNESS);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set display brightness failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default brightness control */
-    res = st7789_set_display_control(&m_lcdHandle,
-                                     ST7789_BASIC_DEFAULT_BRIGHTNESS_BLOCK,
-                                     ST7789_BASIC_DEFAULT_DISPLAY_DIMMING,
-                                     ST7789_BASIC_DEFAULT_BACKLIGHT);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set display control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default color enhancement */
-    res = st7789_set_brightness_control_and_color_enhancement(&m_lcdHandle, ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT,
-                                                              ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT_MODE,
-                                                              ST7789_BASIC_DEFAULT_COLOR_ENHANCEMENT_LEVEL);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set brightness control and color enhancement failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default cabc minimum brightness */
-    res = st7789_set_cabc_minimum_brightness(&m_lcdHandle, ST7789_BASIC_DEFAULT_CABC_MINIMUM_BRIGHTNESS);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set cabc minimum brightness failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default ram control */
-    res = st7789_set_ram_control(&m_lcdHandle,
-                                 ST7789_BASIC_DEFAULT_RAM_ACCESS,
-                                 ST7789_BASIC_DEFAULT_DISPLAY_MODE,
-                                 ST7789_BASIC_DEFAULT_FRAME_TYPE,
-                                 ST7789_BASIC_DEFAULT_DATA_MODE,
-                                 ST7789_BASIC_DEFAULT_RGB_BUS_WIDTH,
-                                 ST7789_BASIC_DEFAULT_PIXEL_TYPE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set ram control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default rgb interface control */
-    res = st7789_set_rgb_interface_control(&m_lcdHandle,
-                                           ST7789_BASIC_DEFAULT_DIRECT_RGB_MODE,
-                                           ST7789_BASIC_DEFAULT_RGB_IF_ENABLE_MODE,
-                                           ST7789_BASIC_DEFAULT_VSPL,
-                                           ST7789_BASIC_DEFAULT_HSPL,
-                                           ST7789_BASIC_DEFAULT_DPL,
-                                           ST7789_BASIC_DEFAULT_EPL,
-                                           ST7789_BASIC_DEFAULT_VBP,
-                                           ST7789_BASIC_DEFAULT_HBP);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set rgb interface control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default porch */
-    res = st7789_set_porch(&m_lcdHandle,
-                           ST7789_BASIC_DEFAULT_PORCH_NORMAL_BACK,
-                           ST7789_BASIC_DEFAULT_PORCH_NORMAL_FRONT,
-                           ST7789_BASIC_DEFAULT_PORCH_ENABLE,
-                           ST7789_BASIC_DEFAULT_PORCH_IDEL_BACK,
-                           ST7789_BASIC_DEFAULT_PORCH_IDEL_FRONT,
-                           ST7789_BASIC_DEFAULT_PORCH_PART_BACK,
-                           ST7789_BASIC_DEFAULT_PORCH_PART_FRONT);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set porch failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default frame rate control */
-    res = st7789_set_frame_rate_control(&m_lcdHandle,
-                                        ST7789_BASIC_DEFAULT_SEPARATE_FR,
-                                        ST7789_BASIC_DEFAULT_FRAME_RATE_DIVIDED,
-                                        ST7789_BASIC_DEFAULT_INVERSION_IDLE_MODE,
-                                        ST7789_BASIC_DEFAULT_IDLE_FRAME_RATE,
-                                        ST7789_BASIC_DEFAULT_INVERSION_PARTIAL_MODE,
-                                        ST7789_BASIC_DEFAULT_IDLE_PARTIAL_RATE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set frame rate control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default partial mode control */
-    res = st7789_set_partial_mode_control(&m_lcdHandle,
-                                          ST7789_BASIC_DEFAULT_NON_DISPLAY_SOURCE_OUTPUT_LEVEL,
-                                          ST7789_BASIC_DEFAULT_NON_DISPLAY_AREA_SCAN_MODE,
-                                          ST7789_BASIC_DEFAULT_NON_DISPLAY_FRAME_FREQUENCY);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set partial mode control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default gate control */
-    res = st7789_set_gate_control(&m_lcdHandle, ST7789_BASIC_DEFAULT_VGHS, ST7789_BASIC_DEFAULT_VGLS_NEGATIVE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set gate control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default gate on timing adjustment */
-    res = st7789_set_gate_on_timing_adjustment(&m_lcdHandle,
-                                               ST7789_BASIC_DEFAULT_GATE_ON_TIMING,
-                                               ST7789_BASIC_DEFAULT_GATE_OFF_TIMING_RGB,
-                                               ST7789_BASIC_DEFAULT_GATE_OFF_TIMING);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set gate on timing adjustment failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default digital gamma */
-    res = st7789_set_digital_gamma(&m_lcdHandle, ST7789_BASIC_DEFAULT_DIGITAL_GAMMA);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set digital gamma failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* vcom convert to register  */
-    res = st7789_vcom_convert_to_register(&m_lcdHandle, ST7789_BASIC_DEFAULT_VCOMS, &reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: vcom convert to register failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default vcoms */
-    res = st7789_set_vcoms(&m_lcdHandle, reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set vcoms failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default lcm control */
-    res = st7789_set_lcm_control(&m_lcdHandle,
-                                 ST7789_BASIC_DEFAULT_XMY,
-                                 ST7789_BASIC_DEFAULT_XBGR,
-                                 ST7789_BASIC_DEFAULT_XINV,
-                                 ST7789_BASIC_DEFAULT_XMX,
-                                 ST7789_BASIC_DEFAULT_XMH,
-                                 ST7789_BASIC_DEFAULT_XMV,
-                                 ST7789_BASIC_DEFAULT_XGS);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set lcm control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default vdv vrh cmd */
-    res = st7789_set_vdv_vrh_from(&m_lcdHandle, ST7789_BASIC_DEFAULT_VDV_VRH_FROM);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set vdv vrh from failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* vrhs convert to register */
-    res = st7789_vrhs_convert_to_register(&m_lcdHandle, ST7789_BASIC_DEFAULT_VRHS, &reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: vrhs convert to register failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default vrhs */
-    res = st7789_set_vrhs(&m_lcdHandle, reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set vrhs failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* vdv convert to register */
-    res = st7789_vdv_convert_to_register(&m_lcdHandle, ST7789_BASIC_DEFAULT_VDV, &reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: vdv convert to register failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default vdv */
-    res = st7789_set_vdv(&m_lcdHandle, reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set vdv failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* vcoms offset convert to register */
-    res = st7789_vcoms_offset_convert_to_register(&m_lcdHandle, ST7789_BASIC_DEFAULT_VCOMS_OFFSET, &reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: vcoms offset convert to register failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default vcoms offset */
-    res = st7789_set_vcoms_offset(&m_lcdHandle, reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set vcoms offset failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default frame rate */
-    res = st7789_set_frame_rate(&m_lcdHandle, ST7789_BASIC_DEFAULT_INVERSION_SELECTION, ST7789_BASIC_DEFAULT_FRAME_RATE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set frame rate failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default cabc control */
-    res = st7789_set_cabc_control(&m_lcdHandle,
-                                  ST7789_BASIC_DEFAULT_LED_ON,
-                                  ST7789_BASIC_DEFAULT_LED_PWM_INIT,
-                                  ST7789_BASIC_DEFAULT_LED_PWM_FIX,
-                                  ST7789_BASIC_DEFAULT_LED_PWM_POLARITY);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set cabc control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default pwm frequency */
-    res = st7789_set_pwm_frequency(&m_lcdHandle, ST7789_BASIC_DEFAULT_PWM_FREQUENCY);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set pwm frequency failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default power control 1 */
-    res = st7789_set_power_control_1(&m_lcdHandle,
-                                     ST7789_BASIC_DEFAULT_AVDD,
-                                     ST7789_BASIC_DEFAULT_AVCL_NEGTIVE,
-                                     ST7789_BASIC_DEFAULT_VDS);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set power control 1 failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default command 2 */
-    res = st7789_set_command_2_enable(&m_lcdHandle, ST7789_BASIC_DEFAULT_COMMAND_2_ENABLE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set command 2 enable failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default positive voltage gamma control */
-    res = st7789_set_positive_voltage_gamma_control(&m_lcdHandle, param_positive);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set positive voltage gamma control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default negative voltage gamma control */
-    res = st7789_set_negative_voltage_gamma_control(&m_lcdHandle, param_negative);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set negative voltage gamma control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* create the table */
-    for (i = 0; i < 64; i++)
-    {
-        params[i] = i * 4;
-    }
-
-    /* set default digital gamma look up table red */
-    res = st7789_set_digital_gamma_look_up_table_red(&m_lcdHandle, params);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set digital gamma look up table red ailed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default digital gamma look up table blue */
-    res = st7789_set_digital_gamma_look_up_table_blue(&m_lcdHandle, params);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set digital gamma look up table blue ailed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default gate line convert to register */
-    res = st7789_gate_line_convert_to_register(&m_lcdHandle, ST7789_BASIC_DEFAULT_GATE_LINE, &reg);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: gate line convert to register failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default gate */
-    res = st7789_set_gate(&m_lcdHandle,
-                          reg,
-                          ST7789_BASIC_DEFAULT_FIRST_SCAN_LINE,
-                          ST7789_BASIC_DEFAULT_GATE_SCAN_MODE,
-                          ST7789_BASIC_DEFAULT_GATE_SCAN_DIRECTION);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set gate failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default spi2 */
-    res = st7789_set_spi2_enable(&m_lcdHandle, ST7789_BASIC_DEFAULT_SPI2_LANE, ST7789_BASIC_DEFAULT_COMMAND_TABLE_2);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set spi2 enable failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default power control 2 */
-    res = st7789_set_power_control_2(&m_lcdHandle, ST7789_BASIC_DEFAULT_SBCLK_DIV, ST7789_BASIC_DEFAULT_STP14CK_DIV);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set power control 2 failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default equalize time control */
-    res = st7789_set_equalize_time_control(&m_lcdHandle,
-                                           ST7789_BASIC_DEFAULT_SOURCE_EQUALIZE_TIME,
-                                           ST7789_BASIC_DEFAULT_SOURCE_PRE_DRIVE_TIME,
-                                           ST7789_BASIC_DEFAULT_GATE_EQUALIZE_TIME);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set equalize time control failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* set default program mode */
-    res = st7789_set_program_mode_enable(&m_lcdHandle, ST7789_BASIC_DEFAULT_PROGRAM_MODE);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: set program mode enable ailed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* display on */
-    res = st7789_display_on(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: display on failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    /* clear */
-    res = st7789_clear(&m_lcdHandle);
-    if (res != 0)
-    {
-        st7789_interface_debug_print("st7789: clear failed.\n");
-        (void)st7789_deinit(&m_lcdHandle);
-
-        return 1;
-    }
-
-    return 0;
 }
+
+void LCDService::tickHook(void* param) { lv_tick_inc(1); }
+
+void LCDService::lvglSendCmd(lv_display_t* disp, const uint8_t* cmd, size_t cmd_size, const uint8_t* param,
+                             size_t param_size) {
+    for (size_t i = 0; i < cmd_size; i++) {
+        erdp_if_uart_putchar("Ccmd"[i % 4]);  // 调试标记
+    }
+    m_spi->csLow();
+    m_dc.write(ERDP_RESET);
+    m_spi->send(cmd, cmd_size);
+    if (param_size > 0) {
+        m_dc.write(ERDP_SET);
+        m_spi->send(param, param_size);
+    }
+    m_spi->csHigh();
+    for (size_t i = 0; i < 4; i++) {
+        erdp_if_uart_putchar("Cend"[i]);  // 调试标记
+    }
+}
+
+void LCDService::lvglSendColor(lv_display_t* disp, const uint8_t* cmd, size_t cmd_size, uint8_t* param,
+                               size_t param_size) {
+    m_spi->csLow();
+    m_dc.write(ERDP_SET);
+    m_spi->send(param, param_size);
+    m_spi->csHigh();
+}
+
 void LCDService::lcdThreadFunc() {
-    GpioDev bl(ERDP_GPIOA, ERDP_GPIO_PIN_0, ERDP_GPIO_PIN_MODE_OUTPUT);
-    bl.write(ERDP_RESET);
-    st7789BasicInit();
-    bl.write(ERDP_SET);
-    while(true){
+
+    // SPI init
+    m_spi = new SpiDev<ERDP_SPI_MODE_MASTER>(LCD_SPI_INFO, LCD_SPI_CONFIG, 128);
+
+    // GPIO init
+    m_blacklight.init(LCD_BL_PORT, LCD_BL_PIN, ERDP_GPIO_PIN_MODE_OUTPUT);
+    m_blacklight.write(ERDP_RESET);
+    m_dc.init(LCD_DC_PORT, LCD_DC_PIN, ERDP_GPIO_PIN_MODE_OUTPUT);
+    m_dc.write(ERDP_RESET);
+    m_rst.init(LCD_RST_PORT, LCD_RST_PIN, ERDP_GPIO_PIN_MODE_OUTPUT);
+    m_rst.write(ERDP_RESET);
+    Thread::sleep(100);
+    m_rst.write(ERDP_SET);
+
+    // Tick hook init
+    Thread::setTickHook(&m_tickHook);
+    lv_init();    
+    lv_delay_set_cb([](uint32_t ms) { erdp::Thread::sleep(ms); });  // 使用 FreeRTOS 延迟
+    UartDev::putChar('1');  // 调试
+    m_disp = lv_st7789_create(240, 320,            // 分辨率
+                              LV_LCD_FLAG_NONE,    // 标志（旋转、颜色顺序等）
+                              lvglSendCmd,         // 命令回调
+                              lvglSendColor        // 颜色数据回调
+    );
+    UartDev::putChar('2');  // 调试
+
+    Debug("LCD", "LCD init success");
+
+    m_pLvglThread = std::make_unique<Thread>(Thread(
+        []() {
+            while (true) {
+                lv_timer_handler();
+                Thread::sleep(20);
+            }
+        },
+        "lvgl_thread", LVGL_SERVICE_PRIO, LVGL_THREAD_STACK_SIZE));
+    m_pLvglThread->join();
+
+    m_blacklight.write(ERDP_SET);
+    // /* 1. 创建一个标签（Label）部件，父对象是当前活动屏幕 */
+    // lv_obj_t* hello_label = lv_label_create(lv_scr_act());
+
+    // /* 2. 设置标签的文本为 "Hello World" */
+    // lv_label_set_text(hello_label, "Hello World");
+
+    // /* 3. （可选）将标签在屏幕上居中显示 */
+    // lv_obj_center(hello_label);
+    while (true) {
         Thread::sleep(1000);
     }
 }

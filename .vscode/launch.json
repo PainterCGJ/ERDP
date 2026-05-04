@@ -50,6 +50,7 @@
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none",
             "preLaunchTask": "build",
+            "interfaceSpeed": 1800,
             "rttConfig": {
                 "enabled": true,
                 "polling_interval": 1,

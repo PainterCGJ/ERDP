@@ -7,6 +7,8 @@ enum ThreadPriority {
 /* ================================< user config >================================ */
 
     LOG_SERVICE_PRIO,
+    LVGL_SERVICE_PRIO,
+    LCD_SERVICE_PRIO,
 
 /* =============================< end of user config >============================ */
     MAX_PRIO = OS_MAX_PRIORITIES - 1,
@@ -14,6 +16,8 @@ enum ThreadPriority {
 };
 
 #define LOG_THREAD_STACK_SIZE 512
+#define LVGL_THREAD_STACK_SIZE 2048
+#define LCD_THREAD_STACK_SIZE 2048
 
 
 

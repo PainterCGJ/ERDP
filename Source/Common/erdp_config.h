@@ -3,13 +3,13 @@
 
 /* ================================< user config >================================ */
 
-#define ERDP_CONFIG_HEAP_SIZE ((size_t)(50 * 1024))
+#define ERDP_CONFIG_HEAP_SIZE ((size_t)(100 * 1024))
 
 #define ERDP_CONFIG_ASSERT_ENABLED 1
 
 #define ERDP_CONFIG_RTOS_ENABLED 1
 
-#define ERDP_CONFIG_MAIN_THREAD_STACK_SIZE (1024)
+#define ERDP_CONFIG_MAIN_THREAD_STACK_SIZE (4096)
 
 #define ERDP_SET_LOGGER_FORMAT "%l-[%t]-[%m]%s\n"
 

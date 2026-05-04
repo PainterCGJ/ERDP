@@ -9,6 +9,8 @@ add_library(lcd-service STATIC EXCLUDE_FROM_ALL
 target_include_directories(lcd-service PUBLIC
     ${CMAKE_SOURCE_DIR}/Source
     ${CMAKE_SOURCE_DIR}/Source/Common
+    ${CMAKE_SOURCE_DIR}/Source/Board
+    
     # ${CMAKE_SOURCE_DIR}/Source/Library/st7789/port
     # ${CMAKE_SOURCE_DIR}/Source/Library/st7789/src
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -16,7 +18,9 @@ target_include_directories(lcd-service PUBLIC
 
 target_link_libraries(lcd-service
     osal
-    st7789
+    hal
+    log-service
+    lvgl
 )
 
 set_target_properties(lcd-service PROPERTIES

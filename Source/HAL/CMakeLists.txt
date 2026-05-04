@@ -3,6 +3,7 @@
 add_subdirectory(GPIO)
 add_subdirectory(UART)
 add_subdirectory(SPI)
+add_subdirectory(DMA)
 
 enable_language(CXX)
 
@@ -18,4 +19,5 @@ target_link_libraries(hal INTERFACE
     hal-uart
     hal-gpio
     hal-spi
+    hal-dma
 )

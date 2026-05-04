@@ -54,6 +54,8 @@ static const dma_cfg_t spi_dma_cfg[ERDP_SPI_NUM][DMA_DIR] = {
 };
 
 uint32_t erdp_if_spi_get_PCLK(ERDP_Spi_t spi) { return spi_pclk[spi]; }
+uint32_t erdp_if_spi_get_instance(ERDP_Spi_t spi) { return spi_instance[spi]; }
+
 void erdp_if_spi_gpio_init(ERDP_SpiInfo_t *spi_info, ERDP_SpiMode_t mode) {
     GPIO_TypeDef *gpio_periph;
     uint32_t gpio_pin;
@@ -210,12 +212,12 @@ void erdp_if_spi_enable(ERDP_Spi_t spi, bool enable) {
 }
 void erdp_if_spi_send(ERDP_Spi_t spi, uint16_t data) { SPI_SendData((SPI_TypeDef *)spi_instance[spi], data); }
 
-void erdp_if_spi_send_dma(ERDP_Spi_t spi, uint8_t *data, uint32_t len) {
+void erdp_if_spi_send_dma(ERDP_Spi_t spi, const uint8_t *data, uint32_t len) {
     DMA_Stream_TypeDef *s = spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].dma_stream;
     uint32_t tc_flag = spi_dma_cfg[spi][DMA_DIR_MEMORY_TO_PERIPH].transfer_done_flag;
     DMA_Cmd(s, DISABLE);
     while (DMA_GetCmdStatus(s) != DISABLE) {
-    }                             // 等 EN 真正清零
+    }    // 等 EN 真正清零
     DMA_ClearFlag(s, tc_flag);    // 至少清 TCIF，最好把该stream相关错误/半传输也清掉
     s->M0AR = (uint32_t)data;
     DMA_SetCurrDataCounter(s, len);

@@ -124,7 +124,7 @@ extern "C"
      * @param[in] data Pointer to data to be transmitted (8/16 bit depending on configuration)
      * @param[in] len Number of bytes to be transmitted
      */
-    void erdp_if_spi_send_dma(ERDP_Spi_t spi, uint8_t *data, uint32_t len);
+    void erdp_if_spi_send_dma(ERDP_Spi_t spi, const uint8_t *data, uint32_t len);
 
     /**
      * @brief Check if SPI DMA transfer is complete
@@ -153,6 +153,13 @@ extern "C"
      * @return true if receive buffer contains data, false otherwise
      */
     bool erdp_if_spi_receive_buffer_not_empty(ERDP_Spi_t spi);
+
+    /**
+     * @brief Get SPI instance identifier
+     * @param[in] spi SPI instance identifier
+     * @return SPI instance identifier
+     */
+    uint32_t erdp_if_spi_get_instance(ERDP_Spi_t spi);
 
 #ifdef __cplusplus
 }

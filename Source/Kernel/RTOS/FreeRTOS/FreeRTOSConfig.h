@@ -344,8 +344,8 @@ extern uint32_t SystemCoreClock;
  * build.  The application writer is responsible for providing the hook function
  * for any set to 1.  See https://www.freertos.org/a00016.html. */
 #define configUSE_IDLE_HOOK 0
-#define configUSE_TICK_HOOK 0
-#define configUSE_MALLOC_FAILED_HOOK 0
+#define configUSE_TICK_HOOK 1
+#define configUSE_MALLOC_FAILED_HOOK 1
 #define configUSE_DAEMON_TASK_STARTUP_HOOK 0
 
 /* Set configUSE_SB_COMPLETED_CALLBACK to 1 to have send and receive completed
@@ -367,7 +367,7 @@ extern uint32_t SystemCoreClock;
  * the stack overflow callback when configCHECK_FOR_STACK_OVERFLOW is set to 1.
  * See https://www.freertos.org/Stacks-and-stack-overflow-checking.html  Defaults
  * to 0 if left undefined. */
-#define configCHECK_FOR_STACK_OVERFLOW 0
+#define configCHECK_FOR_STACK_OVERFLOW 2
 
 /******************************************************************************/
 /* Run time and task stats gathering related definitions. *********************/
